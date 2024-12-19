@@ -1,12 +1,13 @@
 {
-  "name": "three-ts",
+  "name": "match-viewer",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
+  "license": "UNLICENSED",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "build-ghp": "tsc && vite build --base=/vite-ghp",
+    "build-ghp": "tsc && vite build --base=/match-viewer",
     "preview": "vite preview"
   },
   "dependencies": {
