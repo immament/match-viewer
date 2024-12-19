@@ -41,7 +41,6 @@ jobs:
         run: yarn build-ghp
       - shell: bash
         run: |
-          ls
           mv assets/* dist/assets/
       - name: Setup Pages
         uses: actions/configure-pages@v4

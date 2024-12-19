@@ -175,7 +175,7 @@ function modelConfigFactory(modelType: ModelType): ModelConfig {
         jogRight: "sk.jog_strafe_right.anim"
       };
       return new ModelConfig(
-        "/assets/models/player/player.gltf",
+        "assets/models/player/player.gltf",
         (m) => m.getObjectByName("Player"),
         undefined,
         animations

@@ -17,7 +17,7 @@ import {
 import { Ball } from "./ball";
 
 export async function loadBall() {
-  const texture = new TextureLoader().load("/assets/models/ball.jpg");
+  const texture = new TextureLoader().load("assets/models/ball.jpg");
   const geometry = new SphereGeometry(BALL_RADIUS, 16, 8);
   const material = new MeshStandardMaterial({ map: texture });
   const ball = new Ball(geometry, material);
@@ -93,7 +93,7 @@ function createPositionsArrays({ px, pz, pHeight }: BallPositionsConfig) {
 
 // export async function loadBall() {
 //   const loader = new GLTFLoader();
-//   const soldierData = await loader.loadAsync("/assets/models/Ball.glb");
+//   const soldierData = await loader.loadAsync("assets/models/Ball.glb");
 
 //   const { ball } = setupModel(soldierData);
 
