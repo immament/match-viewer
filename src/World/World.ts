@@ -8,7 +8,7 @@ import {
 import Stats from "three/addons/libs/stats.module.js";
 
 import { createControls } from "./systems/controls";
-import { ITickable, Loop } from "./systems/Loop";
+import { IUpdatable, Loop } from "./systems/Loop";
 import { createRenderer } from "./systems/renderer";
 import { Resizer } from "./systems/Resizer";
 import { createSettingsPanel } from "./systems/settings";
@@ -21,13 +21,13 @@ import { Match } from "./components/match/Match.model";
 import { createScene, createStadium } from "./components/scene";
 import { DEBUG_START_TIME } from "./systems/debug";
 
-export interface IViewController extends ITickable {
+export interface IViewController extends IUpdatable {
   setCameraTarget(anObject: Object3D | undefined): void;
   getCameraTarget(): Object3D | undefined;
   viewFromTarget: boolean;
 }
 
-export class World implements ITickable {
+export class World implements IUpdatable {
   private _camera: PerspectiveCamera;
   private _controls: IViewController;
   private _renderer: WebGLRenderer;
@@ -96,7 +96,7 @@ export class World implements ITickable {
     this._match.changeMatchTime(DEBUG_START_TIME * 60);
   }
 
-  addToLoop(tickable: ITickable) {
+  addToLoop(tickable: IUpdatable) {
     this._loop.add(tickable);
   }
 

@@ -1,6 +1,6 @@
 import { AnimationAction, SkeletonHelper } from "three";
 
-import { ITickable } from "@/World/systems/Loop";
+import { IUpdatable } from "@/World/systems/Loop";
 import { Match } from "../match/Match.model";
 import { PoseRecord, PoseTypes } from "./animations/Pose.model";
 import { Player, Player3D } from "./Player.model";
@@ -25,7 +25,7 @@ export type ActionSettings = {
 export type PlayerSettingsFlags = PlayerSettings["settings"];
 export type SwitchPoseSettings = Record<`to ${PoseTypes}`, () => void>;
 
-export class PlayerSettings implements ITickable {
+export class PlayerSettings implements IUpdatable {
   private _model: Player3D;
   private _skeleton: SkeletonHelper;
 

@@ -1,53 +1,46 @@
-import { Camera, Clock, Scene, WebGLRenderer } from "three";
+import { Camera, Scene, WebGLRenderer } from "three";
 import { CSS2DRenderer } from "three/examples/jsm/Addons.js";
+import { MaxFramesClock } from "./MaxFramesClock";
 
-const clock = new Clock();
-
-export interface ITickable {
+export interface IUpdatable {
   tick(delta: number): void;
 }
 
 export class Loop {
-  private updatables: ITickable[] = [];
+  private _updatables: IUpdatable[] = [];
+  private _clock = new MaxFramesClock(false, 60);
 
   constructor(
-    private camera: Camera,
-    private scene: Scene,
-    private renderer: WebGLRenderer,
-    private labelRenderer: CSS2DRenderer
+    private _camera: Camera,
+    private _scene: Scene,
+    private _renderer: WebGLRenderer,
+    private _labelRenderer: CSS2DRenderer
   ) {}
 
-  add(...items: ITickable[]): number {
-    return this.updatables.push(...items);
+  add(...items: IUpdatable[]): number {
+    return this._updatables.push(...items);
   }
 
   start() {
-    clock.start();
-    this.renderer.render(this.scene, this.camera);
-    this.renderer.setAnimationLoop(() => {
-      // tell every animated object to tick forward one frame
-      this.tick();
+    this._clock.start();
 
-      // render a frame
-      this.renderer.render(this.scene, this.camera);
-      this.labelRenderer.render(this.scene, this.camera);
+    this._renderer.render(this._scene, this._camera);
+    this._renderer.setAnimationLoop(() => {
+      const delta = this._clock.getDelta();
+      if (!delta) return false;
+      this.tick(delta);
+      this._renderer.render(this._scene, this._camera);
+      this._labelRenderer.render(this._scene, this._camera);
     });
   }
 
   stop() {
-    clock.stop();
-    this.renderer.setAnimationLoop(null);
+    this._clock.stop();
+    this._renderer.setAnimationLoop(null);
   }
 
-  private tick() {
-    // only call the getDelta function once per frame!
-    const delta = clock.getDelta();
-
-    // logger.debug(
-    //   `The last frame rendered in ${delta * 1000} milliseconds`,
-    // );
-
-    for (const object of this.updatables) {
+  private tick(delta: number): void {
+    for (const object of this._updatables) {
       object.tick(delta);
     }
   }

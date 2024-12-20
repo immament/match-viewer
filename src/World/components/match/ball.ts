@@ -6,9 +6,9 @@ import {
   SphereGeometry,
   Vector3
 } from "three";
-import { ITickable } from "../../systems/Loop";
+import { IUpdatable } from "../../systems/Loop";
 
-export class Ball extends Mesh<SphereGeometry, Material> implements ITickable {
+export class Ball extends Mesh<SphereGeometry, Material> implements IUpdatable {
   private _mixer?: AnimationMixer | undefined;
   private _action?: AnimationAction | undefined;
 
