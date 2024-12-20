@@ -1,5 +1,5 @@
 import { round } from "@/app/utils";
-import { ITickable } from "@/World/systems/Loop";
+import { IUpdatable } from "@/World/systems/Loop";
 import { IViewController } from "@/World/World";
 import GUI from "lil-gui";
 import { Camera } from "three";
@@ -75,7 +75,7 @@ function createFolders(mainPanel: GUI, settings: MatchSettings, match: Match) {
   return panel;
 }
 
-class MatchSettings implements ITickable {
+class MatchSettings implements IUpdatable {
   public "pause/continue" = this.pauseContinue;
   public "make single step" = this.makeSingleStep;
   public "modify step size" = 0.05;

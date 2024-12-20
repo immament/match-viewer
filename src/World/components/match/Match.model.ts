@@ -2,7 +2,7 @@ import GUI from "lil-gui";
 
 import { round } from "@/app/utils";
 import { MatchDebug } from "@/World/systems/debug";
-import { ITickable } from "@/World/systems/Loop";
+import { IUpdatable } from "@/World/systems/Loop";
 import { IViewController, World } from "@/World/World";
 import { Camera, Object3D, Raycaster, Vector2 } from "three";
 import { timeToStep } from "../player/animations/positions";
@@ -24,7 +24,7 @@ enum MouseButton {
   Fifth = 4
 }
 
-export class Match implements ITickable {
+export class Match implements IUpdatable {
   private static _instance?: Match;
   static get instance(): Match | undefined {
     return this._instance;
@@ -35,7 +35,7 @@ export class Match implements ITickable {
   private _ball?: Ball;
   private _players: Player[] = [];
 
-  private _updatables: ITickable[] = [];
+  private _updatables: IUpdatable[] = [];
 
   private _isPaused = true;
   private _sizeOfNextStep: number = 0;

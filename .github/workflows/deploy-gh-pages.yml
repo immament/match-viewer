@@ -4,7 +4,7 @@ name: Deploy static content to Pages
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: ["main"]
+    branches: ["main", "dev"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -39,6 +39,9 @@ jobs:
         run: yarn install
       - name: Build
         run: yarn build-ghp
+      - shell: bash
+        run: |
+          mv assets/* dist/assets/
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
