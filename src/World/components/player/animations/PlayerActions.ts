@@ -1,6 +1,6 @@
 import { AnimationAction } from "three";
 
-import { PlayerId } from "../Player.model";
+import { PlayerId } from "../PlayerId";
 import { PoseTypes } from "./Pose.model";
 import { PoseAction } from "./PoseAction";
 

@@ -1,5 +1,5 @@
 import { round } from "@/app/utils";
-import { PlayerId } from "../Player.model";
+import { PlayerId } from "../PlayerId";
 import { PoseTypes } from "./Pose.model";
 import { PoseBuilderContext } from "./PoseBuilderContext";
 import { PoseBuilderStep } from "./PoseBuilderStep";

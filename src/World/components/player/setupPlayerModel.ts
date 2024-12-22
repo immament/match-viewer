@@ -10,12 +10,13 @@ import {
 import { GLTF } from "three/addons";
 
 import { logger } from "@/app/logger";
-import { Player, PlayerId } from "./Player.model";
+import { ModelConfig } from "./ModelConfig";
+import { Player } from "./Player.model";
+import { PlayerId } from "./PlayerId";
 import { PlayerActions } from "./animations/PlayerActions";
 import { isMovePoseType, PoseTypes } from "./animations/Pose.model";
 import { PoseAction } from "./animations/PoseAction";
 import { createMoveActions } from "./animations/movement";
-import { ModelConfig } from "./loadPlayers";
 
 export function setupPlayerModel(data: GLTF) {
   const model = data.scene;
@@ -28,9 +29,6 @@ export function setupPlayerModel(data: GLTF) {
   logger.trace("Player gltf:", data);
   return { model, animations: data.animations };
 }
-
-export type AnimationIdxs = Record<PoseTypes, number>;
-export type AnimationNames = Record<PoseTypes, string>;
 
 export function setupPlayer(
   playerId: PlayerId,

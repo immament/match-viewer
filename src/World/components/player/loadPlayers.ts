@@ -1,5 +1,4 @@
 import {
-  AnimationClip,
   BufferGeometry,
   MeshStandardMaterial,
   NormalBufferAttributes,
@@ -9,51 +8,12 @@ import {
 import { GLTF, GLTFLoader, SkeletonUtils } from "three/addons";
 
 import { logger } from "@/app/logger";
-import { PoseTypes } from "./animations/Pose.model";
+import { AnimationNames, ModelConfig } from "./ModelConfig";
 import { Player } from "./Player.model";
-import {
-  AnimationIdxs,
-  AnimationNames,
-  setupPlayer,
-  setupPlayerModel
-} from "./setupPlayerModel";
+import { setupPlayer, setupPlayerModel } from "./setupPlayerModel";
 
 type ModelType = "player";
 const MODEL_TYPE: ModelType = "player";
-
-export type DefaulSkinnedMesh = SkinnedMesh<
-  BufferGeometry<NormalBufferAttributes>,
-  MeshStandardMaterial
->;
-
-export class ModelConfig {
-  public get getMeshFn(): (model: Object3D) => Object3D | undefined {
-    return this._getMeshFn;
-  }
-  public get modelPath(): string {
-    return this._modelPath;
-  }
-
-  constructor(
-    private _modelPath: string,
-    private _getMeshFn: (model: Object3D) => Object3D | undefined,
-    private _animationIdxs?: Partial<AnimationIdxs>,
-    private _animationNames?: Partial<AnimationNames>
-  ) {}
-
-  animationClip(clips: AnimationClip[], pose: PoseTypes) {
-    if (this._animationIdxs && this._animationIdxs[pose]) {
-      return clips[this._animationIdxs[pose]];
-    }
-
-    if (this._animationNames) {
-      const name = this._animationNames[pose];
-      if (name) return clips.find((c) => c.name === name);
-    }
-
-    return undefined;
-  }
-}
 
 export async function loadPlayers(): Promise<{ players: Player[] }> {
   const modelConfig = modelConfigFactory(MODEL_TYPE);

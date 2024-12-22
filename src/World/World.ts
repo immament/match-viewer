@@ -11,7 +11,6 @@ import { createControls } from "./systems/controls";
 import { IUpdatable, Loop } from "./systems/Loop";
 import { createRenderer } from "./systems/renderer";
 import { Resizer } from "./systems/Resizer";
-import { createSettingsPanel } from "./systems/settings";
 
 import { logger } from "@/app/logger";
 import { CSS2DRenderer } from "three/addons";
@@ -19,23 +18,25 @@ import { createCamera } from "./components/camera";
 import { createLights } from "./components/lights";
 import { Match } from "./components/match/Match.model";
 import { createScene, createStadium } from "./components/scene";
-import { DEBUG_START_TIME } from "./systems/debug";
+import { IViewController } from "./IViewController";
 
-export interface IViewController extends IUpdatable {
-  setCameraTarget(anObject: Object3D | undefined): void;
-  getCameraTarget(): Object3D | undefined;
-  viewFromTarget: boolean;
-}
+export const DEBUG_START_TIME = 0; //1.45;
 
 export class World implements IUpdatable {
   private _camera: PerspectiveCamera;
   private _controls: IViewController;
+  public get controls(): IViewController {
+    return this._controls;
+  }
   private _renderer: WebGLRenderer;
   private _labelRenderer: CSS2DRenderer;
   private _scene: Scene;
   private _loop: Loop;
   private _stats: Stats;
-  private _match?: Match;
+  private _match: Match | undefined;
+  public get match(): Match | undefined {
+    return this._match;
+  }
 
   constructor(private _htmlContainer: HTMLElement) {
     this._camera = createCamera(
@@ -84,15 +85,13 @@ export class World implements IUpdatable {
   async init() {
     await createStadium(this._scene);
     this._loop.add(this);
-    const settingsPanel = createSettingsPanel(this);
+    // const settingsPanel = createSettingsPanel(this);
 
-    this._match = new Match(this);
-    await this._match.init();
-    this._match.createMatchSettings(
-      settingsPanel,
-      this._camera,
-      this._controls
-    );
+    this._match = new Match(this._controls);
+    const objects = await this._match.init();
+    this._scene.add(...objects);
+    this.addToLoop(this._match);
+
     this._match.changeMatchTime(DEBUG_START_TIME * 60);
   }
 
@@ -170,21 +169,18 @@ export class World implements IUpdatable {
   private initKeyboard() {
     document.addEventListener(
       "keyup",
-      (ev) => {
-        switch (ev.key) {
+      ({ key }) => {
+        switch (key) {
           case " ":
             this._match?.pauseContinue();
             break;
           case "n":
-          case "N":
             this._match?.moveTime(-1);
             break;
           case "m":
-          case "M":
             this._match?.moveTime(1);
             break;
           case "b":
-          case "B":
             this._match?.moveTime(-0.1);
             break;
           case ",":
@@ -195,24 +191,11 @@ export class World implements IUpdatable {
             logger.debug("target:", this._controls.getCameraTarget());
             break;
           case "z":
-            {
-              const ZOOM_DISTANCE = 5;
-              // set zoom to target 15
-              const target = this._controls.getCameraTarget();
-              if (target) {
-                const newPosition = new Vector3();
-                this._camera
-                  .getWorldDirection(newPosition)
-                  .multiplyScalar(ZOOM_DISTANCE);
-
-                this._camera.position.subVectors(target.position, newPosition);
-                if (target.name === "PlayerRoot") this._camera.position.y = 1;
-              }
-            }
+            this._controls.zoomToTarget(5);
             break;
         }
       },
-      false
+      { passive: true }
     );
   }
 }

@@ -1,9 +1,14 @@
-import { round } from "@/app/utils";
-import { IUpdatable } from "@/World/systems/Loop";
-import { IViewController } from "@/World/World";
 import GUI from "lil-gui";
 import { Camera } from "three";
-import { Match } from "./Match.model";
+
+import { round } from "@/app/utils";
+import { IViewController } from "@/World/IViewController";
+import { IUpdatable } from "@/World/systems/Loop";
+import {
+  PlayerDebug,
+  PlayerDebugLabelsConfig
+} from "../../player/debug/PlayerDebug";
+import { Match } from "../Match.model";
 
 export function createMatchSettings(
   mainPanel: GUI,
@@ -75,7 +80,7 @@ function createFolders(mainPanel: GUI, settings: MatchSettings, match: Match) {
   return panel;
 }
 
-class MatchSettings implements IUpdatable {
+export class MatchSettings implements IUpdatable {
   public "pause/continue" = this.pauseContinue;
   public "make single step" = this.makeSingleStep;
   public "modify step size" = 0.05;
@@ -90,14 +95,22 @@ class MatchSettings implements IUpdatable {
   public "follow ball" = true;
   public "view from followed object" = false;
 
+  private _playersDebug: PlayerDebug[] = [];
+
   constructor(
     private _match: Match,
     private _camera: Camera,
     private _viewController: IViewController
-  ) {
+  ) {}
+
+  init() {
     this.playerLabelsVisible(this["player labels"]);
     this.playerPositionVisible(this["display position"]);
     this.followBall(this["follow ball"]);
+  }
+
+  addPlayerDebug(playerDebug: PlayerDebug) {
+    this._playersDebug.push(playerDebug);
   }
 
   private pauseContinue() {
@@ -119,22 +132,30 @@ class MatchSettings implements IUpdatable {
     if (visible) this._camera.layers.enable(LABELS_LAYER);
     else this._camera.layers.disable(LABELS_LAYER);
 
-    this._match.playerLabelsVisible("visible", visible);
+    this.changePlayerLabelConfig("visible", visible);
   }
+
   public playerPositionVisible(visible: boolean) {
-    this._match.playerLabelsVisible("position", visible);
+    this.changePlayerLabelConfig("position", visible);
   }
   playerPoseTimeVisible(visible: boolean) {
-    this._match.playerLabelsVisible("poseTime", visible);
+    this.changePlayerLabelConfig("poseTime", visible);
   }
   playerSpeedVisible(visible: boolean) {
-    this._match.playerLabelsVisible("speed", visible);
+    this.changePlayerLabelConfig("speed", visible);
   }
   playerRotationVisible(visible: boolean) {
-    this._match.playerLabelsVisible("rotation", visible);
+    this.changePlayerLabelConfig("rotation", visible);
   }
   playerMixerTimeVisible(visible: boolean) {
-    this._match.playerLabelsVisible("mixerTime", visible);
+    this.changePlayerLabelConfig("mixerTime", visible);
+  }
+
+  private changePlayerLabelConfig(
+    key: keyof PlayerDebugLabelsConfig,
+    visible: boolean
+  ): void {
+    this._playersDebug.forEach((ch) => (ch.config.labels[key] = visible));
   }
 
   public changeMatchTime(time: number) {

@@ -1,22 +1,29 @@
 import { AnimationAction, AnimationMixer } from "three";
 
-import { logDebugTransition, logger, playerLogger } from "@/app/logger";
+import { logger } from "@/app/logger";
 import { round } from "@/app/utils";
+import {
+  logDebugTransition,
+  playerLogger
+} from "@/World/components/player/player.logger";
 import { PlayerActions } from "./animations/PlayerActions";
-import { PoseRecord } from "./animations/Pose.model";
-import { PoseAction } from "./animations/PoseAction";
+import { PoseAction, PoseRecord } from "./animations/PoseAction";
 import { timeToStep } from "./animations/positions";
-import { Player } from "./Player.model";
+import { ILabelUpdater } from "./ILabelUpdater";
+import { PlayerId } from "./PlayerId";
+import { PoseTransitionProps } from "./PoseTransitionProps";
 
 export type PoseChangedEventDetail = {
-  player: Player;
+  player: PlayerId;
   pose: PoseRecord | undefined;
 };
 
 export class PlayerPoses extends EventTarget {
-  public get player(): Player {
+  public get player(): PlayerId {
     return this._player;
   }
+
+  private _labelUpdater: ILabelUpdater | undefined;
 
   private _currentPose?: PoseRecord = undefined;
   public get currentPose(): PoseRecord | undefined {
@@ -42,7 +49,7 @@ export class PlayerPoses extends EventTarget {
   }
 
   constructor(
-    private _player: Player,
+    private _player: PlayerId,
     private _mixer: AnimationMixer,
     private _actions: PlayerActions,
     private _poses: PoseRecord[]
@@ -100,7 +107,7 @@ export class PlayerPoses extends EventTarget {
     // );
 
     if (this._forceUpdatePose) {
-      this.clearLastPoseAction(props.transitionId);
+      this.clearLastPoseAction(props);
     }
 
     if (props.newAction) {
@@ -160,10 +167,11 @@ export class PlayerPoses extends EventTarget {
     this.updateLabel();
   }
 
-  private clearLastPoseAction(debugRequestId: string): void {
+  private clearLastPoseAction(props: PoseTransitionProps): void {
     if (this.currentAction) {
-      this.logDebug(
-        debugRequestId,
+      playerLogger.debug(
+        this.player,
+        props.transitionId,
         "{clear Last}:",
         this.currentAction.poseType
       );
@@ -177,8 +185,8 @@ export class PlayerPoses extends EventTarget {
   }
 
   private updateLabel() {
-    this._player.debug.updateLabel(
-      this._player.debug.createLabelText(this._currentPose, this._mixer.time)
+    this._labelUpdater?.updateLabel(
+      this._labelUpdater.createLabelText(this._currentPose, this._mixer.time)
     );
   }
 
@@ -283,57 +291,4 @@ export class PlayerPoses extends EventTarget {
 
     //logDebugTransition(this._player, "{executeCrossFade}:", props);
   }
-
-  /// DEBUG Logs
-  private logDebug(requestId: string, ...args: unknown[]) {
-    if (this._player.debug.isActive) {
-      playerLogger.debug(this._player, `[${requestId}]`, ...args);
-    }
-  }
 }
-
-export type PoseTransitionProps = {
-  readonly oldAction: PoseAction | undefined;
-  readonly newAction: PoseAction;
-  readonly newPose: PoseRecord;
-  readonly withSync: boolean;
-  readonly transitionId: string;
-  readonly mixterTime: number;
-};
-
-// if (lastAction.isMoveAction) {
-//   if (newAction.isMoveAction) {
-//     this.executeCrossFade({
-//       oldAction: lastAction.animation,
-//       newAction: newAction.animation,
-//       duration: newPose.fadeTime ?? 0.1,
-//       timeScale: newPose.actionSpeed
-//     });
-//   } else {
-//     // not move poses is started immediately
-//     lastAction.animation.fadeIn(newPose.fadeTime ?? 0.1);
-//     newAction.startAction(newPose);
-//   }
-
-//   return true;
-// }
-
-// const checkIfPaused = false;
-
-// if (lastAction.animation.paused || !checkIfPaused) {
-//   this.logDebug(
-//     0,
-//     "lastAction.paused",
-//     lastAction.name,
-//     "=>",
-//     newAction.name
-//   );
-//   this.executeCrossFade({
-//     oldAction: lastAction.animation,
-//     newAction: newAction.animation,
-//     duration: this._forceUpdatePose ? 0 : 0.1,
-//     timeScale: newPose.actionSpeed
-//   });
-//   return true;
-// }
-// return false;

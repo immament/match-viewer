@@ -8,8 +8,8 @@ import {
 
 import { logger } from "@/app/logger";
 import { PlayerActions } from "./animations/PlayerActions";
-import { PoseRecord } from "./animations/Pose.model";
-import { PlayerDebug } from "./PlayerDebug";
+import { PoseRecord } from "./animations/PoseAction";
+import { PlayerId } from "./PlayerId";
 import { PlayerPoses } from "./PlayerPoses";
 
 export type Player3D = Object3D<Object3DEventMap>;
@@ -20,10 +20,6 @@ export class Player extends Group {
   private _poses: PlayerPoses;
   public get poses(): PlayerPoses {
     return this._poses;
-  }
-  private _debug: PlayerDebug;
-  public get debug(): PlayerDebug {
-    return this._debug;
   }
 
   public get model(): Player3D {
@@ -68,8 +64,6 @@ export class Player extends Group {
     });
 
     this._poses = new PlayerPoses(this, this._mixer, this._actions, aPoses);
-
-    this._debug = new PlayerDebug(this);
   }
 
   public tick(delta: number) {
@@ -83,37 +77,12 @@ export class Player extends Group {
     this._mixer.update(mixerUpdateDelta);
   }
 
-  // public forceUpdatePose() {
-  //   this._poses.forceUpdatePose();
-  // }
-
-  // public pausePoses(pause: boolean) {
-  //   this._poses.pause = pause;
-  // }
-
   debugInfo() {
     logger.debug("debugInfo - player:", this);
     return "todo";
-    // return `[${this.teamIdx}/${this.playerIdx}]
-    //   last action: ${this._lastAction?.name ?? "-"},
-    //   last pose: ${this._lastPose?.type ?? "-"}`;
   }
 
   isPlayer({ teamIdx, playerIdx }: PlayerId) {
     return this.teamIdx === teamIdx && this.playerIdx === playerIdx;
   }
-
-  // public switchPoseTo(newPose: PoseRecord, withSync: boolean) {
-  //   this._poses.switchPoseTo(newPose, withSync);
-  // }
-
-  // ### DEBUG
-  debug_modifyTimeScale(speed: number) {
-    this._mixer.timeScale = speed;
-  }
-}
-
-export interface PlayerId {
-  readonly teamIdx: number;
-  readonly playerIdx: number;
 }

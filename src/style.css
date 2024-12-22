@@ -19,7 +19,7 @@ div#debugPanel {
   font-size: 16px;
   margin-left: 84px;
   position: absolute;
-  background-color: #ffffff44;
+  background-color: #ffffff99;
 }
 
 .label {
@@ -28,6 +28,7 @@ div#debugPanel {
 
 .lil-gui {
   /* --width: 400px; */
+  --background-color: #1f1f1fd4;
 }
 .lil-gui.root {
   min-width: 100px;

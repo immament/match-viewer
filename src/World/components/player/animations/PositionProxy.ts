@@ -1,5 +1,5 @@
 import { Vector2, Vector3 } from "three";
-import { PlayerId } from "../Player.model";
+import { PlayerId } from "../PlayerId";
 import { BallPositionsConfig, distance2D, Point2, Point3 } from "./positions";
 
 export abstract class PositionProxy implements Point3 {

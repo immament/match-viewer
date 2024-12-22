@@ -1,8 +1,9 @@
-import { logLevels, LogLevels, playerLogger } from "@/app/logger";
+import { logLevels, LogLevels } from "@/app/logger";
+import { playerLogger } from "@/World/components/player/player.logger";
 import GUI from "lil-gui";
 import { AnimationAction } from "three";
-import { Match } from "../match/Match.model";
-import { Player } from "./Player.model";
+import { Match } from "../../match/Match.model";
+import { Player } from "../Player.model";
 import {
   ActionSettings,
   ActionTypes,
@@ -11,17 +12,24 @@ import {
   poseTypes,
   SwitchPoseSettings
 } from "./player.settings";
+import { PlayerDebug } from "./PlayerDebug";
 
 export function createPlayerSettings(
   mainPanel: GUI,
   player: Player,
+  playerDebug: PlayerDebug | undefined,
   match: Match
 ): PlayerSettings | undefined {
   const title = playerPanelTitle(player);
 
   if (mainPanel.folders.find((f) => f._title === title)) return;
 
-  const builder = new PlayerSettingsBuilder(player, match, mainPanel);
+  const builder = new PlayerSettingsBuilder(
+    mainPanel,
+    player,
+    playerDebug,
+    match
+  );
   const playerSettings = builder.createPlayerSettings();
   builder.createFolders();
   return playerSettings;
@@ -34,9 +42,10 @@ class PlayerSettingsBuilder {
   private panel!: GUI;
 
   constructor(
+    private _mainPanel: GUI,
     private _player: Player,
-    private _match: Match,
-    private _mainPanel: GUI
+    private _playerDebug: PlayerDebug | undefined,
+    private _match: Match
   ) {}
 
   public createPlayerSettings() {
@@ -44,8 +53,8 @@ class PlayerSettingsBuilder {
     this._actionSettings = this.createActionsSettings();
     this._playerSettings = new PlayerSettings(
       this._player,
+      this._playerDebug,
       this._match,
-      //this._switchPoseSettings,
       this._actionSettings
     );
     return this._playerSettings;

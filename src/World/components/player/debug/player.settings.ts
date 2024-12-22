@@ -1,9 +1,11 @@
 import { AnimationAction, SkeletonHelper } from "three";
 
 import { IUpdatable } from "@/World/systems/Loop";
-import { Match } from "../match/Match.model";
-import { PoseRecord, PoseTypes } from "./animations/Pose.model";
-import { Player, Player3D } from "./Player.model";
+import { Match } from "../../match/Match.model";
+import { PoseTypes } from "../animations/Pose.model";
+import { PoseRecord } from "../animations/PoseAction";
+import { Player, Player3D } from "../Player.model";
+import { PlayerDebug } from "./PlayerDebug";
 
 export const poseTypes: PoseTypes[] = Object.values(PoseTypes);
 export type ActionTypes = PoseTypes | "position" | "rotation";
@@ -71,8 +73,8 @@ export class PlayerSettings implements IUpdatable {
 
   constructor(
     private _player: Player,
+    private _playerDebug: PlayerDebug | undefined,
     private _match: Match,
-    //private _switchPoseSettings: SwitchPoseSettings,
     private _actionSettings: ActionSettings
   ) {
     ({ model: this._model, skeleton: this._skeleton } = _player);
@@ -108,10 +110,10 @@ export class PlayerSettings implements IUpdatable {
     this._player.poses.syncCrossFade = enabled;
   }
   debugPlay(enabled: boolean) {
-    this._player.debug.debugPlay = enabled;
+    if (this._playerDebug) this._playerDebug.debugPlay = enabled;
   }
   debugLogs(enabled: boolean) {
-    this._player.debug.debugLogs = enabled;
+    if (this._playerDebug) this._playerDebug.debugLogs = enabled;
   }
   pausePoses(pause: boolean) {
     this._player.poses.pause = pause;
@@ -124,7 +126,8 @@ export class PlayerSettings implements IUpdatable {
     this._player.mixer.setTime(scaledTime * 60);
   }
 
-  public tick() {
+  //private _lastImportTime = performance.now()
+  public tick(delta: number) {
     this.importSettings();
   }
 
@@ -168,7 +171,7 @@ export class PlayerSettings implements IUpdatable {
   }
 
   modifyTimeScale(speed: number) {
-    this._player.debug_modifyTimeScale(speed);
+    this._playerDebug?.modifyTimeScale(speed);
   }
 
   playAllActions() {
@@ -178,12 +181,6 @@ export class PlayerSettings implements IUpdatable {
   private unPauseAllActions() {
     this._player.singleStepMode = false;
     this._player.actions.unPauseAllMoveActions();
-
-    // if (this._player.actions.getPoseAction(PoseTypes.idle).animation.paused) {
-    //   this._player.actions.unPauseAllActions();
-    // } else {
-    //   this._player.actions.pauseAllActions();
-    // }
   }
 
   private pauseAllActions() {

@@ -6,9 +6,8 @@ import {
   VectorKeyframeTrack
 } from "three";
 
-import { MatchDebug } from "@/World/systems/debug";
-import { playerLogger } from "@/app/logger";
-import { PlayerId } from "../Player.model";
+import { playerLogger } from "@/World/components/player/player.logger";
+import { PlayerId } from "../PlayerId";
 import { getPlayer as getAwayPlayer } from "../_mock_/awayPlayersPosition.big.mock";
 import { getBallPositions } from "../_mock_/ball.mock";
 import { getPlayer as getHomePlayer } from "../_mock_/homePlayersPosition.big.mock";
@@ -98,7 +97,7 @@ function createPositionsArrays(
   }
 
   function traceResult() {
-    if (MatchDebug.isDebugPlayer(playerId)) {
+    if (playerLogger.isActive(playerId)) {
       playerLogger.trace(
         playerId,
         " positions start:",
@@ -195,7 +194,7 @@ function createRotateAction(
   }
 
   function traceResult() {
-    if (MatchDebug.isDebugPlayer(playerId)) {
+    if (playerLogger.isActive(playerId)) {
       playerLogger.trace(playerId, "rotations length:", rotateValues.length);
       playerLogger.trace(
         playerId,

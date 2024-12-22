@@ -1,5 +1,7 @@
-import { World } from "./World/World";
+import { createWorld } from "./World/world.factory";
 import "./style.css";
+
+const DEBUG_MODE = true;
 
 async function main() {
   const container = document.getElementById("app");
@@ -7,10 +9,7 @@ async function main() {
   if (!container) {
     throw new Error("Html element not found.");
   }
-
-  const world = new World(container);
-
-  await world.init();
+  const world = await createWorld(container, DEBUG_MODE);
 
   // start the animation loop
   world.start();

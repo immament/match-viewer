@@ -1,8 +1,8 @@
-import { Camera, Object3D, PerspectiveCamera } from "three";
+import { Camera, Object3D, PerspectiveCamera, Vector3 } from "three";
 import { OrbitControls } from "three/addons";
 
 import { logger } from "@/app/logger";
-import { IViewController } from "../World";
+import { IViewController } from "../IViewController";
 import { ViewFromTarget } from "./ViewFromTarget";
 
 class OrbitViewController extends OrbitControls implements IViewController {
@@ -26,6 +26,16 @@ class OrbitViewController extends OrbitControls implements IViewController {
     this.minDistance = 0.4;
     this.maxDistance = 150;
     this.zoomSpeed = 2;
+  }
+  zoomToTarget(zoomDistance: number): void {
+    const target = this.getCameraTarget();
+    if (target) {
+      const newPosition = new Vector3();
+      this.camera.getWorldDirection(newPosition).multiplyScalar(zoomDistance);
+
+      this.camera.position.subVectors(target.position, newPosition);
+      if (target.name === "PlayerRoot") this.camera.position.y = 1;
+    }
   }
 
   tick(delta: number): void {
@@ -64,7 +74,7 @@ class OrbitViewController extends OrbitControls implements IViewController {
     return this._cameraTarget;
   }
 
-  private get camera(): PerspectiveCamera {
+  public get camera(): PerspectiveCamera {
     return this.object as PerspectiveCamera;
   }
 }

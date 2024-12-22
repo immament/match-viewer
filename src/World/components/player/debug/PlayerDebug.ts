@@ -1,11 +1,12 @@
 import { AnimationMixer, Event, Object3D, Vector3 } from "three";
 
-import { playerLogger as logger } from "@/app/logger";
 import { round } from "@/app/utils";
-import { Label } from "../match/Label";
-import { PoseRecord } from "./animations/Pose.model";
-import { PoseAnimationAction } from "./animations/PoseAction";
-import { Player } from "./Player.model";
+import { playerLogger } from "@/World/components/player/player.logger";
+import { IUpdatable } from "@/World/systems/Loop";
+import { Label } from "../../match/Label";
+import { PoseAnimationAction, PoseRecord } from "../animations/PoseAction";
+import { ILabelUpdater } from "../ILabelUpdater";
+import { Player } from "../Player.model";
 
 export type PlayerDebugLabelsConfig = {
   visible: boolean;
@@ -20,7 +21,7 @@ export type PlayerDebugConfig = {
   labels: PlayerDebugLabelsConfig;
 };
 
-export class PlayerDebug {
+export class PlayerDebug implements ILabelUpdater, IUpdatable {
   private _loopListeners = true;
   public get player(): Player {
     return this._player;
@@ -31,7 +32,7 @@ export class PlayerDebug {
     return this._isActive;
   }
   public set isActive(value) {
-    logger.trace(this._player, "set isActive:", value);
+    playerLogger.trace(this._player, "set isActive:", value);
     this._isActive = value;
 
     if (value && this._loopListeners) {
@@ -55,15 +56,20 @@ export class PlayerDebug {
     loopDelta: number;
   } & Event<"loop", AnimationMixer>) {
     if (this.debugLogs) {
-      logger.debug(this._player, "dbg: {end loop}:", action.getClip().name, {
-        poseRecord: { ...action.poseRecord },
-        aTime: action.time,
-        mTime: round(target.time / 60, 3),
-        loopDelta,
-        enabled: action.enabled,
-        isRunning: action.isRunning(),
-        paused: action.paused
-      });
+      playerLogger.debug(
+        this._player,
+        "dbg: {end loop}:",
+        action.getClip().name,
+        {
+          poseRecord: { ...action.poseRecord },
+          aTime: action.time,
+          mTime: round(target.time / 60, 3),
+          loopDelta,
+          enabled: action.enabled,
+          isRunning: action.isRunning(),
+          paused: action.paused
+        }
+      );
     }
   }
   private onActionFinished({
@@ -75,7 +81,7 @@ export class PlayerDebug {
     AnimationMixer
   >) {
     if (this.debugLogs) {
-      logger.debug(
+      playerLogger.debug(
         this._player,
         "dbg: {Finished action}:",
         action.getClip().name,
@@ -115,6 +121,24 @@ export class PlayerDebug {
 
   constructor(private _player: Player) {
     this.addLabel(_player.model);
+  }
+  private _nextTickTime: number = performance.now();
+  tick(delta: number, realDelta?: number): void {
+    if (!delta) {
+      if (this.debugPlay && realDelta) this._player.tick(realDelta);
+      return;
+    }
+
+    const now = performance.now();
+    if (this._nextTickTime > now) return;
+
+    this.updateLabel(
+      this.createLabelText(
+        this._player.poses.currentPose,
+        this.player.mixer.time
+      )
+    );
+    this._nextTickTime = now + 500;
   }
 
   createLabelText(
@@ -161,5 +185,9 @@ export class PlayerDebug {
     });
 
     this.label.addTo(model);
+  }
+
+  modifyTimeScale(speed: number) {
+    this.player.mixer.timeScale = speed;
   }
 }

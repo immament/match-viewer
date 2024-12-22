@@ -3,7 +3,7 @@ import { CSS2DRenderer } from "three/examples/jsm/Addons.js";
 import { MaxFramesClock } from "./MaxFramesClock";
 
 export interface IUpdatable {
-  tick(delta: number): void;
+  tick(delta: number, realDelta?: number): void;
 }
 
 export class Loop {

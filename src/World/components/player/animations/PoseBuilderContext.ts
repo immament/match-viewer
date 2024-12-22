@@ -1,5 +1,6 @@
-import { PlayerId } from "../Player.model";
-import { PoseRecord, RawPoseEvents, Writeable } from "./Pose.model";
+import { PlayerId } from "../PlayerId";
+import { RawPoseEvents, Writeable } from "./Pose.model";
+import { PoseRecord } from "./PoseAction";
 import { PoseBuilderStep } from "./PoseBuilderStep";
 import { BallPositionProxy, PlayerPositionProxy } from "./PositionProxy";
 import { BallPositionsConfig } from "./positions";

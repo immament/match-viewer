@@ -1,6 +1,7 @@
 import { Quaternion, Vector3 } from "three";
-import { PlayerId } from "../Player.model";
-import { PoseRecord, PoseTypes, RawPoseEvents, Writeable } from "./Pose.model";
+import { PlayerId } from "../PlayerId";
+import { PoseTypes, RawPoseEvents, Writeable } from "./Pose.model";
+import { PoseRecord } from "./PoseAction";
 import {
   BallPositionProxy,
   PlayerPositionProxy,

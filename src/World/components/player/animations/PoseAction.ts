@@ -1,6 +1,6 @@
 import { AnimationAction } from "three";
-import { PlayerId } from "../Player.model";
-import { PoseRecord, PoseTypes } from "./Pose.model";
+import { PlayerId } from "../PlayerId";
+import { PoseTypes } from "./Pose.model";
 
 export class PoseAnimationAction extends AnimationAction {
   public poseAction?: PoseAction;
@@ -65,3 +65,19 @@ export class PoseAction {
     };
   }
 }
+export type PoseRecord = {
+  readonly type: PoseTypes;
+  readonly timeScale: number;
+  readonly playerSpeed: number;
+  readonly step: number;
+  readonly startFrom?: number;
+  readonly fadeTime?: number;
+  readonly lockTime?: number;
+  readonly iteration?: number;
+  readonly rawPose?: string;
+  readonly direction: number;
+  readonly lastDirection?: number;
+  // radions
+  readonly rotation: number;
+  action?: PoseAction;
+};

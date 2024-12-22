@@ -1,5 +1,6 @@
 import { MathUtils } from "three";
-import { PoseRecord, PoseTypes, Writeable } from "./Pose.model";
+import { PoseTypes, Writeable } from "./Pose.model";
+import { PoseRecord } from "./PoseAction";
 import { PoseBuilderContext } from "./PoseBuilderContext";
 import { rotation } from "./positions";
 
