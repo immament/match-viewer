@@ -1,7 +1,6 @@
-import { logLevels, LogLevels } from "@/app/logger";
-import { playerLogger } from "@/World/components/player/player.logger";
 import GUI from "lil-gui";
 import { AnimationAction } from "three";
+import { playerLogger } from "../../../components/player/player.logger";
 import { Match } from "../../match/Match.model";
 import { Player } from "../Player.model";
 import {
@@ -13,6 +12,7 @@ import {
   SwitchPoseSettings
 } from "./player.settings";
 import { PlayerDebug } from "./PlayerDebug";
+import { logLevels, LogLevels } from "/app/logger";
 
 export function createPlayerSettings(
   mainPanel: GUI,
@@ -106,9 +106,6 @@ class PlayerSettingsBuilder {
     visibilityFolder
       .add(this.settings, "show model")
       .onChange((v: boolean) => this._playerSettings.showModel(v));
-    visibilityFolder
-      .add(this.settings, "show skeleton")
-      .onChange((v: boolean) => this._playerSettings.showSkeleton(v));
   }
 
   private createActivationFolder() {

@@ -20,26 +20,24 @@ export class PoseAction {
     _animation.poseAction = this;
   }
 
-  public get animation(): PoseAnimationAction {
+  get animation(): PoseAnimationAction {
     return this._animation;
   }
-
   get name(): string {
     return this._animation.getClip().name ?? "-";
   }
-
   get isMove(): boolean {
     return this._isMove;
   }
   get isPose(): boolean {
     return !this._isMove;
   }
-
-  public get poseType(): PoseTypes {
+  get poseType(): PoseTypes {
     return this._poseType;
   }
 
-  startAction(pose: PoseRecord, reverse = false) {
+  startAction(pose: PoseRecord, reverse = false): boolean {
+    if (this._poseType !== pose.type) return false;
     this._animation.reset();
     if (reverse) {
       this._animation.time = this._animation.getClip().duration;
@@ -50,6 +48,7 @@ export class PoseAction {
     this._animation.setEffectiveTimeScale(pose.timeScale);
     this._animation.setEffectiveWeight(1);
     this._animation.play();
+    return true;
   }
 
   state() {
@@ -65,6 +64,7 @@ export class PoseAction {
     };
   }
 }
+
 export type PoseRecord = {
   readonly type: PoseTypes;
   readonly timeScale: number;

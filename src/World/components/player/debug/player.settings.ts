@@ -1,6 +1,6 @@
-import { AnimationAction, SkeletonHelper } from "three";
+import { AnimationAction } from "three";
 
-import { IUpdatable } from "@/World/systems/Loop";
+import { IUpdatable } from "../../../systems/Loop";
 import { Match } from "../../match/Match.model";
 import { PoseTypes } from "../animations/Pose.model";
 import { PoseRecord } from "../animations/PoseAction";
@@ -29,7 +29,6 @@ export type SwitchPoseSettings = Record<`to ${PoseTypes}`, () => void>;
 
 export class PlayerSettings implements IUpdatable {
   private _model: Player3D;
-  private _skeleton: SkeletonHelper;
 
   private _positionAnimation: AnimationAction;
   private _rotateAnimation: AnimationAction;
@@ -77,7 +76,7 @@ export class PlayerSettings implements IUpdatable {
     private _match: Match,
     private _actionSettings: ActionSettings
   ) {
-    ({ model: this._model, skeleton: this._skeleton } = _player);
+    ({ model: this._model } = _player);
 
     ({
       positionAction: this._positionAnimation,
@@ -164,10 +163,6 @@ export class PlayerSettings implements IUpdatable {
 
   showModel(visibility: boolean) {
     this._model.visible = visibility;
-  }
-
-  showSkeleton(visibility: boolean) {
-    this._skeleton.visible = visibility;
   }
 
   modifyTimeScale(speed: number) {

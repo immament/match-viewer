@@ -1,9 +1,9 @@
 import logger, { LogLevelNames, LogLevelNumbers, Logger } from "loglevel";
 import prefix from "loglevel-plugin-prefix";
 
-import { originalFactory } from "@/app/logger";
-import { isDebugPlayer } from "@/World/systems/debug/debug.constants";
+import { isDebugPlayer } from "../../systems/debug/debug.constants";
 import { PoseTransitionProps } from "./PoseTransitionProps";
+import { originalFactory } from "/app/logger";
 
 // PLAYER filtered LOGGER
 export const playerLogger = logger.getLogger("player") as PlayerLogger;
@@ -49,22 +49,28 @@ function logTransition(
   logLevel: LogLevelNames,
   player: LoggerPlayerId,
   name: string,
-  { oldAction, newAction, newPose, transitionId }: PoseTransitionProps,
+  {
+    oldPoseAction,
+    newPoseAction,
+    newPoseRecord,
+    transitionId
+  }: PoseTransitionProps,
   ...args: unknown[]
 ) {
   //if (!player.debug.isActive) return;
   //if (newPose.type !== PoseTypes.jogBack) return;
+
   playerLogger[logLevel](
     player,
     `[${transitionId}]`,
     name,
-    oldAction?.poseType,
+    oldPoseAction?.poseType,
     "=>",
-    newAction.poseType,
+    newPoseAction.poseType,
     ", newPose:",
-    newPose,
+    newPoseRecord,
     ", newAction state:",
-    newAction.state(),
+    newPoseAction.state(),
     ...args
   );
 }

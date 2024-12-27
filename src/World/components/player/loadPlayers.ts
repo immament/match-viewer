@@ -7,10 +7,10 @@ import {
 } from "three";
 import { GLTF, GLTFLoader, SkeletonUtils } from "three/addons";
 
-import { logger } from "@/app/logger";
 import { AnimationNames, ModelConfig } from "./ModelConfig";
 import { Player } from "./Player.model";
 import { setupPlayer, setupPlayerModel } from "./setupPlayerModel";
+import { logger } from "/app/logger";
 
 type ModelType = "player";
 const MODEL_TYPE: ModelType = "player";

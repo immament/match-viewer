@@ -1,6 +1,6 @@
-import { logger, LogLevels, logLevels } from "@/app/logger";
 import GUI from "lil-gui";
 import { World } from "../../World";
+import { logger, LogLevels, logLevels } from "/app/logger";
 
 export function createSettingsPanel(world: World) {
   const _panel = new GUI({ closeFolders: true });

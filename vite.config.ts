@@ -1,11 +1,11 @@
-import { defineConfig } from "vite";
-
 import path from "path";
+import { defineConfig } from "vite";
 
 export default defineConfig({
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
+      "/src/app": path.resolve(__dirname, "./src/app")
+      // "/src/World": path.resolve(__dirname, "./src/World")
+    }
+  }
 });

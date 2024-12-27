@@ -1,4 +1,3 @@
-import { round } from "@/app/utils";
 import { PlayerId } from "../PlayerId";
 import { PoseTypes } from "./Pose.model";
 import { PoseBuilderContext } from "./PoseBuilderContext";
@@ -6,6 +5,7 @@ import { PoseBuilderStep } from "./PoseBuilderStep";
 import { PositionProxy } from "./PositionProxy";
 import { distance2D, MATCH_TIME_SCALE, onOut } from "./positions";
 import { RotationBuilder } from "./RotationBuilder";
+import { round } from "/app/utils";
 
 const THROW_IN_BALL_MIN_HEIGHT = 1.6;
 const HEAD_BALL_MIN_HEIGHT = 1.4;

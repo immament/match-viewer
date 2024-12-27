@@ -1,9 +1,9 @@
 import { Camera, Object3D, PerspectiveCamera, Vector3 } from "three";
 import { OrbitControls } from "three/addons";
 
-import { logger } from "@/app/logger";
 import { IViewController } from "../IViewController";
 import { ViewFromTarget } from "./ViewFromTarget";
+import { logger } from "/app/logger";
 
 class OrbitViewController extends OrbitControls implements IViewController {
   private _cameraTarget: Object3D | undefined;

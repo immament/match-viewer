@@ -1,12 +1,12 @@
 import { AnimationMixer, Event, Object3D, Vector3 } from "three";
 
-import { round } from "@/app/utils";
-import { playerLogger } from "@/World/components/player/player.logger";
-import { IUpdatable } from "@/World/systems/Loop";
+import { playerLogger } from "../../../components/player/player.logger";
+import { IUpdatable } from "../../../systems/Loop";
 import { Label } from "../../match/Label";
 import { PoseAnimationAction, PoseRecord } from "../animations/PoseAction";
 import { ILabelUpdater } from "../ILabelUpdater";
 import { Player } from "../Player.model";
+import { round } from "/app/utils";
 
 export type PlayerDebugLabelsConfig = {
   visible: boolean;

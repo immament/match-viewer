@@ -6,12 +6,12 @@ import {
   VectorKeyframeTrack
 } from "three";
 
-import { playerLogger } from "@/World/components/player/player.logger";
+import { playerLogger } from "../../../components/player/player.logger";
 import { PlayerId } from "../PlayerId";
-import { getPlayer as getAwayPlayer } from "../_mock_/awayPlayersPosition.big.mock";
-import { getBallPositions } from "../_mock_/ball.mock";
-import { getPlayer as getHomePlayer } from "../_mock_/homePlayersPosition.big.mock";
-import { getPlayerPoses } from "../_mock_/playersPose.mock";
+import { getPlayer as getAwayPlayer } from "../__mocks__/awayPlayersPosition.big.mock";
+import { getBallPositions } from "../__mocks__/ball.mock";
+import { getPlayer as getHomePlayer } from "../__mocks__/homePlayersPosition.big.mock";
+import { getPlayerPoses } from "../__mocks__/playersPose.mock";
 import { RawPoseEvents } from "./Pose.model";
 import { PoseBuilder } from "./PoseBuilder";
 import { PoseBuilderContext } from "./PoseBuilderContext";

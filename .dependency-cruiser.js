@@ -8,9 +8,7 @@ export default {
         "This dependency is part of a circular relationship. You might want to revise " +
         "your solution (i.e. use dependency inversion, make sure the modules have a single responsibility) ",
       from: {},
-      to: {
-        circular: true
-      }
+      to: { circular: true }
     },
     {
       name: "no-orphans",
@@ -125,12 +123,8 @@ export default {
         "implement functionality this is odd. Either you're writing a test outside the test folder " +
         "or there's something in the test folder that isn't a test.",
       severity: "error",
-      from: {
-        pathNot: "^(tests)"
-      },
-      to: {
-        path: "^(tests)"
-      }
+      from: { pathNot: "(__tests__)" },
+      to: { path: "(__tests__)" }
     },
     {
       name: "not-to-spec",
@@ -140,9 +134,7 @@ export default {
         "responsibility anymore. Factor it out into (e.g.) a separate utility/ helper or a mock.",
       severity: "error",
       from: {},
-      to: {
-        path: "[.](?:spec|test)[.](?:js|mjs|cjs|jsx|ts|mts|cts|tsx)$"
-      }
+      to: { path: "[.](?:spec|test)[.](?:js|mjs|cjs|jsx|ts|mts|cts|tsx)$" }
     },
     {
       name: "not-to-dev-dep",
@@ -175,9 +167,7 @@ export default {
         "If you're using an optional dependency here by design - add an exception to your" +
         "dependency-cruiser configuration.",
       from: {},
-      to: {
-        dependencyTypes: ["npm-optional"]
-      }
+      to: { dependencyTypes: ["npm-optional"] }
     },
     {
       name: "peer-deps-used",

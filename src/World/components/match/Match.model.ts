@@ -1,6 +1,6 @@
-import { IViewController } from "@/World/IViewController";
-import { IUpdatable } from "@/World/systems/Loop";
+import { IViewController } from "src/World/IViewController";
 import { Object3D, Raycaster, Vector2, Vector3 } from "three";
+import { IUpdatable } from "../../systems/Loop";
 import { loadPlayers } from "../player/loadPlayers";
 import { Player } from "../player/Player.model";
 import { PlayerId } from "../player/PlayerId";

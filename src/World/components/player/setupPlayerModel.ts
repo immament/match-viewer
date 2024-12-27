@@ -4,12 +4,10 @@ import {
   AnimationMixer,
   LoopOnce,
   Object3D,
-  SkeletonHelper,
   VectorKeyframeTrack
 } from "three";
 import { GLTF } from "three/addons";
 
-import { logger } from "@/app/logger";
 import { ModelConfig } from "./ModelConfig";
 import { Player } from "./Player.model";
 import { PlayerId } from "./PlayerId";
@@ -17,6 +15,7 @@ import { PlayerActions } from "./animations/PlayerActions";
 import { isMovePoseType, PoseTypes } from "./animations/Pose.model";
 import { PoseAction } from "./animations/PoseAction";
 import { createMoveActions } from "./animations/movement";
+import { logger } from "/app/logger";
 
 export function setupPlayerModel(data: GLTF) {
   const model = data.scene;
@@ -36,9 +35,6 @@ export function setupPlayer(
   animationClips: AnimationClip[],
   modelConfig: ModelConfig
 ) {
-  const skeleton = new SkeletonHelper(model);
-  skeleton.visible = false;
-
   const { mixer, actions, poses } = setupPlayerAnimmations(
     playerId,
     model,
@@ -46,7 +42,7 @@ export function setupPlayer(
     modelConfig
   );
 
-  const player = new Player(playerId, model, skeleton, mixer, actions, poses);
+  const player = new Player(playerId, model, mixer, actions, poses);
 
   return { player };
 }

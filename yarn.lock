@@ -685,6 +685,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vitest/eslint-plugin@npm:^1.1.20":
+  version: 1.1.20
+  resolution: "@vitest/eslint-plugin@npm:1.1.20"
+  peerDependencies:
+    "@typescript-eslint/utils": ">= 8.0"
+    eslint: ">= 8.57.0"
+    typescript: ">= 5.0.0"
+    vitest: "*"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+    vitest:
+      optional: true
+  checksum: 10c0/d6ef1a55d0763fb0d85e9464d6c24bdd840c78c98c0ffe990933dc0f44dde433dbd7235cd011930908a3a5e24d8c432ad34c6b7171dffccc75e9745b8e76b159
+  languageName: node
+  linkType: hard
+
 "@vitest/expect@npm:2.1.8":
   version: 2.1.8
   resolution: "@vitest/expect@npm:2.1.8"
@@ -1995,6 +2012,7 @@ __metadata:
     "@types/eslint__js": "npm:^8.42.3"
     "@types/node": "npm:^22.9.0"
     "@types/three": "npm:^0.169.0"
+    "@vitest/eslint-plugin": "npm:^1.1.20"
     dependency-cruiser: "npm:^16.8.0"
     eslint: "npm:^9.14.0"
     globals: "npm:^15.12.0"
@@ -2006,6 +2024,7 @@ __metadata:
     typescript-eslint: "npm:^8.14.0"
     vite: "npm:^5.4.10"
     vitest: "npm:^2.1.8"
+    vitest-mock-extended: "npm:^2.0.2"
   languageName: unknown
   linkType: soft
 
@@ -2854,6 +2873,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ts-essentials@npm:>=10.0.0":
+  version: 10.0.3
+  resolution: "ts-essentials@npm:10.0.3"
+  peerDependencies:
+    typescript: ">=4.5.0"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/1bbad8241d8db1ebe4b2eb8f3c984b879de24b14ea42010fcbbc71d9a61a4e3ccd95f7a22c8c0709e2cad578fe1722012e9fbf74420a2ca3fc840565d0b8eb9d
+  languageName: node
+  linkType: hard
+
 "tsconfig-paths-webpack-plugin@npm:^4.2.0":
   version: 4.2.0
   resolution: "tsconfig-paths-webpack-plugin@npm:4.2.0"
@@ -3009,6 +3040,18 @@ __metadata:
   bin:
     vite: bin/vite.js
   checksum: 10c0/d536bb7af57dd0eca2a808f95f5ff1d7b7ffb8d86e17c6893087680a0448bd0d15e07475270c8a6de65cb5115592d037130a1dd979dc76bcef8c1dda202a1874
+  languageName: node
+  linkType: hard
+
+"vitest-mock-extended@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "vitest-mock-extended@npm:2.0.2"
+  dependencies:
+    ts-essentials: "npm:>=10.0.0"
+  peerDependencies:
+    typescript: 3.x || 4.x || 5.x
+    vitest: ">=2.0.0"
+  checksum: 10c0/f5dd4533115cf0da2fee6a5b02e27a32568667805679ed1b5c9b900a08afbcf1f09293304df92f0b4f5925764aa55d68a82cb8e4b743c65821d8cdbeaf47306d
   languageName: node
   linkType: hard
 

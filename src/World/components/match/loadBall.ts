@@ -1,4 +1,3 @@
-import { logger } from "@/app/logger";
 import {
   AnimationClip,
   AnimationMixer,
@@ -8,13 +7,14 @@ import {
   TextureLoader,
   VectorKeyframeTrack
 } from "three";
-import { getBallPositions } from "../player/_mock_/ball.mock";
+import { getBallPositions } from "../player/__mocks__/ball.mock";
 import {
   BALL_RADIUS,
   BallPositionsConfig,
   MATCH_TIME_SCALE
 } from "../player/animations/positions";
 import { Ball } from "./ball";
+import { logger } from "/app/logger";
 
 export async function loadBall() {
   const texture = new TextureLoader().load("assets/models/ball.jpg");

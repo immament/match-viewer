@@ -1,19 +1,15 @@
-import {
-  AnimationMixer,
-  Group,
-  Object3D,
-  Object3DEventMap,
-  SkeletonHelper
-} from "three";
-
-import { logger } from "@/app/logger";
+import { AnimationMixer, Group, Object3D, Object3DEventMap } from "three";
 import { PlayerActions } from "./animations/PlayerActions";
 import { PoseRecord } from "./animations/PoseAction";
 import { PlayerId } from "./PlayerId";
 import { PlayerPoses } from "./PlayerPoses";
+import { logger } from "/app/logger";
 
 export type Player3D = Object3D<Object3DEventMap>;
+
+// Player mesh/object
 export class Player extends Group {
+  // TODO: debug props
   public singleStepMode: boolean = false;
   public sizeOfNextStep: number = 0;
 
@@ -24,9 +20,6 @@ export class Player extends Group {
 
   public get model(): Player3D {
     return this._model;
-  }
-  public get skeleton(): SkeletonHelper {
-    return this._skeleton;
   }
 
   public get mixer(): AnimationMixer {
@@ -47,7 +40,6 @@ export class Player extends Group {
   constructor(
     aPlayerId: PlayerId,
     private _model: Player3D,
-    private _skeleton: SkeletonHelper,
     private _mixer: AnimationMixer,
     private _actions: PlayerActions,
     aPoses: PoseRecord[]

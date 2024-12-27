@@ -1,6 +1,6 @@
-import { logger } from "@/app/logger";
 import { MathUtils, Scene, Vector3 } from "three";
 import { GLTF, GLTFLoader, Sky } from "three/addons";
+import { logger } from "/app/logger";
 
 export function createScene() {
   const scene = new Scene();

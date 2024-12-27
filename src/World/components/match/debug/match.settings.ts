@@ -1,14 +1,14 @@
 import GUI from "lil-gui";
 import { Camera } from "three";
 
-import { round } from "@/app/utils";
-import { IViewController } from "@/World/IViewController";
-import { IUpdatable } from "@/World/systems/Loop";
+import { IViewController } from "../../../IViewController";
+import { IUpdatable } from "../../../systems/Loop";
 import {
   PlayerDebug,
   PlayerDebugLabelsConfig
 } from "../../player/debug/PlayerDebug";
 import { Match } from "../Match.model";
+import { round } from "/app/utils";
 
 export function createMatchSettings(
   mainPanel: GUI,

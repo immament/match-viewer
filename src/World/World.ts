@@ -12,13 +12,13 @@ import { IUpdatable, Loop } from "./systems/Loop";
 import { createRenderer } from "./systems/renderer";
 import { Resizer } from "./systems/Resizer";
 
-import { logger } from "@/app/logger";
 import { CSS2DRenderer } from "three/addons";
 import { createCamera } from "./components/camera";
 import { createLights } from "./components/lights";
 import { Match } from "./components/match/Match.model";
 import { createScene, createStadium } from "./components/scene";
 import { IViewController } from "./IViewController";
+import { logger } from "/app/logger";
 
 export const DEBUG_START_TIME = 0; //1.45;
 

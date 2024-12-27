@@ -1,9 +1,9 @@
-import { round } from "@/app/utils";
-import { Match } from "@/World/components/match/Match.model";
-import { timeToStep } from "@/World/components/player/animations/positions";
+import { Match } from "../../components/match/Match.model";
+import { timeToStep } from "../../components/player/animations/positions";
 import { PlayerId } from "../../components/player/PlayerId";
 import { IUpdatable } from "../Loop";
 import { isDebugPlayer, setDebugPlayerId } from "./debug.constants";
+import { round } from "/app/utils";
 
 // in minutes
 

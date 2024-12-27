@@ -1,6 +1,7 @@
 import globals from "globals";
 import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
+import vitest from "@vitest/eslint-plugin";
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
@@ -11,7 +12,12 @@ export default [
   {
     rules: {
       "no-console": ["warn"],
-      "@typescript-eslint/no-unused-vars": "warn",
-    },
+      "@typescript-eslint/no-unused-vars": "warn"
+    }
   },
+  {
+    files: ["**/*.test.ts"],
+    plugins: { vitest },
+    rules: { ...vitest.configs.recommended.rules }
+  }
 ];
