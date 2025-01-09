@@ -1,6 +1,5 @@
 import { Vector2, Vector3 } from "three";
-import { PlayerId } from "../PlayerId";
-import { BallPositionsConfig, distance2D, Point2, Point3 } from "./positions";
+import { distance2D, Point2, Point3 } from "./positions.utils";
 
 export abstract class PositionProxy implements Point3 {
   private _step = 0;
@@ -61,13 +60,18 @@ export abstract class PositionProxy implements Point3 {
   private _tmp_begin = new Vector2();
   private _tmp_end = new Vector2();
 
-  moveToPoint2(target: Point2, distance: number) {
+  /**
+   * Moves the current position to a point at a specified distance from the target point.
+   *
+   * @param target - The target point to move towards.
+   * @param distance - The distance to move from the target point.
+   */
+  moveToPointAtDistance(target: Point2, distance: number) {
     this.copyToVector2(this._tmp_begin);
     this._tmp_end.set(target.x, target.z);
-
     this._tmp_dir.subVectors(this._tmp_begin, this._tmp_end).normalize();
-
     this._tmp_end.addScaledVector(this._tmp_dir, distance);
+    //console.log("this._tmp_end", this._tmp_end);
 
     this.x = this._tmp_end.x;
     this.z = this._tmp_end.y;
@@ -78,76 +82,5 @@ export abstract class PositionProxy implements Point3 {
   }
   direction2DRaw(xEnd: number, zEnd: number) {
     return Math.atan2(xEnd - this.x, zEnd - this.z);
-  }
-}
-
-export class PlayerPositionProxy extends PositionProxy {
-  constructor(private _positions: Float32Array, private _playerId: PlayerId) {
-    super();
-    super.step = 0;
-  }
-
-  public set step(value: number) {
-    super.step = value;
-    this._vector3.fromArray(this._positions, value * 3);
-  }
-  protected xChanged(value: number) {
-    // playerLogger.debug(
-    //   this._playerId,
-    //   super.step,
-    //   "xChanged:",
-    //   this,
-    //   `${this._vector3.x} => ${value}`,
-    //   this._positions[super.step * 3]
-    // );
-    this._positions[super.step * 3] = value;
-  }
-  protected yChanged(value: number) {
-    this._positions[super.step * 3 + 1] = value;
-  }
-  protected zChanged(value: number) {
-    this._positions[super.step * 3 + 2] = value;
-  }
-}
-
-export class BallPositionProxy extends PositionProxy {
-  constructor(
-    private _positions: BallPositionsConfig,
-    private _playerId: PlayerId
-  ) {
-    super();
-    super.step = 0;
-  }
-
-  public set step(aStep: number) {
-    super.step = aStep;
-    this._vector3.set(
-      this._positions.px[aStep],
-      this._positions.pHeight[aStep],
-      this._positions.pz[aStep]
-    );
-    // if (aStep < 4) {
-    //   playerLogger.debug(
-    //     this._playerId,
-    //     aStep,
-    //     "set step",
-
-    //     this._vector3.x,
-    //     this._vector3.y,
-    //     this._vector3.z,
-    //     this.z,
-    //     this._positions.pz[aStep]
-    //   );
-    // }
-  }
-
-  protected xChanged(value: number) {
-    this._positions.px[super.step] = value;
-  }
-  protected yChanged(value: number) {
-    this._positions.pHeight[super.step] = value;
-  }
-  protected zChanged(value: number) {
-    this._positions.pz[super.step] = value;
   }
 }

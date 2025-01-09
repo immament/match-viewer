@@ -1,13 +1,11 @@
 import { IViewController } from "src/World/IViewController";
-import { Object3D, Raycaster, Vector2, Vector3 } from "three";
+import { Object3D, Raycaster, Scene, Vector2, Vector3 } from "three";
 import { IUpdatable } from "../../systems/Loop";
-import { loadPlayers } from "../player/loadPlayers";
-import { Player } from "../player/Player.model";
 import { PlayerId } from "../player/PlayerId";
+import { PlayerMesh } from "../player/PlayerMesh";
 import { SceneDirector, TimeChangedEventDetail } from "../SceneDirector";
-import { Ball } from "./ball";
+import { Ball } from "./Ball";
 import { Label } from "./Label";
-import { loadBall } from "./loadBall";
 
 enum MouseButton {
   Main = 0,
@@ -23,17 +21,8 @@ export class Match implements IUpdatable {
     return this._instance;
   }
 
-  private _director!: SceneDirector;
-
-  private _ball?: Ball;
-  public get ballPosition(): Vector3 | undefined {
-    return this._ball?.position;
-  }
-
-  private _players: Player[] = [];
-
+  private _director: SceneDirector;
   private _updatables: IUpdatable[] = [];
-
   private _isPaused = true;
   private _sizeOfNextStep: number = 0;
 
@@ -44,80 +33,49 @@ export class Match implements IUpdatable {
   // end tooltip
 
   private _followBall: boolean = false;
-  //private _debuggedPlayer?: PlayerDebug = undefined;
-  // private _mainSettingsPanel?: GUI;
 
-  public get followBall(): boolean {
+  constructor(
+    private _controls: IViewController,
+    private _ball: Ball,
+    private _players: PlayerMesh[]
+  ) {
+    Match._instance = this;
+    this._director = new SceneDirector(this._ball.mixer, this._ball.action);
+    this.initPlayers();
+    this._updatables.push(this._ball, ...this._players);
+    this.listenDirectorTimeChanges();
+    this.listenMouse();
+  }
+
+  get ballPosition(): Vector3 | undefined {
+    return this._ball.position;
+  }
+
+  get followBall(): boolean {
     return this._followBall;
   }
-  public set followBall(value: boolean) {
+  set followBall(value: boolean) {
     this._followBall = value;
     this._controls.setCameraTarget(value ? this._ball : undefined);
   }
 
-  constructor(private _controls: IViewController) {
-    Match._instance = this;
-  }
-
-  public get durationMinutes(): number {
+  get durationMinutes(): number {
     return this._director.duration / 60;
   }
-  public get duration(): number {
+  get duration(): number {
     return this._director.duration;
   }
 
-  public async init(): Promise<(Ball | Player)[]> {
-    ({ players: this._players } = await loadPlayers());
-
-    this._ball = (await loadBall()).ball;
-    const objects: (Ball | Player)[] = [this._ball];
-    //this._world.addToScene(this._ball);
-
-    this._director = new SceneDirector(this._ball.mixer, this._ball.action);
-
-    this._players.forEach((pl) => {
-      //this._world.addToScene(pl);
-      objects.push(pl);
-
-      this._director.addMixer(pl.mixer);
-      this._director.addActions(...pl.actions.allMoveAnimations);
-      pl.poses.forceUpdatePose();
-      // pl.poses.addEventListener("poseChanged", (ev) => {
-      //   const pcEv = ev as CustomEvent<PoseChangedEventDetail> & {
-      //     target: PlayerPoses;
-      //   };
-      //   if (pcEv.detail.pose?.action?.isPose) {
-      //     this.followPlayer(pcEv.target.player);
-      //   }
-      // });
-    });
-
-    this._director.addEventListener(
-      "timeChanged",
-      (ev: CustomEventInit<TimeChangedEventDetail>) => {
-        this._players.forEach((pl) => {
-          pl.poses.forceUpdatePose();
-          pl.actions.unPauseAllMoveActions();
-          if (ev.detail) pl.actions.setTime(ev.detail.timeInSeconds);
-        });
-      }
-    );
-
-    this._updatables.push(this._ball, ...this._players);
-    // this._world.addToLoop(this);
-
-    this.listenMouse();
-
-    // this.setDebugPlayer(this.getPlayer(MatchDebug.debugPlayerId));
-
-    return objects;
+  addToScene(scene: Scene) {
+    scene.add(this._ball);
+    scene.add(...this._players);
   }
 
-  public getPlayer({ teamIdx, playerIdx }: PlayerId) {
+  getPlayer({ teamIdx, playerIdx }: PlayerId) {
     if (teamIdx < 0 || playerIdx < 0) return;
     return this._players[teamIdx * 11 + playerIdx];
   }
-  public getPlayerByIdx(idx: number) {
+  getPlayerByIdx(idx: number) {
     return this._players[idx];
   }
 
@@ -125,15 +83,22 @@ export class Match implements IUpdatable {
     this._updatables.push(updatable);
   }
 
-  // private setDebugPlayer(player: Player | undefined): void {
-  //   if (player) {
-  //     if (this._debuggedPlayer) this._debuggedPlayer.isActive = false;
-  //     MatchDebug.setDebugPlayerId(player);
-  //     // TODO
-  //     // this._debuggedPlayer = player.labelUpdater;
-  //     // this._debuggedPlayer.isActive = true;
-  //   }
-  // }
+  tick(delta: number): void {
+    if (!this._ball) return;
+
+    const mixerUpdateDelta = this.mixerDeltaTime(delta);
+
+    for (const object of this._updatables) {
+      object.tick(mixerUpdateDelta, delta);
+    }
+
+    this.tooltip();
+    //this.debugText();
+  }
+  followPlayer(player: PlayerMesh): void {
+    this._followBall = false;
+    this._controls.setCameraTarget(player.model);
+  }
 
   private listenMouse(): void {
     window.addEventListener("mouseup", ({ clientX, clientY, button }) => {
@@ -170,11 +135,11 @@ export class Match implements IUpdatable {
     if (player) this.followPlayer(player);
   }
 
-  private playerFromPoint(pointer: Vector2): Player | undefined {
+  private playerFromPoint(pointer: Vector2): PlayerMesh | undefined {
     this._raycaster.setFromCamera(pointer, this._controls.camera);
     const hoveres = this._raycaster.intersectObjects(this._players, true);
     if (hoveres.length) {
-      return this.playerModelAncestor(hoveres[0].object) as Player;
+      return this.playerModelAncestor(hoveres[0].object) as PlayerMesh;
     }
   }
 
@@ -199,19 +164,6 @@ export class Match implements IUpdatable {
     }
   }
 
-  public tick(delta: number): void {
-    if (!this._ball) return;
-
-    const mixerUpdateDelta = this.mixerDeltaTime(delta);
-
-    for (const object of this._updatables) {
-      object.tick(mixerUpdateDelta, delta);
-    }
-
-    this.tooltip();
-    //this.debugText();
-  }
-
   private mixerDeltaTime(delta: number): number {
     let result = delta;
 
@@ -230,49 +182,64 @@ export class Match implements IUpdatable {
     return result;
   }
 
-  public followPlayer(player: Player): void {
-    this._followBall = false;
-    this._controls.setCameraTarget(player.model);
+  private initPlayers(): void {
+    this._players.forEach((pl) => {
+      this._director.addMixer(pl.mixer);
+      pl.poses.forceUpdatePose();
+    });
+  }
+
+  private listenDirectorTimeChanges(): void {
+    this._director.addEventListener(
+      "timeChanged",
+      (ev: CustomEventInit<TimeChangedEventDetail>) => {
+        this._players.forEach((pl) => {
+          pl.poses.forceUpdatePose();
+          pl.actions.unPauseAllMoveActions();
+          if (ev.detail) pl.actions.setTime(ev.detail.timeInSeconds);
+        });
+      }
+    );
   }
 
   // ## controlls ##
 
-  public get time(): number {
+  get time(): number {
     return this._director.time;
   }
-  public get timeInMinutes(): number {
+  get timeInMinutes(): number {
     return this._director.timeInMinutes;
   }
 
-  public changeMatchTime(time: number): void {
+  changeMatchTime(time: number): void {
     this._director.gotoTime(time);
   }
 
-  public makeStep(stepSize: number): void {
+  makeStep(stepSize: number): void {
     this._sizeOfNextStep = stepSize;
   }
 
-  public moveTime(delta: number): void {
+  moveTime(delta: number): void {
     this._director.moveTime(delta);
   }
 
-  public timeScale(): number {
+  timeScale(): number {
     return this._director.timeScale;
   }
 
-  public modifyTimeScale(timeScale: number): void {
+  modifyTimeScale(timeScale: number): void {
     this._director.modifyTimeScale(timeScale);
   }
 
-  public pause(): void {
+  pause(): void {
     this._isPaused = true;
   }
 
-  public continue(): void {
+  continue(): void {
     this._isPaused = true;
   }
 
-  public pauseContinue(): boolean {
+  pauseContinue(): boolean {
     return (this._isPaused = !this._isPaused);
   }
 }

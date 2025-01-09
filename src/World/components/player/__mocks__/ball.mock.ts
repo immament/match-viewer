@@ -4,7 +4,7 @@ import {
   BallPositionsConfig,
   xToPitch,
   zToPitch
-} from "../animations/positions";
+} from "../animations/positions.utils";
 
 export function getBallPositions(): BallPositionsConfig {
   return ballPositions;

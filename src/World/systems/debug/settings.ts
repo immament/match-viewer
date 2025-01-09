@@ -14,7 +14,7 @@ export function createSettingsPanel(world: World) {
 
   createFolders(_panel, _settings);
 
-  world.stadiumVisible(_settings["stadium visible"]);
+  world.debug_stadiumVisible(_settings["stadium visible"]);
 
   return _panel;
 
@@ -33,7 +33,7 @@ export function createSettingsPanel(world: World) {
     const sceneFolder = panel.addFolder("Scene");
     sceneFolder
       .add(settings, "stadium visible")
-      .onChange((v: boolean) => world.stadiumVisible(v));
+      .onChange((v: boolean) => world.debug_stadiumVisible(v));
 
     //panel.onChange((c) => console.log("panel.onChange", c));
 

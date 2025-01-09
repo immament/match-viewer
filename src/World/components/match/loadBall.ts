@@ -12,8 +12,8 @@ import {
   BALL_RADIUS,
   BallPositionsConfig,
   MATCH_TIME_SCALE
-} from "../player/animations/positions";
-import { Ball } from "./ball";
+} from "../player/animations/positions.utils";
+import { Ball } from "./Ball";
 import { logger } from "/app/logger";
 
 export async function loadBall() {
@@ -52,7 +52,11 @@ function positionAnimation(mixer: AnimationMixer) {
 }
 
 // pz => height
-function createPositionsArrays({ px, pz, pHeight }: BallPositionsConfig) {
+export function createPositionsArrays({
+  px,
+  pz,
+  pHeight
+}: BallPositionsConfig): { times: number[]; positions: number[] } {
   if (px.length !== pz.length || pHeight.length !== px.length) {
     logger.warn("positions arays have diffrent length!", {
       x_length: px.length,

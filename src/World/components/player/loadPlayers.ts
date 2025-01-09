@@ -5,17 +5,17 @@ import {
   Object3D,
   SkinnedMesh
 } from "three";
-import { GLTF, GLTFLoader, SkeletonUtils } from "three/addons";
-
+import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
+import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { AnimationNames, ModelConfig } from "./ModelConfig";
-import { Player } from "./Player.model";
-import { setupPlayer, setupPlayerModel } from "./setupPlayerModel";
+import { PlayerMesh } from "./PlayerMesh";
+import { createPlayerMesh } from "./createPlayerMesh";
 import { logger } from "/app/logger";
 
 type ModelType = "player";
 const MODEL_TYPE: ModelType = "player";
 
-export async function loadPlayers(): Promise<{ players: Player[] }> {
+export async function loadPlayers(): Promise<{ players: PlayerMesh[] }> {
   const modelConfig = modelConfigFactory(MODEL_TYPE);
 
   const loader = new GLTFLoader();
@@ -30,10 +30,10 @@ export async function loadPlayers(): Promise<{ players: Player[] }> {
     throw error;
   }
 
-  const { model: baseModel, animations } = setupPlayerModel(characterData);
+  const { model: baseModel, animations } = extractPlayerModel(characterData);
   logger.info("animations:", animations, ", baseModel:", baseModel);
 
-  const players: Player[] = [];
+  const players: PlayerMesh[] = [];
 
   type DefaultMesh = SkinnedMesh<
     BufferGeometry<NormalBufferAttributes>,
@@ -66,7 +66,7 @@ export async function loadPlayers(): Promise<{ players: Player[] }> {
 
       const mesh = getMesh(playerModel);
       colorize(mesh);
-      const { player } = setupPlayer(
+      const { player } = createPlayerMesh(
         { teamIdx, playerIdx },
         playerModel,
         animations,
@@ -115,6 +115,18 @@ export async function loadPlayers(): Promise<{ players: Player[] }> {
   }
 }
 
+function extractPlayerModel(data: GLTF) {
+  const model = data.scene;
+
+  model.name = "PlayerRoot";
+
+  // model.traverse(function (object: Object3D & { isMesh?: boolean }) {
+  //   if (object.isMesh) object.castShadow = true;
+  // });
+  logger.trace("Player gltf:", data);
+  return { model, animations: data.animations };
+}
+
 function modelConfigFactory(modelType: ModelType): ModelConfig {
   switch (modelType) {
     case "player": {
@@ -147,42 +159,3 @@ function modelConfigFactory(modelType: ModelType): ModelConfig {
       throw new Error("Wrong model type: " + modelType);
   }
 }
-
-// const anims = [
-//   {
-//     name: "pl.t_pose",
-//     duration: 0.06666667014360428
-//   },
-//   {
-//     name: "sk.idle.anim",
-//     duration: 2
-//   },
-//   {
-//     name: "sk.jog_forward",
-//     duration: 0.8666666746139526
-//   },
-//   {
-//     name: "sk.offensive_idle.anim",
-//     duration: 10.600000381469727
-//   },
-//   {
-//     name: "sk.soccer_header.anim",
-//     duration: 2.4000000953674316
-//   },
-//   {
-//     name: "sk.soccer_idle",
-//     duration: 6.233333110809326
-//   },
-//   {
-//     name: "sk.soccer_pass.anim",
-//     duration: 1.6333333253860474
-//   },
-//   {
-//     name: "sk.throw_in.anim",
-//     duration: 2.799999952316284
-//   },
-//   {
-//     name: "sk.walking.anim",
-//     duration: 1.0666667222976685
-//   }
-// ];

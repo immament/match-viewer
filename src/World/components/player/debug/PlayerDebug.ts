@@ -1,11 +1,18 @@
-import { AnimationMixer, Event, Object3D, Vector3 } from "three";
+import {
+  AnimationAction,
+  AnimationMixer,
+  Event,
+  Object3D,
+  Vector3
+} from "three";
 
 import { playerLogger } from "../../../components/player/player.logger";
 import { IUpdatable } from "../../../systems/Loop";
 import { Label } from "../../match/Label";
-import { PoseAnimationAction, PoseRecord } from "../animations/PoseAction";
+import { PoseRecord } from "../animations/PoseAction.model";
+import { PoseAnimationAction } from "../animations/PoseAnimationAction";
 import { ILabelUpdater } from "../ILabelUpdater";
-import { Player } from "../Player.model";
+import { PlayerMesh } from "../PlayerMesh";
 import { round } from "/app/utils";
 
 export type PlayerDebugLabelsConfig = {
@@ -23,7 +30,7 @@ export type PlayerDebugConfig = {
 
 export class PlayerDebug implements ILabelUpdater, IUpdatable {
   private _loopListeners = true;
-  public get player(): Player {
+  public get player(): PlayerMesh {
     return this._player;
   }
 
@@ -52,51 +59,52 @@ export class PlayerDebug implements ILabelUpdater, IUpdatable {
     loopDelta,
     target
   }: {
-    action: PoseAnimationAction;
+    action: AnimationAction;
     loopDelta: number;
   } & Event<"loop", AnimationMixer>) {
-    if (this.debugLogs) {
-      playerLogger.debug(
-        this._player,
-        "dbg: {end loop}:",
-        action.getClip().name,
-        {
-          poseRecord: { ...action.poseRecord },
-          aTime: action.time,
-          mTime: round(target.time / 60, 3),
-          loopDelta,
-          enabled: action.enabled,
-          isRunning: action.isRunning(),
-          paused: action.paused
-        }
-      );
-    }
+    if (!this.debugLogs || !(action instanceof PoseAnimationAction)) return;
+
+    playerLogger.debug(
+      this._player,
+      "dbg: {end loop}:",
+      action.getClip().name,
+      {
+        poseRecord: action.poseRecord,
+        aTime: action.time,
+        mTime: round(target.time / 60, 3),
+        loopDelta,
+        enabled: action.enabled,
+        isRunning: action.isRunning(),
+        paused: action.paused
+      }
+    );
   }
+
   private onActionFinished({
     action,
     direction,
     target
-  }: { action: PoseAnimationAction; direction: number } & Event<
+  }: { action: AnimationAction; direction: number } & Event<
     "finished",
     AnimationMixer
   >) {
-    if (this.debugLogs) {
-      playerLogger.debug(
-        this._player,
-        "dbg: {Finished action}:",
-        action.getClip().name,
-        {
-          poseRecord: action.poseRecord,
-          aTime: action.time,
-          mTime: round(target.time / 60),
-          direction,
-          enabled: action.enabled,
-          isRunning: action.isRunning(),
-          paused: action.paused
-        },
-        action
-      );
-    }
+    if (!this.debugLogs || !(action instanceof PoseAnimationAction)) return;
+
+    playerLogger.debug(
+      this._player,
+      "dbg: {Finished action}:",
+      action.getClip().name,
+      {
+        poseRecord: action.poseRecord,
+        aTime: action.time,
+        mTime: round(target.time / 60),
+        direction,
+        enabled: action.enabled,
+        isRunning: action.isRunning(),
+        paused: action.paused
+      },
+      action
+    );
   }
 
   public debugPlay = false;
@@ -119,7 +127,7 @@ export class PlayerDebug implements ILabelUpdater, IUpdatable {
     return this._config;
   }
 
-  constructor(private _player: Player) {
+  constructor(private _player: PlayerMesh) {
     this.addLabel(_player.model);
   }
   private _nextTickTime: number = performance.now();
@@ -152,8 +160,8 @@ export class PlayerDebug implements ILabelUpdater, IUpdatable {
     if (labels.mixerTime) {
       text += ` t:${round(mixerTime)}`;
     }
-    if (labels.poseTime && pose?.action?.animation) {
-      text += ` [${round(pose.action.animation.time)}]`;
+    if (labels.poseTime && pose?.action) {
+      text += ` [${round(pose.action.time)}]`;
     }
 
     if (labels.position) {

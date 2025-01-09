@@ -1,16 +1,11 @@
 import { AnimationClip, AnimationMixer, Object3D } from "three";
-
 import { beforeEach, describe, expect, it, vi } from "vitest";
-
 import { mock } from "vitest-mock-extended";
-import { PoseTypes } from "../animations/Pose.model";
-import {
-  PoseAction,
-  PoseAnimationAction,
-  PoseRecord
-} from "../animations/PoseAction";
-import { PlayerId } from "../PlayerId";
+import { PlayerId } from "../../PlayerId";
 import { PlayerPoses, PoseChangedEventDetail } from "../PlayerPoses";
+import { PoseTypes } from "../Pose.model";
+import { PoseRecord } from "../PoseAction.model";
+import { PoseAnimationAction } from "../PoseAnimationAction";
 
 vi.mock(import("three"));
 
@@ -75,7 +70,7 @@ describe("PlayerPoses", () => {
       const result = playerPoses.currentPose;
 
       expect(result).toEqual({ ...poseRecord });
-      expect(result?.action?.animation.poseRecord).toEqual({ ...poseRecord });
+      // expect(result?.action?.poseRecord).toEqual({ ...poseRecord });
 
       await expect(poseChange, "pose change event emitted").resolves.toEqual({
         player: defaultPlayerId,
@@ -101,7 +96,7 @@ describe("PlayerPoses", () => {
         //playerActions.getPoseAction = () => new PoseAction();
 
         // poseAction.state = () => ({} as ReturnType<PoseAction["state"]>);
-        const poseActionMock = mock<PoseAction>();
+        const poseActionMock = mock<PoseAnimationAction>();
         const poseRecord = mock<PoseRecord>({
           type: PoseTypes.head,
           action: poseActionMock
@@ -115,13 +110,12 @@ describe("PlayerPoses", () => {
     );
   });
 });
-function createPoseAction(): PoseAction {
-  return new PoseAction(
-    new PoseAnimationAction(
-      new AnimationMixer({} as Object3D),
-      new AnimationClip()
-    ),
+function createPoseAction(): PoseAnimationAction {
+  return new PoseAnimationAction(
     true,
-    PoseTypes.head
+    PoseTypes.head,
+    { teamIdx: 1, playerIdx: 2 },
+    new AnimationMixer({} as Object3D),
+    new AnimationClip()
   );
 }

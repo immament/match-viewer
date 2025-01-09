@@ -1,10 +1,9 @@
 import { PlayerId } from "../PlayerId";
+import { PlayerDirectionBuilder } from "./PlayerDirectionBuilder";
 import { PoseTypes } from "./Pose.model";
 import { PoseBuilderContext } from "./PoseBuilderContext";
-import { PoseBuilderStep } from "./PoseBuilderStep";
 import { PositionProxy } from "./PositionProxy";
-import { distance2D, MATCH_TIME_SCALE, onOut } from "./positions";
-import { RotationBuilder } from "./RotationBuilder";
+import { distance2D, MATCH_TIME_SCALE, onOut } from "./positions.utils";
 import { round } from "/app/utils";
 
 const THROW_IN_BALL_MIN_HEIGHT = 1.6;
@@ -13,117 +12,115 @@ const HEAD_BALL_MIN_HEIGHT = 1.4;
 export class PoseBuilder {
   constructor(
     private _playerId: PlayerId,
-    private _rotationBuilder: RotationBuilder
+    private ctx: PoseBuilderContext,
+    private _directionBuilder: PlayerDirectionBuilder
   ) {}
 
-  public calculatePose(context: PoseBuilderContext): void {
-    if (context.step < 0) return;
-    context.initPoseRecord(this.playerSpeed(context));
-    this.createPose(context);
-    this.poseReapeat(context);
+  public calculatePose(): void {
+    if (this.ctx.stepIdx < 0) return;
+    this.ctx.initPoseRecord(this.playerSpeed());
+    this.createPose();
+    this.poseReapeat();
 
-    this._rotationBuilder.calculateDirection(context);
+    this._directionBuilder.calculateDirection();
   }
 
-  private poseReapeat(context: PoseBuilderContext) {
-    if (context.step <= 0) return;
-    if (context.prev.pose?.type === context.pose.type) {
-      context.pose.iteration = (context.prev.pose.iteration ?? 0) + 1;
-      if (context.pose.startFrom) {
-        context.pose.startFrom += MATCH_TIME_SCALE;
+  private poseReapeat() {
+    if (this.ctx.stepIdx <= 0) return;
+    if (this.ctx.prev.pose?.type === this.ctx.pose.type) {
+      this.ctx.pose.iteration = (this.ctx.prev.pose.iteration ?? 0) + 1;
+      if (this.ctx.pose.startFrom) {
+        this.ctx.pose.startFrom += MATCH_TIME_SCALE;
       }
     }
   }
 
-  private createPose(context: PoseBuilderContext): void {
-    switch (context.rawPose) {
+  private createPose(): void {
+    switch (this.ctx.rawPose) {
       case "p": // pass
       case "l": // pass
       case "o": // cross
-        if (this.passType(context)) return;
+        if (this.passType()) return;
         break;
       case "r": // shot
       case "v": // shot
-        return this.isHead(context)
-          ? this.useHeadPose(context)
-          : this.useShotPose(context);
+        return this.isHead() ? this.useHeadPose() : this.useShotPose();
     }
 
-    return this.createMovePose(context);
+    return this.createMovePose();
   }
 
-  private passType(context: PoseBuilderContext): boolean {
-    if (this.isThrowIn(context.ballPos)) {
-      if (onOut(context.playerPos)) {
+  /**
+   * Determines the type of pass based on the current context and updates the pose accordingly.
+   *
+   * @returns {boolean} - Returns `true` if a valid pass type is determined, otherwise `false`.
+   */
+  private passType(): boolean {
+    if (this.isThrowIn(this.ctx.ballPos)) {
+      if (onOut(this.ctx.playerPos)) {
         //  && ballDistBeg < 0.7
-        context.pose.type = PoseTypes.throwIn;
-        context.pose.startFrom = 1;
+        this.ctx.pose.type = PoseTypes.throwIn;
+        this.ctx.pose.startFrom = 1;
         return true;
       }
       return false;
     }
-    if (this.isHead(context)) this.useHeadPose(context);
-    else this.usePassPose(context);
+    if (this.isHead()) this.useHeadPose();
+    else this.usePassPose();
     return true;
   }
 
-  private usePassPose(context: PoseBuilderContext) {
-    context.pose.type = PoseTypes.pass;
-    context.pose.startFrom = 0.3;
-    this.movePlayerToBall(context);
+  private usePassPose() {
+    this.ctx.pose.type = PoseTypes.pass;
+    this.ctx.pose.startFrom = 0.3;
+    this.movePlayerToBall();
   }
 
-  private useHeadPose(context: PoseBuilderContext) {
-    context.pose.type = PoseTypes.head;
-    context.pose.startFrom = 1;
-    this.movePlayerToBall(context);
+  private useHeadPose() {
+    this.ctx.pose.type = PoseTypes.head;
+    this.ctx.pose.startFrom = 1;
+    this.movePlayerToBall();
   }
 
-  private useShotPose(context: PoseBuilderContext): void {
+  private useShotPose(): void {
     //logger.debug(this._playerId, "useShotPose", round(context.step / 120));
-    context.pose.type = PoseTypes.shot;
-    context.pose.timeScale = 1;
-    context.pose.startFrom = 0.5;
-    this.movePlayerToBall(context);
+    this.ctx.pose.type = PoseTypes.shot;
+    this.ctx.pose.timeScale = 1;
+    this.ctx.pose.startFrom = 0.5;
+    this.movePlayerToBall();
   }
 
-  private isHead({
-    ballPos,
-    playerPos
-  }: {
-    ballPos: PositionProxy;
-    playerPos: PositionProxy;
-  }) {
+  private isHead() {
     return (
-      ballPos.y > HEAD_BALL_MIN_HEIGHT && ballPos.distanceTo(playerPos) < 1.5
+      this.ctx.ballPos.y > HEAD_BALL_MIN_HEIGHT && this.distanceToBall() < 1.5
     );
   }
 
-  private movePlayerToBall(
-    context: PoseBuilderContext,
-    maxDistance = 0.5,
-    finalDistance = 0.4
-  ) {
-    if (context.ballPos.distanceTo(context.playerPos) <= maxDistance) return;
-
-    const { next } = context;
-    context.playerPos.moveToPoint2(context.ballPos, finalDistance);
-    next.playerPos.x = context.playerPos.x;
-    next.playerPos.z = context.playerPos.z;
-
-    this.updatePreviousPose(context);
+  private distanceToBall() {
+    return this.ctx.playerPos.distanceTo(this.ctx.ballPos);
   }
 
-  private updatePreviousPose(context: PoseBuilderContext) {
-    if (context.prev.rawPose) return;
-    context.step--;
-    this.calculatePose(context);
-    context.step++;
+  private movePlayerToBall(maxDistance = 0.5, finalDistance = 0.4) {
+    if (this.ctx.playerPos.distanceTo(this.ctx.ballPos) <= maxDistance) return;
+
+    const { next } = this.ctx;
+    this.ctx.playerPos.moveToPointAtDistance(this.ctx.ballPos, finalDistance);
+    next.playerPos.x = this.ctx.playerPos.x;
+    next.playerPos.z = this.ctx.playerPos.z;
+
+    this.updatePreviousPose();
   }
 
-  private createMovePose(context: PoseBuilderContext): void {
-    if (this.checkThrowIn(context)) return;
-    const pose = context.pose;
+  private updatePreviousPose() {
+    if (this.ctx.prev.rawPose) return;
+    this.ctx.stepIdx--;
+    this.calculatePose();
+    this.ctx.stepIdx++;
+  }
+
+  private createMovePose(): void {
+    if (this.checkThrowIn()) return;
+    const pose = this.ctx.pose;
 
     if (pose.playerSpeed > 1.5) {
       pose.type = PoseTypes.run;
@@ -146,7 +143,8 @@ export class PoseBuilder {
     return Math.min(1, round((playerSpeed * 2 + 0.5) / 4));
   }
 
-  private checkThrowIn({ ballPos, playerPos, pose }: PoseBuilderStep): boolean {
+  private checkThrowIn(): boolean {
+    const { ballPos, playerPos, pose } = this.ctx;
     if (this.isThrowIn(ballPos)) {
       if (onOut(playerPos))
         if (distance2D(playerPos, ballPos) < 0.7) {
@@ -163,9 +161,9 @@ export class PoseBuilder {
     return onOut(ballPos) && ballPos.y > THROW_IN_BALL_MIN_HEIGHT;
   }
 
-  private playerSpeed(context: PoseBuilderContext): number {
-    const deltaDist = context.playerPos.distanceTo(context.next.playerPos);
-    const deltaTime = context.next.time - context.time;
+  private playerSpeed(): number {
+    const deltaDist = this.ctx.playerPos.distanceTo(this.ctx.next.playerPos);
+    const deltaTime = this.ctx.next.time - this.ctx.time;
     return deltaDist / deltaTime;
   }
 }

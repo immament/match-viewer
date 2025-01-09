@@ -60,13 +60,21 @@ export interface Point3 extends Point2 {
   get y(): number;
 }
 
-export function rotation(directionA: number, directionB: number) {
-  let result = directionA - directionB;
-  if (result > Math.PI) {
-    result = -2 * Math.PI + result;
-  } else if (result < -Math.PI) {
-    result = 2 * Math.PI + result;
+/**
+ * Calculates the smallest rotation angle between two directions in range (-PI, PI).
+ * @returns Angle in radians.
+ */
+export function rotationAngle(direction: number, newDirection: number): number {
+  let angle = direction - newDirection;
+  if (Math.abs(angle) > Math.PI) {
+    angle = angle % (2 * Math.PI);
+  }
+  if (angle > Math.PI) {
+    return -2 * Math.PI + angle;
+  }
+  if (angle < -Math.PI) {
+    return 2 * Math.PI + angle;
   }
 
-  return result;
+  return angle;
 }

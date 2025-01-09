@@ -1,4 +1,4 @@
-import { PlayerPositions } from "../animations/positions";
+import { PlayerPositions } from "../animations/positions.utils";
 
 export function getPlayer(index: number): PlayerPositions {
   return { px: players.hpx[index], pz: players.hpz[index] };

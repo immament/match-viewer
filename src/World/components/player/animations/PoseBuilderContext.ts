@@ -1,9 +1,10 @@
 import { PlayerId } from "../PlayerId";
-import { RawPoseEvents, Writeable } from "./Pose.model";
-import { PoseRecord } from "./PoseAction";
+import { BallPositionProxy } from "./BallPositionProxy";
+import { PlayerPositionProxy } from "./PlayerPositionProxy";
+import { RawPoseEvents } from "./Pose.model";
+import { PoseRecord } from "./PoseAction.model";
 import { PoseBuilderStep } from "./PoseBuilderStep";
-import { BallPositionProxy, PlayerPositionProxy } from "./PositionProxy";
-import { BallPositionsConfig } from "./positions";
+import { BallPositionsConfig } from "./positions.utils";
 
 export class PoseBuilderContext extends PoseBuilderStep {
   private _prev: PoseBuilderStep;
@@ -19,14 +20,14 @@ export class PoseBuilderContext extends PoseBuilderStep {
     return this._next;
   }
 
-  get step(): number {
-    return super.step;
+  get stepIdx(): number {
+    return super.stepIdx;
   }
 
-  set step(value: number) {
-    this._prev.step = value - 1;
-    super.step = value;
-    this._next.step = value + 1;
+  set stepIdx(value: number) {
+    this._prev.stepIdx = value - 1;
+    super.stepIdx = value;
+    this._next.stepIdx = value + 1;
   }
 
   constructor(
@@ -42,19 +43,32 @@ export class PoseBuilderContext extends PoseBuilderStep {
       times,
       rawPoses
     );
-    this._prev = createStep(this.posesResult);
-    this._next = createStep(this.posesResult);
 
-    function createStep(posesResult: Writeable<PoseRecord>[]) {
-      return PoseBuilderStep.create(
-        playerPositions,
-        ballPositions,
-        times,
-        rawPoses,
-        posesResult,
-        playerId
+    if (playerPositions.length !== times.length * 3) {
+      throw new Error(
+        `Wrong array sizes playerPositions.length !== times.length
+        [${playerPositions.length}!==${times.length * 3}]`
       );
     }
+    if (ballPositions.px.length !== times.length) {
+      throw new Error(
+        `Wrong array sizes ballPositions.px.length !== times.length
+        [${ballPositions.px.length}!==${times.length}]`
+      );
+    }
+
+    const createStep = function (this: PoseBuilderContext) {
+      return new PoseBuilderStep(
+        new PlayerPositionProxy(playerPositions, playerId),
+        new BallPositionProxy(ballPositions, playerId),
+        times,
+        rawPoses,
+        this.posesResult,
+        this.directionsResult
+      );
+    }.bind(this);
+    this._prev = createStep();
+    this._next = createStep();
   }
 
   public getPosesResult(): PoseRecord[] {
@@ -62,9 +76,9 @@ export class PoseBuilderContext extends PoseBuilderStep {
     return this.posesResult;
   }
 
-  getRotationResult() {
-    this.fixLastRotation(this.rotateValues, 4);
-    return this.rotateValues;
+  getDirectionsResult() {
+    this.fixLastDirection(this.directionsResult, 4);
+    return this.directionsResult;
   }
 
   // if last position is undefined pose is copied from previouse position
@@ -76,7 +90,7 @@ export class PoseBuilderContext extends PoseBuilderStep {
       };
     }
   }
-  private fixLastRotation(rotations: number[], count: number) {
+  private fixLastDirection(rotations: number[], count: number) {
     for (let i = rotations.length - count; i < rotations.length; i++) {
       rotations[i] = rotations[i - count];
     }

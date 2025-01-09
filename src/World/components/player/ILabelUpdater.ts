@@ -1,4 +1,4 @@
-import { PoseRecord } from "./animations/PoseAction";
+import { PoseRecord } from "./animations/PoseAction.model";
 
 export interface ILabelUpdater {
   updateLabel(text?: string): void;

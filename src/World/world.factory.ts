@@ -21,17 +21,22 @@ export async function createWorld(
   if (debug) {
     const settingsPanel = createSettingsPanel(world);
 
-    if (world.match) {
-      MatchDebug.init(world.match);
+    if (world.debug_match) {
+      MatchDebug.init(world.debug_match);
       const matchSettings = createMatchSettings(
         settingsPanel,
-        world.match,
-        world.controls.camera,
-        world.controls
+        world.debug_match,
+        world.debug_controls.camera,
+        world.debug_controls
       );
       world.addToLoop(matchSettings);
       world.addToLoop(MatchDebug.instance);
-      createPlayersDebug(settingsPanel, world, world.match, matchSettings);
+      createPlayersDebug(
+        settingsPanel,
+        world,
+        world.debug_match,
+        matchSettings
+      );
       matchSettings.init();
     }
   }

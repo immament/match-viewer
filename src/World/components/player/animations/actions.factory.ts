@@ -6,23 +6,23 @@ import {
   VectorKeyframeTrack
 } from "three";
 
-import { playerLogger } from "../../../components/player/player.logger";
 import { PlayerId } from "../PlayerId";
 import { getPlayer as getAwayPlayer } from "../__mocks__/awayPlayersPosition.big.mock";
 import { getBallPositions } from "../__mocks__/ball.mock";
 import { getPlayer as getHomePlayer } from "../__mocks__/homePlayersPosition.big.mock";
 import { getPlayerPoses } from "../__mocks__/playersPose.mock";
+import { playerLogger } from "../player.logger";
+import { PlayerDirectionBuilder } from "./PlayerDirectionBuilder";
 import { RawPoseEvents } from "./Pose.model";
 import { PoseBuilder } from "./PoseBuilder";
 import { PoseBuilderContext } from "./PoseBuilderContext";
-import { RotationBuilder } from "./RotationBuilder";
 import {
   BallPositionsConfig,
   MATCH_TIME_SCALE,
   PlayerPositions,
   xToPitch,
   zToPitch
-} from "./positions";
+} from "./positions.utils";
 
 export function createMoveActions(mixer: AnimationMixer, playerId: PlayerId) {
   const { positionAction, positionKF } = createPositionAction(playerId, mixer);
@@ -171,9 +171,6 @@ function createRotateAction(
     ballPositions: BallPositionsConfig
   ) {
     const times = positionKF.times;
-    const rotationBuilder = new RotationBuilder();
-    const poseBuilder = new PoseBuilder(playerId, rotationBuilder);
-
     const context = new PoseBuilderContext(
       playerId,
       positionKF.values,
@@ -182,13 +179,20 @@ function createRotateAction(
       rawPoses
     );
 
-    for (context.step = 0; context.step < times.length - 1; context.step++) {
-      poseBuilder.calculatePose(context);
+    const rotationBuilder = new PlayerDirectionBuilder(context);
+    const poseBuilder = new PoseBuilder(playerId, context, rotationBuilder);
+
+    for (
+      context.stepIdx = 0;
+      context.stepIdx < times.length - 1;
+      context.stepIdx++
+    ) {
+      poseBuilder.calculatePose();
     }
 
     return {
       times,
-      rotateValues: context.getRotationResult(),
+      rotateValues: context.getDirectionsResult(),
       poses: context.getPosesResult()
     };
   }

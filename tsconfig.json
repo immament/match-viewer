@@ -19,12 +19,13 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "paths": { 
+    "paths": {
       "/app/*": ["./src/app/*"],
-      //"/world/*": ["./src/World/*"] 
-    },   
-    "baseUrl": ".", 
-    "allowJs": true,
+      "/test-setup/*": ["./src/__tests__/*"]
+      //"/world/*": ["./src/World/*"]
+    },
+    "baseUrl": ".",
+    "allowJs": true
   },
 
   "include": ["src"]

@@ -1,19 +1,15 @@
-import { AnimationMixer } from "three";
+import { AnimationAction, AnimationMixer } from "three";
 
-import {
-  logDebugTransition,
-  playerLogger
-} from "../../components/player/player.logger";
-import { PlayerActions } from "./animations/PlayerActions";
+import { ILabelUpdater } from "../ILabelUpdater";
+import { logDebugTransition, playerLogger } from "../player.logger";
+import { PlayerId } from "../PlayerId";
+import { PlayerActions } from "./PlayerActions";
 import {
   PoseAction,
-  PoseAnimationAction,
-  PoseRecord
-} from "./animations/PoseAction";
-import { timeToStep } from "./animations/positions";
-import { ILabelUpdater } from "./ILabelUpdater";
-import { PlayerId } from "./PlayerId";
-import { PoseTransitionProps } from "./PoseTransitionProps";
+  PoseRecord,
+  PoseTransitionProps
+} from "./PoseAction.model";
+import { timeToStep } from "./positions.utils";
 import { logger } from "/app/logger";
 import { round } from "/app/utils";
 
@@ -45,19 +41,19 @@ export class PlayerPoses extends EventTarget {
   public get currentPose(): PoseRecord | undefined {
     return this._currentPose;
   }
-  public get syncCrossFade() {
+  public get syncCrossFade(): boolean {
     return this._syncCrossFade;
   }
-  public set syncCrossFade(value) {
+  public set syncCrossFade(value: boolean) {
     this._syncCrossFade = value;
   }
   public get playerId(): PlayerId {
     return this._playerId;
   }
-  public get pause() {
+  public get pause(): boolean {
     return this._pause;
   }
-  public set pause(value) {
+  public set pause(value: boolean) {
     this._pause = value;
   }
 
@@ -66,7 +62,7 @@ export class PlayerPoses extends EventTarget {
   }
 
   public setCurrentPose(newPose: PoseRecord | undefined) {
-    if (newPose?.action) newPose.action.animation.poseRecord = newPose;
+    if (newPose?.action) newPose.action.poseRecord = newPose;
     this._currentPose = newPose;
     this.dispatchEvent(
       new CustomEvent<PoseChangedEventDetail>("poseChanged", {
@@ -150,9 +146,7 @@ export class PlayerPoses extends EventTarget {
 
   private switchPose(props: PoseTransitionProps) {
     if (this.currentAction === props.newPoseAction) {
-      props.newPoseAction.animation.setEffectiveTimeScale(
-        props.newPoseRecord.timeScale
-      );
+      props.newPoseAction.setEffectiveTimeScale(props.newPoseRecord.timeScale);
       logDebugTransition(this._playerId, "{Keep Pose}:", props);
       this.setCurrentPose(props.newPoseRecord);
       this.updateLabel();
@@ -177,8 +171,8 @@ export class PlayerPoses extends EventTarget {
         "{clear Last}:",
         this.currentAction.poseType
       );
-      this.currentAction.animation.setEffectiveWeight(0);
-      this.currentAction.animation.enabled = false;
+
+      this.currentAction.stopAction();
       this.setCurrentPose(undefined);
       this.updateLabel();
     }
@@ -212,17 +206,14 @@ export class PlayerPoses extends EventTarget {
   }
 
   private synchronizeCrossFade(props: PoseTransitionProps) {
-    if (
-      !this.currentAction ||
-      this.currentAction.animation.getEffectiveWeight() < 0.1
-    ) {
+    if (!this.currentAction?.canSyncCrossFadeFrom()) {
       logDebugTransition(
         this._playerId,
         "{synchronizeCrossFade skipped}:",
         props,
         this.currentAction
           ? "old action weight to low:" +
-              round(this.currentAction.animation.getEffectiveWeight())
+              round(this.currentAction.getEffectiveWeight())
           : "old action not set"
       );
       this.executeCrossFade(props);
@@ -241,10 +232,10 @@ export class PlayerPoses extends EventTarget {
       anOldAction: PoseAction
     ) {
       const onLoopFinished = (event: {
-        action: PoseAnimationAction;
+        action: AnimationAction;
         loopDelta: number;
       }) => {
-        if (event.action === anOldAction.animation) {
+        if (anOldAction.theSameAction(event.action)) {
           logDebugTransition(
             aPlayerPose.playerId,
             `{getOnLoopFinished}:`,
@@ -265,32 +256,41 @@ export class PlayerPoses extends EventTarget {
     logDebugTransition(this._playerId, "{executeCrossFade}:", props);
 
     if (this.currentAction !== props.oldPoseAction) {
-      logger.warn("this.currentAction !==props.oldAction", props);
+      logger.warn("this.currentAction !== props.oldAction", props);
     }
 
-    const newAnimation = props.newPoseAction.animation;
-    // Not only the start action, but also the end action must get a weight of 1 before fading
-    // (concerning the start action this is already guaranteed in this place)
-    newAnimation.enabled = true;
-    newAnimation.setEffectiveTimeScale(props.newPoseRecord.timeScale);
-    newAnimation.setEffectiveWeight(1);
-    if (this._mixer.timeScale >= 0) {
-      newAnimation.time = props.newPoseRecord.startFrom ?? 0;
+    props.newPoseAction.executeCrossFade(
+      props,
+      this._warping,
+      this.isReverse()
+    );
 
-      props.oldPoseAction?.animation.crossFadeTo(
-        newAnimation,
-        props.newPoseRecord.fadeTime ?? 0.1,
-        this._warping
-      );
-    } else {
-      newAnimation.time = newAnimation.getClip().duration;
-      if (props.oldPoseAction) {
-        //props.oldAction.animation.syncWith(newAnimation);
-        //props.oldAction.animation.halt(0.1);
-        props.oldPoseAction.animation.enabled = false;
-      }
-    }
+    // // Not only the start action, but also the end action must get a weight of 1 before fading
+    // // (concerning the start action this is already guaranteed in this place)
+    // newPoseAction.enabled = true;
+    // newPoseAction.setEffectiveTimeScale(props.newPoseRecord.timeScale);
+    // newPoseAction.setEffectiveWeight(1);
+    // if (this._mixer.timeScale >= 0) {
+    //   newPoseAction.time = props.newPoseRecord.startFrom ?? 0;
+    //   if (props.oldPoseAction)
+    //     props.oldPoseAction.crossFadeTo(
+    //       newPoseAction,
+    //       props.newPoseRecord.fadeTime ?? 0.1,
+    //       this._warping
+    //     );
+    // } else {
+    //   newPoseAction.time = newPoseAction.getClip().duration;
+    //   if (props.oldPoseAction) {
+    //     //props.oldAction.animation.syncWith(newAnimation);
+    //     //props.oldAction.animation.halt(0.1);
+    //     props.oldPoseAction.enabled = false;
+    //   }
+    // }
 
     //logDebugTransition(this._player, "{executeCrossFade}:", props);
+  }
+
+  private isReverse(): boolean {
+    return this._mixer.timeScale < 0;
   }
 }

@@ -2,7 +2,7 @@ import logger, { LogLevelNames, LogLevelNumbers, Logger } from "loglevel";
 import prefix from "loglevel-plugin-prefix";
 
 import { isDebugPlayer } from "../../systems/debug/debug.constants";
-import { PoseTransitionProps } from "./PoseTransitionProps";
+import { PoseTransitionProps } from "./animations/PoseAction.model";
 import { originalFactory } from "/app/logger";
 
 // PLAYER filtered LOGGER
@@ -70,7 +70,7 @@ function logTransition(
     ", newPose:",
     newPoseRecord,
     ", newAction state:",
-    newPoseAction.state(),
+    newPoseAction.debug_state(),
     ...args
   );
 }

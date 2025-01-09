@@ -1,5 +1,5 @@
 import { PerspectiveCamera, WebGLRenderer } from "three";
-import { CSS2DRenderer } from "three/examples/jsm/Addons.js";
+import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
 
 export class Resizer {
   constructor(

@@ -3,8 +3,8 @@ import { AnimationAction } from "three";
 import { IUpdatable } from "../../../systems/Loop";
 import { Match } from "../../match/Match.model";
 import { PoseTypes } from "../animations/Pose.model";
-import { PoseRecord } from "../animations/PoseAction";
-import { Player, Player3D } from "../Player.model";
+import { PoseAction, PoseRecord } from "../animations/PoseAction.model";
+import { Player3D, PlayerMesh } from "../PlayerMesh";
 import { PlayerDebug } from "./PlayerDebug";
 
 export const poseTypes: PoseTypes[] = Object.values(PoseTypes);
@@ -71,7 +71,7 @@ export class PlayerSettings implements IUpdatable {
   }
 
   constructor(
-    private _player: Player,
+    private _player: PlayerMesh,
     private _playerDebug: PlayerDebug | undefined,
     private _match: Match,
     private _actionSettings: ActionSettings
@@ -100,7 +100,7 @@ export class PlayerSettings implements IUpdatable {
     // just to move ball
     // /this._match.changeMatchTime(1);
     this._match.followPlayer(this._player);
-    this.getAction(PoseTypes.walk).timeScale = 0.2;
+    this.getAction(PoseTypes.walk).setEffectiveTimeScale(0.2);
     //this._settings["debug play"] = true;
     this.debugPlay(true);
   }
@@ -126,15 +126,18 @@ export class PlayerSettings implements IUpdatable {
   }
 
   //private _lastImportTime = performance.now()
-  public tick(delta: number) {
+  public tick() {
     this.importSettings();
   }
 
   private importSettings() {
     this._settings["mixer time [m]"] = this._player.mixer.time / 60;
     this._settings["mixer time [s]"] = this._player.mixer.time;
-    this._player.actions.poseActions.forEach(({ animation, poseType }) => {
-      this.copyActionStateToSettings(poseType, animation);
+    this.playerPoseActions().forEach((poseAction) => {
+      this.copyActionStateToSettings(
+        poseAction.poseType,
+        poseAction.debug_animation()
+      );
     });
 
     this.copyActionStateToSettings("position", this._positionAnimation);
@@ -147,9 +150,8 @@ export class PlayerSettings implements IUpdatable {
   ) {
     this._actionSettings.enabled[actionType] = animation.enabled;
     this._actionSettings.paused[actionType] = animation.paused;
-    this._actionSettings.weight[actionType] = animation.getEffectiveWeight();
-    this._actionSettings.timeScale[actionType] =
-      animation.getEffectiveTimeScale();
+    this._actionSettings.weight[actionType] = animation.weight;
+    this._actionSettings.timeScale[actionType] = animation.timeScale;
     this._actionSettings.time[actionType] = animation.time;
   }
 
@@ -158,7 +160,7 @@ export class PlayerSettings implements IUpdatable {
   }
 
   private stopAllActions() {
-    this._player.actions.stopAllMoveActions();
+    this._player.actions.debug_stopAllMoveActions();
   }
 
   showModel(visibility: boolean) {
@@ -170,23 +172,23 @@ export class PlayerSettings implements IUpdatable {
   }
 
   playAllActions() {
-    this._player.actions.playAllMoveActions();
+    this._player.actions.debug_playAllMoveActions();
   }
 
   private unPauseAllActions() {
-    this._player.singleStepMode = false;
+    this._player.debug_singleStepMode = false;
     this._player.actions.unPauseAllMoveActions();
   }
 
   private pauseAllActions() {
-    this._player.actions.pauseAllMoveActions();
+    this._player.actions.debug_pauseAllMoveActions();
   }
 
   private toSingleStepMode() {
     this._player.actions.unPauseAllMoveActions();
 
-    this._player.singleStepMode = true;
-    this._player.sizeOfNextStep = this._settings["modify step size"];
+    this._player.debug_singleStepMode = true;
+    this._player.debug_sizeOfNextStep = this._settings["modify step size"];
   }
 
   switchPoseTo(poseType: PoseTypes) {
@@ -219,7 +221,15 @@ export class PlayerSettings implements IUpdatable {
       case "rotation":
         return this._rotateAnimation;
       default:
-        return this._player.actions.getPoseAction(key).animation;
+        return this.getPoseActionAnimation(key);
     }
+  }
+
+  private getPoseActionAnimation(key: PoseTypes): AnimationAction {
+    return this._player.actions.getPoseAction(key).debug_animation();
+  }
+
+  private playerPoseActions(): PoseAction[] {
+    return this._player.actions.poseActions;
   }
 }

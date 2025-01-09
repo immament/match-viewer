@@ -1,9 +1,15 @@
 import { Camera, Object3D, PerspectiveCamera, Vector3 } from "three";
-import { OrbitControls } from "three/addons";
-
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { IViewController } from "../IViewController";
 import { ViewFromTarget } from "./ViewFromTarget";
 import { logger } from "/app/logger";
+
+export function createControls(
+  camera: Camera,
+  canvas: HTMLElement
+): IViewController {
+  return new OrbitViewController(camera, canvas);
+}
 
 class OrbitViewController extends OrbitControls implements IViewController {
   private _cameraTarget: Object3D | undefined;
@@ -77,13 +83,6 @@ class OrbitViewController extends OrbitControls implements IViewController {
   public get camera(): PerspectiveCamera {
     return this.object as PerspectiveCamera;
   }
-}
-
-export function createControls(
-  camera: Camera,
-  canvas: HTMLElement
-): IViewController {
-  return new OrbitViewController(camera, canvas);
 }
 
 //controls.target.y = 1;

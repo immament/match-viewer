@@ -5,19 +5,22 @@ import vitest from "@vitest/eslint-plugin";
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
-  { files: ["**/*.{js,mjs,cjs,ts}"] },
-  { languageOptions: { globals: globals.browser } },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   {
+    files: ["**/*.{js,mjs,cjs,ts}"],
+    languageOptions: { globals: globals.browser },
     rules: {
-      "no-console": ["warn"],
+      "no-console": ["warn", { allow: ["warn", "error"] }],
       "@typescript-eslint/no-unused-vars": "warn"
     }
   },
   {
     files: ["**/*.test.ts"],
     plugins: { vitest },
-    rules: { ...vitest.configs.recommended.rules }
+    rules: {
+      ...vitest.configs.recommended.rules,
+      "vitest/valid-expect": ["error", { minArgs: 0 }]
+    }
   }
 ];

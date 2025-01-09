@@ -1,17 +1,17 @@
 import { AnimationMixer, Group, Object3D, Object3DEventMap } from "three";
 import { PlayerActions } from "./animations/PlayerActions";
-import { PoseRecord } from "./animations/PoseAction";
+import { PlayerPoses } from "./animations/PlayerPoses";
+import { PoseRecord } from "./animations/PoseAction.model";
 import { PlayerId } from "./PlayerId";
-import { PlayerPoses } from "./PlayerPoses";
 import { logger } from "/app/logger";
 
 export type Player3D = Object3D<Object3DEventMap>;
 
 // Player mesh/object
-export class Player extends Group {
+export class PlayerMesh extends Group {
   // TODO: debug props
-  public singleStepMode: boolean = false;
-  public sizeOfNextStep: number = 0;
+  public debug_singleStepMode: boolean = false;
+  public debug_sizeOfNextStep: number = 0;
 
   private _poses: PlayerPoses;
   public get poses(): PlayerPoses {
@@ -60,9 +60,9 @@ export class Player extends Group {
 
   public tick(delta: number) {
     let mixerUpdateDelta = delta;
-    if (this.singleStepMode) {
-      mixerUpdateDelta = this.sizeOfNextStep;
-      this.sizeOfNextStep = 0;
+    if (this.debug_singleStepMode) {
+      mixerUpdateDelta = this.debug_sizeOfNextStep;
+      this.debug_sizeOfNextStep = 0;
     }
 
     this._poses.updatePose(mixerUpdateDelta);

@@ -1,5 +1,5 @@
 import { Match } from "../../components/match/Match.model";
-import { timeToStep } from "../../components/player/animations/positions";
+import { timeToStep } from "../../components/player/animations/positions.utils";
 import { PlayerId } from "../../components/player/PlayerId";
 import { IUpdatable } from "../Loop";
 import { isDebugPlayer, setDebugPlayerId } from "./debug.constants";

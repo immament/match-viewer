@@ -2,7 +2,7 @@ import GUI from "lil-gui";
 import { AnimationAction } from "three";
 import { playerLogger } from "../../../components/player/player.logger";
 import { Match } from "../../match/Match.model";
-import { Player } from "../Player.model";
+import { PlayerMesh } from "../PlayerMesh";
 import {
   ActionSettings,
   ActionTypes,
@@ -16,7 +16,7 @@ import { logLevels, LogLevels } from "/app/logger";
 
 export function createPlayerSettings(
   mainPanel: GUI,
-  player: Player,
+  player: PlayerMesh,
   playerDebug: PlayerDebug | undefined,
   match: Match
 ): PlayerSettings | undefined {
@@ -43,7 +43,7 @@ class PlayerSettingsBuilder {
 
   constructor(
     private _mainPanel: GUI,
-    private _player: Player,
+    private _player: PlayerMesh,
     private _playerDebug: PlayerDebug | undefined,
     private _match: Match
   ) {}
@@ -283,6 +283,6 @@ class PlayerSettingsBuilder {
       });
   }
 }
-function playerPanelTitle(player: Player) {
+function playerPanelTitle(player: PlayerMesh) {
   return "Player " + player.teamIdx + "." + player.playerIdx;
 }

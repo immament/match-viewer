@@ -1,5 +1,5 @@
 import { Object3D, Vector3 } from "three";
-import { CSS2DObject } from "three/examples/jsm/Addons.js";
+import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer.js";
 
 type LabelProps = {
   position?: Vector3;
@@ -26,6 +26,7 @@ export class Label {
       this.remove();
       return;
     }
+
     object.add(this._label);
   }
 

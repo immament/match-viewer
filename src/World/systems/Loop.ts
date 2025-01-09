@@ -1,5 +1,5 @@
 import { Camera, Scene, WebGLRenderer } from "three";
-import { CSS2DRenderer } from "three/examples/jsm/Addons.js";
+import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
 import { MaxFramesClock } from "./MaxFramesClock";
 
 export interface IUpdatable {
@@ -14,7 +14,7 @@ export class Loop {
     private _camera: Camera,
     private _scene: Scene,
     private _renderer: WebGLRenderer,
-    private _labelRenderer: CSS2DRenderer
+    private _labelRenderer?: CSS2DRenderer
   ) {}
 
   add(...items: IUpdatable[]): number {
@@ -23,14 +23,14 @@ export class Loop {
 
   start() {
     this._clock.start();
-
     this._renderer.render(this._scene, this._camera);
+
     this._renderer.setAnimationLoop(() => {
       const delta = this._clock.getDelta();
       if (!delta) return false;
       this.tick(delta);
       this._renderer.render(this._scene, this._camera);
-      this._labelRenderer.render(this._scene, this._camera);
+      this._labelRenderer?.render(this._scene, this._camera);
     });
   }
 
