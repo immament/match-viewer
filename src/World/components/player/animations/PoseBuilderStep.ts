@@ -22,7 +22,7 @@ export class PoseBuilderStep {
   constructor(
     private _playerPos: PositionProxy,
     private _ballPos: PositionProxy,
-    private _times: Float32Array,
+    private _times: ReadonlyArray<number>,
     private _rawPoses: RawPoseEvents,
     private _posesResult: Writeable<PoseRecord>[] = Array(_times.length),
     // 4 floats for quaternion

@@ -170,7 +170,7 @@ function createRotateAction(
     playerId: PlayerId,
     ballPositions: BallPositionsConfig
   ) {
-    const times = positionKF.times;
+    const times = Array.from(positionKF.times);
     const context = new PoseBuilderContext(
       playerId,
       positionKF.values,

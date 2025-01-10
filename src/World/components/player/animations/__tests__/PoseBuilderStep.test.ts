@@ -11,7 +11,7 @@ import { BallPositionsConfig } from "../positions.utils";
 describe("PoseBuilderStep", () => {
   let playerPositions: Float32Array;
   let ballPositions: BallPositionsConfig;
-  let times: Float32Array;
+  let times: ReadonlyArray<number>;
   let rawPoses: RawPoseEvents;
   let playerId: PlayerId;
   let playerPositionsProxy: PlayerPositionProxy;
@@ -20,7 +20,7 @@ describe("PoseBuilderStep", () => {
   beforeEach(() => {
     playerPositions = new Float32Array([1, 2, 3, 4, 5, 6]);
     ballPositions = { px: [11, 14], pHeight: [12, 15], pz: [13, 16] };
-    times = new Float32Array([101, 102]);
+    times = [101, 102];
     rawPoses = { 0: "l", 1: "r" };
     playerId = { teamIdx: 1, playerIdx: 2 };
 

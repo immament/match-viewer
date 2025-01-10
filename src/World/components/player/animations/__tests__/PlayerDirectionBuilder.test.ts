@@ -23,7 +23,7 @@ describe("PlayerDirectionBuilder", () => {
     pHeight: [0, 0, 0],
     pz: [1, 1, 1]
   };
-  const times = new Float32Array([0, 1, 2]);
+  const times: ReadonlyArray<number> = [0, 1, 2];
   const rawPoses: RawPoseEvents = {};
   const playerId: PlayerId = { teamIdx: 1, playerIdx: 2 };
 

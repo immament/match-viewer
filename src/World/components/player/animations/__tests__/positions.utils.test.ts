@@ -77,7 +77,7 @@ describe("positions utils", () => {
       expect(result).toBeCloseTo(-Math.PI + 0.1);
     });
 
-    it.only("should calculate rotation angle between two directions (-PI - 0.1)", () => {
+    it("should calculate rotation angle between two directions (-PI - 0.1)", () => {
       const directionA = -Math.PI;
       const directionB = 0.1;
       const result = rotationAngle(directionA, directionB);
@@ -91,9 +91,8 @@ describe("positions utils", () => {
       expect(result).toBeCloseTo(-Math.PI + 0.1);
     });
 
-    it.only("should calculate rotation angle between two directions (-5*PI - 0.1)", () => {
+    it("should calculate rotation angle between two directions (-5*PI - 0.1)", () => {
       const directionA = -5 * Math.PI;
-      console.log(directionA);
       const directionB = 0.1;
       const result = rotationAngle(directionA, directionB);
       expect(result).toBeCloseTo(Math.PI - 0.1);

@@ -34,7 +34,7 @@ export class PoseBuilderContext extends PoseBuilderStep {
     playerId: PlayerId,
     playerPositions: Float32Array,
     ballPositions: BallPositionsConfig,
-    times: Float32Array,
+    times: ReadonlyArray<number>,
     rawPoses: RawPoseEvents
   ) {
     super(
