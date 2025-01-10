@@ -4,7 +4,7 @@ import { IUpdatable } from "../../systems/Loop";
 import { PlayerId } from "../player/PlayerId";
 import { PlayerMesh } from "../player/PlayerMesh";
 import { SceneDirector, TimeChangedEventDetail } from "../SceneDirector";
-import { Ball } from "./Ball";
+import { Ball } from "./ball";
 import { Label } from "./Label";
 
 enum MouseButton {

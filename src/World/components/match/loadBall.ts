@@ -13,7 +13,7 @@ import {
   BallPositionsConfig,
   MATCH_TIME_SCALE
 } from "../player/animations/positions.utils";
-import { Ball } from "./Ball";
+import { Ball } from "./ball";
 import { logger } from "/app/logger";
 
 export async function loadBall() {

@@ -1,6 +1,6 @@
 import { AnimationClip, AnimationMixer } from "three";
 import { describe, expect, it, vi } from "vitest";
-import { Ball } from "../Ball";
+import { Ball } from "../ball";
 
 vi.mock("three");
 

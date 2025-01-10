@@ -1,6 +1,6 @@
 import { TextureLoader } from "three";
 import { describe, expect, it, vi } from "vitest";
-import { Ball } from "../Ball";
+import { Ball } from "../ball";
 import { createPositionsArrays, loadBall } from "../loadBall";
 
 vi.mock("three");

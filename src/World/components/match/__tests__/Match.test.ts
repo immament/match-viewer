@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { PlayerActions } from "../../player/animations/PlayerActions";
 import { PoseRecord } from "../../player/animations/PoseAction.model";
 import { Player3D, PlayerMesh } from "../../player/PlayerMesh";
-import { Ball } from "../Ball";
+import { Ball } from "../ball";
 import { Match } from "../Match.model";
 import { createMatch } from "../matchFactory";
 
