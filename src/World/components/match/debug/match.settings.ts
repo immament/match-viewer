@@ -15,7 +15,7 @@ export function createMatchSettings(
   match: Match,
   camera: Camera,
   viewController: IViewController
-) {
+): MatchSettings {
   const matchSettings = new MatchSettings(match, camera, viewController);
 
   createFolders(mainPanel, matchSettings, match);
@@ -36,6 +36,7 @@ function createFolders(mainPanel: GUI, settings: MatchSettings, match: Match) {
   generalSpeedFolder
     .add(settings, "modify time scale", -5, 5, 0.01)
     .onChange((v: number) => settings.modifyTimeScale(v));
+
   generalSpeedFolder
     .add(settings, "match time", 0.0, match.durationMinutes, 0.01)
     .listen()

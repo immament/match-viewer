@@ -1,13 +1,13 @@
-import { beforeAll, describe, expect, test, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { createLights } from "../lights";
-import { threeMockSetup } from "/test-setup/three.mock.setup";
+// import { threeMockSetup } from "/test-setup/three.mock.setup";
 
 vi.mock("three");
 
 describe("lights", () => {
-  beforeAll(() => {
-    threeMockSetup({ lights: true });
-  });
+  // beforeAll(() => {
+  //   threeMockSetup({ lights: true });
+  // });
 
   test("should create lights with default values", () => {
     const { lights } = createLights();

@@ -17,7 +17,7 @@ export default defineConfig({
       exclude: [
         ...(configDefaults.coverage.exclude ?? []),
         "**/__mocks__/*",
-        // "**/__sampleData__/*",
+        "**/__sampleData__/*",
         "**/debug/**"
       ]
     }

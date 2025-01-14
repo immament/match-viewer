@@ -1,4 +1,4 @@
-import { MathUtils, Scene, Vector3 } from "three";
+import { MathUtils, Object3D, Scene, Vector3 } from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { Sky } from "three/examples/jsm/objects/Sky.js";
 import { logger } from "/app/logger";
@@ -39,7 +39,7 @@ function createSky() {
   }
 }
 
-export async function createStadium(scene: Scene) {
+export async function createStadium(scene: Scene): Promise<Object3D> {
   const loader = new GLTFLoader();
   let stadium: GLTF;
   const stadiumPath = "assets/models/stadium/stadium.gltf";
@@ -47,6 +47,7 @@ export async function createStadium(scene: Scene) {
     stadium = await loader.loadAsync(stadiumPath);
     stadium.scene.name = "stadium";
     scene.add(stadium.scene);
+    return stadium.scene;
   } catch (error) {
     logger.error("Exception during model loading: " + stadiumPath, error);
     throw error;

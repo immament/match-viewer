@@ -75,6 +75,7 @@ export class World implements IUpdatable {
     // const settingsPanel = createSettingsPanel(this);
 
     this._match = await createMatch(this._controls);
+
     // const objects = this._match.init();
     this._match.addToScene(this._scene);
     this.addToLoop(this._match);

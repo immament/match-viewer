@@ -1,17 +1,22 @@
-import { Scene } from "three";
 import { Sky } from "three/examples/jsm/objects/Sky.js";
 import { describe, expect, test, vi } from "vitest";
-import { createScene } from "../scene";
+import { createScene, createStadium } from "../scene";
 
 vi.mock("three");
-
-Scene.prototype.children = [];
+vi.mock("three/examples/jsm/loaders/GLTFLoader.js");
 
 describe("scene", () => {
-  test("createScene", () => {
+  test("should create scene", () => {
     const scene = createScene();
 
     expect(scene).toBeTruthy();
     expect(vi.mocked(scene.add).mock.calls[0][0]).instanceOf(Sky);
+  });
+
+  test("should create stadium", async () => {
+    const scene = createScene();
+    const stadium = await createStadium(scene);
+    expect(stadium.name).toBe("stadium");
+    expect(scene.children).includes(stadium);
   });
 });

@@ -51,7 +51,8 @@ function createPlayersDebug(
   matchSettings: MatchSettings
 ) {
   for (let index = 0; index < 22; index++) {
-    const player = match.getPlayerByIdx(index)!;
+    const player = match.getPlayerByIdx(index);
+    if (!player) continue;
     const playerDebug = new PlayerDebug(player);
     matchSettings.addPlayerDebug(playerDebug);
     match.addUpdatable(playerDebug);

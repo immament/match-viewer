@@ -1,47 +1,24 @@
+import { Mesh, Object3D } from "three";
 import { describe, expect, it, vi } from "vitest";
 import { loadPlayers } from "../loadPlayers";
 import { logger } from "/app/logger";
 
-logger.disableAll();
+logger.setLevel("SILENT");
 
 // Mock dependencies
+vi.mock(import("three"));
+vi.mock(import("three/examples/jsm/loaders/GLTFLoader.js"));
 
 vi.mock(import("../__sampleData__/awayPlayersPosition.big.mock"));
 vi.mock(import("../__sampleData__/homePlayersPosition.big.mock"));
 vi.mock(import("../__sampleData__/ball.mock"));
 vi.mock(import("../__sampleData__/playersPose.mock"));
 
-const MeshMock = vi.fn((name) => {
-  return {
-    name,
-    animations: [],
-    children: [],
-    get scene() {
-      return new MeshMock("scene");
-    },
-    getObjectByName: vi.fn((name) => new MeshMock(name)),
-    material: {
-      clone: vi.fn().mockReturnValue({ color: { set: vi.fn() } })
-    },
-    traverse: vi.fn(),
-    clone: vi.fn(() => new MeshMock(name + " clone"))
-  };
+vi.spyOn(Object3D.prototype, "getObjectByName").mockImplementation((name) => {
+  const result = new Mesh();
+  result.name = name;
+  return result;
 });
-
-vi.mock("three");
-
-// vi.mock("three/examples/jsm/utils/SkeletonUtils.js", () => {
-//   return {
-//     clone: (obj: Object3D) => {
-//       return obj.clone();
-//     }
-//   };
-// });
-vi.mock("three/examples/jsm/loaders/GLTFLoader.js", () => ({
-  GLTFLoader: vi.fn(() => ({
-    loadAsync: vi.fn().mockResolvedValue(new MeshMock("main"))
-  }))
-}));
 
 describe("loadPlayers", () => {
   it("should load players correctly", async () => {

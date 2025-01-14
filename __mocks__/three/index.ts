@@ -4,26 +4,61 @@ import { vi } from "vitest";
 
 export { Clock, Layers, MathUtils, Quaternion, Vector2, Vector3 } from "three";
 
-export class Object3D {
+export class Object3D implements Partial<three.Object3D> {
+  name: string;
+  readonly children: three.Object3D[] = [];
   parent: three.Object3D | null;
   readonly position = new three.Vector3();
   readonly rotation = new three.Euler();
-  add: (...object: three.Object3D[]) => this = vi.fn((...object) => {
-    object.forEach((obj) => {
-      obj.parent = this;
-    });
-    return this;
-  });
-  remove: (...object: three.Object3D[]) => this = vi.fn();
+  add: (...objects: three.Object3D[]) => three.Object3D = vi.fn(
+    (...objects) => {
+      objects.forEach((obj) => {
+        obj.parent = this;
+        this.children.push(obj);
+      });
+
+      return this as unknown as three.Object3D;
+    }
+  );
+  remove: (...object: three.Object3D[]) => three.Object3D = vi.fn();
+  getObjectByName(name: string): three.Object3D | undefined {
+    return this.children.find((obj) => obj.name === name);
+  }
+  traverse = vi.fn();
+  clone(recursive?: boolean): three.Object3D {
+    const newObject = new Object3D();
+    newObject.position.copy(this.position);
+    newObject.rotation.copy(this.rotation);
+    if (recursive) {
+      this.children.forEach((child) => {
+        newObject.add(child.clone(true));
+      });
+    }
+    return newObject as unknown as three.Object3D;
+  }
 }
 
 export class Group extends Object3D {}
 
-export class Mesh extends Object3D {}
+export class Mesh extends Object3D {
+  material = {
+    clone: vi.fn().mockReturnValue({ color: { set: vi.fn() } })
+  };
+  getObjectByName(name: string): three.Object3D {
+    let result = this.children.find((obj) => obj.name === name);
+    if (!result) {
+      result = new Mesh() as unknown as three.Object3D;
+      this.add(result);
+      result.name = name;
+    }
+    return result;
+  }
+}
 
 export const SphereGeometry = vi.fn();
 export const MeshBasicMaterial = vi.fn();
 export const MeshStandardMaterial = vi.fn();
+
 export class DirectionalLight extends Object3D {
   castShadow = false;
   shadow = { camera: new PerspectiveCamera(0, 0, 0, 0) };
@@ -35,9 +70,9 @@ export class DirectionalLight extends Object3D {
   }
 }
 
-export const HemisphereLight = vi.fn();
+export class HemisphereLight extends Object3D {}
 
-export const Scene = vi.fn(() => ({ add: vi.fn() }));
+export class Scene extends Object3D {}
 
 export const WebGLRenderer = vi.fn(() => ({
   setSize: vi.fn(),
