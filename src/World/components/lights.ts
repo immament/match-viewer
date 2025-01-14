@@ -18,6 +18,8 @@ export function createLights(castShadow?: boolean): { lights: Light[] } {
   }
 
   const lights: Light[] = [hemiLight, dirLight];
+
+  return { lights };
   //lights.push(hemiLight, dirLight);
 
   //dirLight = dirLight.clone();
@@ -44,5 +46,4 @@ export function createLights(castShadow?: boolean): { lights: Light[] } {
   // dirLight.position.set(0, 10, 30);
   // lights.push(dirLight);
   //ambientLight: hemiLight, mainLight: dirLight,
-  return { lights };
 }

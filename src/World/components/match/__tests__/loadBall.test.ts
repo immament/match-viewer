@@ -1,31 +1,32 @@
 import { TextureLoader } from "three";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { Ball } from "../ball";
 import { createPositionsArrays, loadBall } from "../loadBall";
 
 vi.mock("three");
+vi.mock(import("../../player/__sampleData__/ball.mock"));
 
 describe("loadBall", () => {
-  it("should load ball", async () => {
+  test("should load ball", async () => {
     const { ball } = await loadBall();
 
     expect(ball).toBeTruthy();
     expect(ball).instanceOf(Ball);
   });
 
-  it("should create mixer", async () => {
+  test("should create mixer", async () => {
     const { ball } = await loadBall();
 
     expect(ball.mixer).toBeTruthy();
   });
 
-  it("should create AnimationAction", async () => {
+  test("should create AnimationAction", async () => {
     const { ball } = await loadBall();
 
     expect(ball.action).toBeTruthy();
   });
 
-  it("should create position arrays", async () => {
+  test("should create position arrays", async () => {
     const positions = createPositionsArrays({
       px: [1, 2],
       pHeight: [3, 4],
@@ -38,8 +39,7 @@ describe("loadBall", () => {
     });
   });
 
-  it("should load texture", async () => {
-    console.log("TextureLoader", TextureLoader.prototype);
+  test("should load texture", async () => {
     const textureLoaderSpy = vi.spyOn(TextureLoader.prototype, "load");
     await loadBall();
     expect(textureLoaderSpy).toHaveBeenCalled();

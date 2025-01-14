@@ -5,7 +5,7 @@ import {
   AnimationMixer,
   Object3D
 } from "three";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { SceneDirector, TimeChangedEventDetail } from "../SceneDirector";
 
 vi.mock("three");
@@ -25,32 +25,32 @@ describe("SceneDirector", () => {
     director = new SceneDirector(mixerMock, actionMock);
   });
 
-  it("should create SceneDirector", () => {
+  test("should create SceneDirector", () => {
     expect(director).toBeTruthy();
   });
 
-  it("should returns mixer time in seconds", () => {
+  test("should returns mixer time in seconds", () => {
     const expected = faker.number.float();
     vi.mocked(mixerMock).time = expected;
 
     expect(director.time).toBeCloseTo(expected);
   });
 
-  it("should returns mixer time in minutes", () => {
+  test("should returns mixer time in minutes", () => {
     const expected = faker.number.float();
     vi.mocked(mixerMock).time = expected * 60;
 
     expect(director.timeInMinutes).toBeCloseTo(expected);
   });
 
-  it("should returns mixer time scale", () => {
+  test("should returns mixer time scale", () => {
     const expected = faker.number.float();
     vi.mocked(mixerMock).timeScale = expected;
 
     expect(director.timeScale).toBeCloseTo(expected);
   });
 
-  it("should returns main action duration", () => {
+  test("should returns main action duration", () => {
     const expected = faker.number.float();
     vi.mocked(clipMock).duration = expected;
     vi.mocked(actionMock).getClip.mockImplementationOnce(() => clipMock);
@@ -58,13 +58,13 @@ describe("SceneDirector", () => {
     expect(director.duration).toBeCloseTo(expected);
   });
 
-  it("should add mixer", () => {
+  test("should add mixer", () => {
     const mixer = new AnimationMixer({} as Object3D);
 
     expect(director.addMixer(mixer)).toBe(1);
   });
 
-  it("should modify main mixer time scale", () => {
+  test("should modify main mixer time scale", () => {
     const expected = faker.number.float({ min: -5, max: 5 });
     //vi.mocked(mixerMock).timeScale = expected;
 
@@ -73,7 +73,7 @@ describe("SceneDirector", () => {
     expect(mixerMock.timeScale).toBeCloseTo(expected);
   });
 
-  it("should modify sub mixer time scale", () => {
+  test("should modify sub mixer time scale", () => {
     const expected = faker.number.float({ min: -5, max: 5 });
 
     const subMixer = new AnimationMixer({} as Object3D);
@@ -85,7 +85,7 @@ describe("SceneDirector", () => {
   });
 
   describe("gotoTime", () => {
-    it("should change mixer time, when time scale = 1", () => {
+    test("should change mixer time, when time scale = 1", () => {
       const time = faker.number.float({ min: -2, max: 15 });
       const timeScale = 1;
       mixerMock.timeScale = timeScale;
@@ -98,7 +98,7 @@ describe("SceneDirector", () => {
       expect(actionMock.time).toBe(expectedTime);
     });
 
-    it("should change mixer time to scaled time", () => {
+    test("should change mixer time to scaled time", () => {
       const time = faker.number.float({ min: -2, max: 15 });
       const timeScale = faker.number.float({ min: -5, max: 5 }) || 1;
       mixerMock.timeScale = timeScale;
@@ -112,7 +112,7 @@ describe("SceneDirector", () => {
       expect(actionMock.time).toBeCloseTo(expectedActionTime);
     });
 
-    it("should dispatch 'timeChanged' event", async () => {
+    test("should dispatch 'timeChanged' event", async () => {
       const time = faker.number.float({ min: -2, max: 15 });
       const timeScale = faker.number.float({ min: -5, max: 5 }) || 1;
       mixerMock.timeScale = timeScale;
@@ -140,7 +140,7 @@ describe("SceneDirector", () => {
       });
     });
 
-    it("should modify sub mixer time", () => {
+    test("should modify sub mixer time", () => {
       const time = faker.number.float(2);
       mixerMock.timeScale = 1;
       clipMock.duration = faker.number.float();
@@ -154,7 +154,7 @@ describe("SceneDirector", () => {
       expect(subMixer.time).toBeCloseTo(expectedTime);
     });
 
-    it("should unpause main action", () => {
+    test("should unpause main action", () => {
       clipMock.duration = 2;
       mixerMock.timeScale = 1;
       actionMock.paused = true;
@@ -164,7 +164,7 @@ describe("SceneDirector", () => {
       expect(actionMock.paused).toBeFalsy();
     });
 
-    it("should moveTime forward by 0.1", () => {
+    test("should moveTime forward by 0.1", () => {
       const delta = 0.1;
       const time = 2;
       const expectedTime = time + delta;
@@ -180,7 +180,7 @@ describe("SceneDirector", () => {
   });
 
   describe("moveTime", () => {
-    it("should moveTime back by -0.1", () => {
+    test("should moveTime back by -0.1", () => {
       const delta = -0.1;
       const time = 2;
       const expectedTime = time + delta;
@@ -194,7 +194,7 @@ describe("SceneDirector", () => {
       expect(director.time).toBe(expectedTime);
     });
 
-    it("should moveTime to clip end, when new time greater then duration", () => {
+    test("should moveTime to clip end, when new time greater then duration", () => {
       const delta = 2;
       mixerMock.time = 4;
       clipMock.duration = 5;
@@ -206,7 +206,7 @@ describe("SceneDirector", () => {
       expect(director.time).toBe(expectedTime);
     });
 
-    it("should moveTime to 0, when new time lower then 0", () => {
+    test("should moveTime to 0, when new time lower then 0", () => {
       const delta = -2;
       mixerMock.time = 1;
       clipMock.duration = 5;
@@ -218,7 +218,7 @@ describe("SceneDirector", () => {
       expect(director.time).toBe(expectedTime);
     });
 
-    it("should moveTime by random time", () => {
+    test("should moveTime by random time", () => {
       const delta = faker.number.float({ min: -1, max: 1 });
       const time = faker.number.float(6);
       clipMock.duration = faker.number.float(5);

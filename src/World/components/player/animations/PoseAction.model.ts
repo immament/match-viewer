@@ -1,7 +1,7 @@
 import { AnimationAction } from "three";
 import { PoseTypes } from "./Pose.model";
 
-export interface PoseAction extends IMoveAction {
+export interface IPoseAction extends IMoveAction {
   poseRecord?: PoseRecord;
   poseType: PoseTypes;
   get isMove(): boolean;
@@ -61,12 +61,12 @@ export type PoseRecord = {
   readonly lastDirection?: number;
   // in radians
   readonly rotation: number;
-  action?: PoseAction;
+  action?: IPoseAction;
 };
 
 export type PoseTransitionProps = {
-  readonly oldPoseAction: PoseAction | undefined;
-  readonly newPoseAction: PoseAction;
+  readonly oldPoseAction: IPoseAction | undefined;
+  readonly newPoseAction: IPoseAction;
   readonly newPoseRecord: PoseRecord;
   readonly withSync: boolean;
   readonly transitionId: string;

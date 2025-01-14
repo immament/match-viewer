@@ -1,8 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, test } from "vitest";
 import { createCamera } from "../camera";
 
 describe("camera", () => {
-  it("createCamera", () => {
+  test("createCamera", () => {
     const expected = { aspect: 3 };
     const camera = createCamera(expected.aspect);
 

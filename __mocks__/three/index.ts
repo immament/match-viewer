@@ -1,4 +1,5 @@
 import * as three from "three";
+import { KeyframeTrack } from "three";
 import { vi } from "vitest";
 
 export { Clock, Layers, MathUtils, Quaternion, Vector2, Vector3 } from "three";
@@ -23,7 +24,17 @@ export class Mesh extends Object3D {}
 export const SphereGeometry = vi.fn();
 export const MeshBasicMaterial = vi.fn();
 export const MeshStandardMaterial = vi.fn();
-export const DirectionalLight = vi.fn();
+export class DirectionalLight extends Object3D {
+  castShadow = false;
+  shadow = { camera: new PerspectiveCamera(0, 0, 0, 0) };
+  constructor(
+    private color?: three.ColorRepresentation,
+    private intensity?: number
+  ) {
+    super();
+  }
+}
+
 export const HemisphereLight = vi.fn();
 
 export const Scene = vi.fn(() => ({ add: vi.fn() }));
@@ -48,20 +59,28 @@ export class AnimationMixer implements three.EventDispatcher {
   setTime: (time: number) => void = vi.fn((time) => {
     this.time = time;
   });
-  clipAction(
-    clip: AnimationClip,
-    _root?: three.Object3D | three.AnimationObjectGroup,
-    blendMode?: three.AnimationBlendMode
-  ): AnimationAction {
-    const animation = new AnimationAction(this, clip);
-    animation.blendMode = blendMode ?? three.NormalAnimationBlendMode;
-    return animation;
-  }
+
+  clipAction = vi.fn(
+    (
+      clip: AnimationClip,
+      _root?: three.Object3D | three.AnimationObjectGroup,
+      blendMode?: three.AnimationBlendMode
+    ) => {
+      const animation = new AnimationAction(this, clip);
+      animation.blendMode = blendMode ?? three.NormalAnimationBlendMode;
+      return animation;
+    }
+  );
+
   update: (delta: number) => void = vi.fn();
 }
 
 export class AnimationClip {
-  constructor(public name: string, public duration: number) {}
+  constructor(
+    public name: string,
+    public duration: number,
+    public tracks?: KeyframeTrack[]
+  ) {}
 }
 
 export class AnimationAction {
@@ -102,9 +121,18 @@ export class PerspectiveCamera {
   };
   lookAt = vi.fn();
   updateProjectionMatrix = vi.fn();
-  constructor(fov: number, aspect: number, near: number, far: number) {
-    // Initialize properties if needed
-  }
+
+  top = 0;
+  bottom = 0;
+  left = 0;
+  right = 0;
+
+  constructor(
+    fov: number,
+    aspect: number,
+    public near: number,
+    public far: number
+  ) {}
 }
 
 export class TextureLoader {
@@ -116,6 +144,16 @@ export class TextureLoader {
 
 //TextureLoader.prototype.load = vi.fn(() => new three.Texture());
 
-export const VectorKeyframeTrack = vi.fn();
+export const VectorKeyframeTrack = vi.fn(function (name, times, values) {
+  this.name = name;
+  this.times = times;
+  this.values = values;
+});
+
+export const QuaternionKeyframeTrack = vi.fn(function (name, times, values) {
+  this.name = name;
+  this.times = times;
+  this.values = values;
+});
 
 export const Raycaster = vi.fn();

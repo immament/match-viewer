@@ -1,7 +1,10 @@
 import { RawPoseEvents, RawPoseTypes } from "../animations/Pose.model";
 
 // playerIdx between 0-10
-export function getPlayerPoses(teamIdx: number, playerIdx: number) {
+export function getPlayerPoses(
+  teamIdx: number,
+  playerIdx: number
+): RawPoseEvents {
   return convertPoses(poses[teamIdx][playerIdx]);
 }
 

@@ -4,12 +4,12 @@ import {
   AnimationMixer,
   Object3D
 } from "three";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mock } from "vitest-mock-extended";
 import { PlayerId } from "../../PlayerId";
 import { PoseTypes } from "../Pose.model";
+import { PoseAction } from "../PoseAction";
 import { PoseRecord } from "../PoseAction.model";
-import { PoseAction2 } from "../PoseAction2";
 
 vi.mock("three");
 
@@ -20,8 +20,8 @@ describe("PoseAction2", () => {
     playerId = { teamIdx: 1, playerIdx: 2 };
   });
 
-  it("startAction with different pose type", () => {
-    const poseAction = new PoseAction2(
+  test("startAction with different pose type", () => {
+    const poseAction = new PoseAction(
       true,
       PoseTypes.head,
       playerId,
@@ -34,9 +34,9 @@ describe("PoseAction2", () => {
     expect(result).toBeFalsy();
   });
 
-  it("startAction with the same pose type", () => {
+  test("startAction with the same pose type", () => {
     const poseType = PoseTypes.head;
-    const poseAction = new PoseAction2(
+    const poseAction = new PoseAction(
       true,
       poseType,
       playerId,
@@ -49,12 +49,12 @@ describe("PoseAction2", () => {
     expect(result).toBeTruthy();
   });
 
-  it("startAction forward", () => {
+  test("startAction forward", () => {
     const expected = { time: 0.5, timeScale: 0.9, weight: 1 };
 
     const animationMock = createAnimationMock();
 
-    const poseAction = new PoseAction2(
+    const poseAction = new PoseAction(
       true,
       PoseTypes.head,
       playerId,
@@ -77,7 +77,7 @@ describe("PoseAction2", () => {
     expect(animationMock.play).toBeCalled();
   });
 
-  it("startAction reverse", () => {
+  test("startAction reverse", () => {
     const expected = { animationTime: 2, timeScale: 0.9, weight: 1 };
 
     // const animationClip = new AnimationClip(undefined, expected.animationTime);
@@ -92,7 +92,7 @@ describe("PoseAction2", () => {
     const animationMock = vi.mocked(createAnimationMock(animationClip));
     animationMock.getClip.mockReturnValue(animationClip);
 
-    const poseAction = new PoseAction2(
+    const poseAction = new PoseAction(
       true,
       PoseTypes.head,
       playerId,

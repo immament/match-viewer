@@ -19,8 +19,8 @@ export default [
     files: ["**/*.test.ts"],
     plugins: { vitest },
     rules: {
-      ...vitest.configs.recommended.rules,
-      "vitest/valid-expect": ["error", { minArgs: 0 }]
+      ...vitest.configs.recommended.rules
+      // "vitest/valid-expect": ["error"]
     }
   }
 ];

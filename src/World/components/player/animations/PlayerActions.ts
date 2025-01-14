@@ -2,7 +2,7 @@ import { AnimationAction } from "three";
 
 import { PlayerId } from "../PlayerId";
 import { PoseTypes } from "./Pose.model";
-import { IMoveAction, PoseAction } from "./PoseAction.model";
+import { IMoveAction, IPoseAction } from "./PoseAction.model";
 
 export class PlayerActions {
   public get positionAction(): AnimationAction {
@@ -13,17 +13,12 @@ export class PlayerActions {
   }
 
   private _moveAnimations: IMoveAction[];
-  public get allMoveAnimations(): IMoveAction[] {
-    return [...this._moveAnimations];
-  }
-  public get poseActions(): PoseAction[] {
-    return Object.values(this._poseActions);
-  }
 
   constructor(
     private _positionAction: AnimationAction,
     private _rotateAction: AnimationAction,
-    private _poseActions: Record<PoseTypes, PoseAction>,
+    private _poseActions: Record<PoseTypes, IPoseAction>,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _playerId: PlayerId
   ) {
     this._moveAnimations = [_positionAction, _rotateAction];
@@ -31,7 +26,6 @@ export class PlayerActions {
     Object.values(_poseActions).forEach((a) => {
       if (a.isMove) {
         this._moveAnimations.push(a);
-        // a.setEffectiveWeight(0);
         a.play();
       }
     });
@@ -40,7 +34,7 @@ export class PlayerActions {
     this._rotateAction.play();
   }
 
-  public getPoseAction(poseType: PoseTypes): PoseAction {
+  public getPoseAction(poseType: PoseTypes): IPoseAction {
     return this._poseActions[poseType];
   }
 
@@ -55,7 +49,11 @@ export class PlayerActions {
     this._rotateAction.time = timeInSeconds;
   }
 
-  // TODO: only debug settings
+  // TODO: use only in debug settings
+
+  public get debug_poseActions(): IPoseAction[] {
+    return Object.values(this._poseActions);
+  }
 
   debug_stopAllMoveActions() {
     this._moveAnimations.forEach((action) => {
@@ -64,17 +62,10 @@ export class PlayerActions {
   }
 
   debug_playAllMoveActions() {
-    //playerLogger.info(this._playerId, "playAllMoveActions");
     this._moveAnimations.forEach((action) => {
       action.play();
     });
   }
-
-  // disableAllMoveActions() {
-  //   this._moveAnimations.forEach((action) => {
-  //     action.enabled = false;
-  //   });
-  // }
 
   debug_pauseAllMoveActions() {
     this._moveAnimations.forEach((action) => {

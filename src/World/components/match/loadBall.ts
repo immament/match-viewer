@@ -7,7 +7,7 @@ import {
   TextureLoader,
   VectorKeyframeTrack
 } from "three";
-import { getBallPositions } from "../player/__mocks__/ball.mock";
+import { getBallPositions } from "../player/__sampleData__/ball.mock";
 import {
   BALL_RADIUS,
   BallPositionsConfig,

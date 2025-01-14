@@ -5,7 +5,7 @@ import { logDebugTransition, playerLogger } from "../player.logger";
 import { PlayerId } from "../PlayerId";
 import { PlayerActions } from "./PlayerActions";
 import {
-  PoseAction,
+  IPoseAction,
   PoseRecord,
   PoseTransitionProps
 } from "./PoseAction.model";
@@ -129,7 +129,7 @@ export class PlayerPoses extends EventTarget {
 
   // ++ INTERNALS +++
 
-  private get currentAction(): PoseAction | undefined {
+  private get currentAction(): IPoseAction | undefined {
     return this._currentPose?.action;
   }
 
@@ -229,7 +229,7 @@ export class PlayerPoses extends EventTarget {
 
     function getOnLoopFinished(
       aPlayerPose: PlayerPoses,
-      anOldAction: PoseAction
+      anOldAction: IPoseAction
     ) {
       const onLoopFinished = (event: {
         action: AnimationAction;

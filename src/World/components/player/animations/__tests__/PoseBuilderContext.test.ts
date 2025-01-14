@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, test } from "vitest";
 import { PlayerId } from "../../PlayerId";
 import { RawPoseEvents } from "../Pose.model";
 import { PoseBuilderContext } from "../PoseBuilderContext";
@@ -19,7 +19,7 @@ describe("PoseBuilderContext", () => {
     playerId = { teamIdx: 1, playerIdx: 2 };
   });
 
-  it("should initialize with default values", () => {
+  test("should initialize with default values", () => {
     const context = new PoseBuilderContext(
       playerId,
       playerPositions,
@@ -42,7 +42,7 @@ describe("PoseBuilderContext", () => {
         rawPoses
       );
     });
-    it.each([0, 5, 7, 8])(
+    test.each([0, 5, 7, 8])(
       "should set step index to %1 and change prev & next",
       (index) => {
         context.stepIdx = index;
@@ -53,7 +53,7 @@ describe("PoseBuilderContext", () => {
     );
   });
 
-  it("should get poses result", () => {
+  test("should get poses result", () => {
     const context = new PoseBuilderContext(
       playerId,
       playerPositions,
@@ -67,7 +67,7 @@ describe("PoseBuilderContext", () => {
     expect(posesResult.length).toBe(times.length);
   });
 
-  it("should get directions result", () => {
+  test("should get directions result", () => {
     const context = new PoseBuilderContext(
       playerId,
       playerPositions,

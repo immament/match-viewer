@@ -1,12 +1,12 @@
 import { Vector2, Vector3 } from "three";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { PositionProxy } from "../PositionProxy";
 import { Point2, Point3 } from "../positions.utils";
 
 class TestPositionProxy extends PositionProxy {
-  protected xChanged(value: number): void {}
-  protected yChanged(value: number): void {}
-  protected zChanged(value: number): void {}
+  public xChanged = vi.fn();
+  public yChanged = vi.fn();
+  public zChanged = vi.fn();
 }
 
 describe("PositionProxy", () => {
@@ -16,19 +16,19 @@ describe("PositionProxy", () => {
     positionProxy = new TestPositionProxy();
   });
 
-  it("should initialize with default values", () => {
+  test("should initialize with default values", () => {
     expect(positionProxy.step).toBe(0);
     expect(positionProxy.x).toBe(0);
     expect(positionProxy.y).toBe(0);
     expect(positionProxy.z).toBe(0);
   });
 
-  it("should update step value", () => {
+  test("should update step value", () => {
     positionProxy.step = 5;
     expect(positionProxy.step).toBe(5);
   });
 
-  it("should update x, y, z values and trigger change methods", () => {
+  test("should update x, y, z values and trigger change methods", () => {
     positionProxy.x = 10;
     positionProxy.y = 20;
     positionProxy.z = 30;
@@ -38,7 +38,7 @@ describe("PositionProxy", () => {
     expect(positionProxy.z).toBe(30);
   });
 
-  it("should copy to Vector3", () => {
+  test("should copy to Vector3", () => {
     const vector = new Vector3();
     positionProxy.x = 1;
     positionProxy.y = 2;
@@ -48,7 +48,7 @@ describe("PositionProxy", () => {
     expect(vector).toMatchObject({ x: 1, y: 2, z: 3 });
   });
 
-  it("should copy to Vector2", () => {
+  test("should copy to Vector2", () => {
     const vector = new Vector2();
     positionProxy.x = 1;
     positionProxy.z = 3;
@@ -58,7 +58,7 @@ describe("PositionProxy", () => {
     expect(vector.y).toBe(3);
   });
 
-  it("should calculate distance to another point", () => {
+  test("should calculate distance to another point", () => {
     const point: Point3 = { x: 3, y: 0, z: 4 };
 
     const distance = positionProxy.distanceTo(point);
@@ -66,7 +66,7 @@ describe("PositionProxy", () => {
   });
 
   describe("moveToPointAtDistance", () => {
-    it("should move to a target point at x axis", () => {
+    test("should move to a target point at x axis", () => {
       const target: Point2 = { x: 3, z: 0 };
 
       positionProxy.moveToPointAtDistance(target, 1);
@@ -74,7 +74,7 @@ describe("PositionProxy", () => {
       expect(positionProxy.z).toBeCloseTo(0);
     });
 
-    it("should move to a target point at z axis", () => {
+    test("should move to a target point at z axis", () => {
       const target: Point2 = { x: 0, z: 3 };
 
       positionProxy.moveToPointAtDistance(target, 1);
@@ -82,7 +82,7 @@ describe("PositionProxy", () => {
       expect(positionProxy.z).toBeCloseTo(2);
     });
 
-    it("should move to a target point", () => {
+    test("should move to a target point", () => {
       const target: Point2 = { x: 3, z: 3 };
 
       positionProxy.moveToPointAtDistance(target, 0);
@@ -90,7 +90,7 @@ describe("PositionProxy", () => {
       expect(positionProxy.z).toBeCloseTo(3);
     });
 
-    it("should move to a target point at distance 1", () => {
+    test("should move to a target point at distance 1", () => {
       const target: Point2 = { x: 3, z: 3 };
       // const expectedPoint = {
       //
@@ -104,22 +104,49 @@ describe("PositionProxy", () => {
     });
   });
 
-  it("should calculate direction from from 0,0 to 3,4", () => {
+  test("should calculate direction from from 0,0 to 3,4", () => {
     const target: Point2 = { x: 3, z: 4 };
 
     const direction = positionProxy.direction2D(target);
     expect(direction).toBeCloseTo(Math.atan2(3, 4));
   });
 
-  it("should calculate direction from 0,0 to 3,3 ", () => {
+  test("should calculate direction from 0,0 to 3,3", () => {
     const target: Point2 = { x: 3, z: 3 };
 
     const direction = positionProxy.direction2D(target);
     expect(direction).toBeCloseTo(Math.PI / 4);
   });
 
-  it("should calculate direction to raw coordinates", () => {
+  test("should calculate direction to raw coordinates", () => {
     const direction = positionProxy.direction2DRaw(3, 4);
     expect(direction).toBeCloseTo(Math.atan2(3, 4));
+  });
+
+  test("should call xChanged when x was changed", () => {
+    const expectedValue = 11;
+    positionProxy.x = expectedValue;
+
+    expect(vi.mocked(positionProxy).xChanged).toHaveBeenCalledWith(
+      expectedValue
+    );
+  });
+
+  test("should call yChanged when y was changed 2", () => {
+    const expectedValue = 11;
+    positionProxy.y = expectedValue;
+
+    expect(vi.mocked(positionProxy).yChanged).toHaveBeenCalledWith(
+      expectedValue
+    );
+  });
+
+  test("should call zChanged when z was changed 2", () => {
+    const expectedValue = 11;
+    positionProxy.z = expectedValue;
+
+    expect(vi.mocked(positionProxy).zChanged).toHaveBeenCalledWith(
+      expectedValue
+    );
   });
 });

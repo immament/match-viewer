@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, test, vi } from "vitest";
 import { World } from "../World";
 import { threeMockSetup } from "/test-setup/three.mock.setup";
 
@@ -12,7 +12,7 @@ describe("World", () => {
     threeMockSetup({ webGLRenderer: true, camera: true, lights: true });
   });
 
-  it("should create world", () => {
+  test("should create world", () => {
     const container = document.createElement("div");
 
     const world = new World(container);

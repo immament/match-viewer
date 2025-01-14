@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, test, vi } from "vitest";
 import { createLights } from "../lights";
 import { threeMockSetup } from "/test-setup/three.mock.setup";
 
@@ -9,11 +9,15 @@ describe("lights", () => {
     threeMockSetup({ lights: true });
   });
 
-  it("createLights", () => {
-    const expected = { aspect: 3 };
+  test("should create lights with default values", () => {
     const { lights } = createLights();
 
-    expect(lights).toBeDefined();
-    expect(lights).length.gt(0);
+    expect(lights.length).gt(0);
+  });
+
+  test("should create lights with shadow", () => {
+    const { lights } = createLights(true);
+
+    expect(lights.length).gt(0);
   });
 });

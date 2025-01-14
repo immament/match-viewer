@@ -7,10 +7,10 @@ import {
 } from "three";
 
 import { PlayerId } from "../PlayerId";
-import { getPlayer as getAwayPlayer } from "../__mocks__/awayPlayersPosition.big.mock";
-import { getBallPositions } from "../__mocks__/ball.mock";
-import { getPlayer as getHomePlayer } from "../__mocks__/homePlayersPosition.big.mock";
-import { getPlayerPoses } from "../__mocks__/playersPose.mock";
+import { getPlayer as getAwayPlayer } from "../__sampleData__/awayPlayersPosition.big.mock";
+import { getBallPositions } from "../__sampleData__/ball.mock";
+import { getPlayer as getHomePlayer } from "../__sampleData__/homePlayersPosition.big.mock";
+import { getPlayerPoses } from "../__sampleData__/playersPose.mock";
 import { playerLogger } from "../player.logger";
 import { PlayerDirectionBuilder } from "./PlayerDirectionBuilder";
 import { RawPoseEvents } from "./Pose.model";
@@ -25,20 +25,18 @@ import {
 } from "./positions.utils";
 
 export function createMoveActions(mixer: AnimationMixer, playerId: PlayerId) {
-  const { positionAction, positionKF } = createPositionAction(playerId, mixer);
+  const { positionAction, positionKF } = createPositionAction(mixer, playerId);
 
   const { rotateAction, poses } = createRotateAction(
     mixer,
     positionKF,
-    getPlayerPoses(playerId.teamIdx, playerId.playerIdx),
-    getBallPositions(),
     playerId
   );
 
   return { positionAction, rotateAction, poses };
 }
 
-function createPositionAction(playerId: PlayerId, mixer: AnimationMixer) {
+function createPositionAction(mixer: AnimationMixer, playerId: PlayerId) {
   const playerPositions =
     playerId.teamIdx === 0
       ? getHomePlayer(playerId.playerIdx)
@@ -123,6 +121,20 @@ function createPositionsArrays(
 function createRotateAction(
   mixer: AnimationMixer,
   positionKF: VectorKeyframeTrack,
+  playerId: PlayerId
+) {
+  return createRotateActionInternal(
+    mixer,
+    positionKF,
+    getPlayerPoses(playerId.teamIdx, playerId.playerIdx),
+    getBallPositions(),
+    playerId
+  );
+}
+
+function createRotateActionInternal(
+  mixer: AnimationMixer,
+  positionKF: VectorKeyframeTrack,
   rawPoses: RawPoseEvents,
   ballPositions: BallPositionsConfig,
   playerId: PlayerId
@@ -171,7 +183,7 @@ function createRotateAction(
     ballPositions: BallPositionsConfig
   ) {
     const times = Array.from(positionKF.times);
-    const context = new PoseBuilderContext(
+    const ctx = new PoseBuilderContext(
       playerId,
       positionKF.values,
       ballPositions,
@@ -179,21 +191,17 @@ function createRotateAction(
       rawPoses
     );
 
-    const rotationBuilder = new PlayerDirectionBuilder(context);
-    const poseBuilder = new PoseBuilder(playerId, context, rotationBuilder);
+    const rotationBuilder = new PlayerDirectionBuilder(ctx);
+    const poseBuilder = new PoseBuilder(playerId, ctx, rotationBuilder);
 
-    for (
-      context.stepIdx = 0;
-      context.stepIdx < times.length - 1;
-      context.stepIdx++
-    ) {
+    for (ctx.stepIdx = 0; ctx.stepIdx < times.length - 1; ctx.stepIdx++) {
       poseBuilder.calculatePose();
     }
 
     return {
       times,
-      rotateValues: context.getDirectionsResult(),
-      poses: context.getPosesResult()
+      rotateValues: ctx.getDirectionsResult(),
+      poses: ctx.getPosesResult()
     };
   }
 

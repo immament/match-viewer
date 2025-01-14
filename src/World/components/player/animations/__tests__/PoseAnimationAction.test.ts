@@ -1,5 +1,5 @@
 import { AnimationClip, AnimationMixer, Object3D } from "three";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mock } from "vitest-mock-extended";
 import { PlayerId } from "../../PlayerId";
 import { PoseTypes } from "../Pose.model";
@@ -34,7 +34,7 @@ describe("PoseAnimationAction", () => {
     // );
   });
 
-  it("startAction with different pose type", () => {
+  test("startAction with different pose type", () => {
     const poseAction = new PoseAnimationAction(
       true,
       PoseTypes.head,
@@ -49,7 +49,7 @@ describe("PoseAnimationAction", () => {
     expect(result).toBeFalsy();
   });
 
-  it("startAction with the same pose type", () => {
+  test("startAction with the same pose type", () => {
     const poseType = PoseTypes.head;
     const poseAction = new PoseAnimationAction(
       true,
@@ -65,7 +65,7 @@ describe("PoseAnimationAction", () => {
     expect(result).toBeTruthy();
   });
 
-  it("startAction forward", () => {
+  test("startAction forward", () => {
     const poseAction = new PoseAnimationAction(
       true,
       PoseTypes.head,
@@ -90,7 +90,7 @@ describe("PoseAnimationAction", () => {
     // expect(poseAction.play).toBeCalled();
   });
 
-  it("startAction reverse", () => {
+  test("startAction reverse", () => {
     const expected = { animationTime: 2, timeScale: 0.9, weight: 1 };
 
     const animationClip = new AnimationClip(undefined, expected.animationTime);

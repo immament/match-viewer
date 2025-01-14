@@ -2,12 +2,12 @@ import { AnimationAction } from "three";
 import { PlayerId } from "../PlayerId";
 import { PoseTypes } from "./Pose.model";
 import {
-  PoseAction,
+  IPoseAction,
   PoseRecord,
   PoseTransitionProps
 } from "./PoseAction.model";
 
-export class PoseAction2 implements PoseAction {
+export class PoseAction implements IPoseAction {
   public poseRecord?: PoseRecord;
 
   public set poseType(value: PoseTypes) {

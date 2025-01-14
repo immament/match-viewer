@@ -4,7 +4,7 @@ export function getPlayer(index: number): PlayerPositions {
   return { px: players.hpx[index], pz: players.hpz[index] };
 }
 
-type PlayerPositionsConfig = {
+export type PlayerPositionsConfig = {
   hpx: number[][];
   hpz: number[][];
 };

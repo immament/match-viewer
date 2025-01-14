@@ -8,13 +8,16 @@ import {
 import { PlayerId } from "../PlayerId";
 import { PoseTypes } from "./Pose.model";
 import {
-  PoseAction,
+  IPoseAction,
   PoseActionState,
   PoseRecord,
   PoseTransitionProps
 } from "./PoseAction.model";
 
-export class PoseAnimationAction extends AnimationAction implements PoseAction {
+export class PoseAnimationAction
+  extends AnimationAction
+  implements IPoseAction
+{
   public poseRecord?: PoseRecord;
 
   constructor(

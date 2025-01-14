@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, test } from "vitest";
 import { PlayerId } from "../../PlayerId";
 import { PlayerDirectionBuilder } from "../PlayerDirectionBuilder";
 import { PoseTypes, RawPoseEvents, RawPoseTypes } from "../Pose.model";
@@ -19,7 +19,7 @@ describe("PoseBuilder", () => {
     rawPoses = Array(3);
   });
 
-  it("should initialize with default values", () => {
+  test("should initialize with default values", () => {
     const ctx = new PoseBuilderContext(
       playerId,
       playerPositions,
@@ -33,7 +33,7 @@ describe("PoseBuilder", () => {
     expect(builder).toBeInstanceOf(PoseBuilder);
   });
 
-  it("should calculate pose", () => {
+  test("should calculate pose", () => {
     const ctx = new PoseBuilderContext(
       playerId,
       playerPositions,
@@ -48,7 +48,7 @@ describe("PoseBuilder", () => {
     expect(ctx.getPosesResult()[0].type).toBe(PoseTypes.idle);
   });
 
-  it("should create walk pose", () => {
+  test("should create walk pose", () => {
     const ctx = new PoseBuilderContext(
       playerId,
       playerPositions,
@@ -63,7 +63,7 @@ describe("PoseBuilder", () => {
     builder.calculatePose();
     expect(ctx.getPosesResult()[1].type).toBe(PoseTypes.walk);
   });
-  it("should create run pose", () => {
+  test("should create run pose", () => {
     playerPositions[6] = 5;
     playerPositions[8] = 5;
     const ctx = new PoseBuilderContext(
@@ -81,7 +81,7 @@ describe("PoseBuilder", () => {
     expect(ctx.getPosesResult()[1].type).toBe(PoseTypes.run);
   });
 
-  it("should create pass pose", () => {
+  test("should create pass pose", () => {
     rawPoses[1] = "p";
     const ctx = new PoseBuilderContext(
       playerId,
@@ -99,7 +99,7 @@ describe("PoseBuilder", () => {
     expect(ctx.getPosesResult()[1].type).toBe(PoseTypes.pass);
   });
 
-  it("should create shot pose", () => {
+  test("should create shot pose", () => {
     rawPoses[1] = "r";
     const ctx = new PoseBuilderContext(
       playerId,
@@ -115,8 +115,9 @@ describe("PoseBuilder", () => {
     builder.calculatePose();
     expect(ctx.getPosesResult()[1].type).toBe(PoseTypes.shot);
   });
-  describe("head pose ", () => {
-    it.each<RawPoseTypes>(["p", "l", "v", "r"])(
+
+  describe("head pose", () => {
+    test.each<RawPoseTypes>(["p", "l", "v", "r"])(
       "should create from raw type: '%s'",
       (rawType) => {
         rawPoses[1] = rawType;

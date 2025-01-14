@@ -3,7 +3,7 @@ import { AnimationAction } from "three";
 import { IUpdatable } from "../../../systems/Loop";
 import { Match } from "../../match/Match.model";
 import { PoseTypes } from "../animations/Pose.model";
-import { PoseAction, PoseRecord } from "../animations/PoseAction.model";
+import { IPoseAction, PoseRecord } from "../animations/PoseAction.model";
 import { Player3D, PlayerMesh } from "../PlayerMesh";
 import { PlayerDebug } from "./PlayerDebug";
 
@@ -229,7 +229,7 @@ export class PlayerSettings implements IUpdatable {
     return this._player.actions.getPoseAction(key).debug_animation();
   }
 
-  private playerPoseActions(): PoseAction[] {
-    return this._player.actions.poseActions;
+  private playerPoseActions(): IPoseAction[] {
+    return this._player.actions.debug_poseActions;
   }
 }

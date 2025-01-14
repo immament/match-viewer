@@ -12,8 +12,8 @@ import { PlayerId } from "./PlayerId";
 import { PlayerMesh } from "./PlayerMesh";
 import { PlayerActions } from "./animations/PlayerActions";
 import { isMovePoseType, PoseTypes } from "./animations/Pose.model";
-import { PoseAction } from "./animations/PoseAction.model";
-import { PoseAction2 } from "./animations/PoseAction2";
+import { PoseAction } from "./animations/PoseAction";
+import { IPoseAction } from "./animations/PoseAction.model";
 import { PoseAnimationAction } from "./animations/PoseAnimationAction";
 import { createMoveActions } from "./animations/actions.factory";
 
@@ -22,7 +22,7 @@ export function createPlayerMesh(
   model: Object3D,
   animationClips: AnimationClip[],
   modelConfig: ModelConfig
-) {
+): { player: PlayerMesh } {
   const { mixer, actions, poses } = setupPlayerAnimations(
     playerId,
     model,
@@ -61,7 +61,7 @@ function setupPlayerAnimations(
 
   // internal
   function createPoseActions() {
-    const poseActions = {} as Record<PoseTypes, PoseAction>;
+    const poseActions = {} as Record<PoseTypes, IPoseAction>;
 
     Object.keys(PoseTypes).forEach((key) => {
       const posType = key as PoseTypes;
@@ -78,13 +78,13 @@ function setupPlayerAnimations(
     playerId: PlayerId,
     poseType: PoseTypes,
     isMoveType: boolean
-  ): PoseAction {
+  ): IPoseAction {
     const clip =
       modelConfig.animationClip(animationClips, poseType)?.clone() ??
       emptyClip();
 
     const { poseAction, animationAction } = createPoseActionWithAnimation(
-      "PoseAction2",
+      "PoseAction",
       playerId,
       poseType,
       isMoveType,
@@ -103,13 +103,13 @@ function setupPlayerAnimations(
   }
 
   function createPoseActionWithAnimation(
-    poseImplType: "PoseAnimationAction" | "PoseAction2",
+    poseImplType: "PoseAnimationAction" | "PoseAction",
     playerId: PlayerId,
     poseType: PoseTypes,
     isMoveType: boolean,
     clip: AnimationClip
   ) {
-    let poseAction: PoseAction;
+    let poseAction: IPoseAction;
     let animationAction: AnimationAction;
     switch (poseImplType) {
       case "PoseAnimationAction":
@@ -126,7 +126,7 @@ function setupPlayerAnimations(
 
       default:
         animationAction = mixer.clipAction(clip);
-        poseAction = new PoseAction2(
+        poseAction = new PoseAction(
           isMoveType,
           poseType,
           playerId,

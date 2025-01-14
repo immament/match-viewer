@@ -5,9 +5,7 @@ export abstract class PositionProxy implements Point3 {
   private _step = 0;
   protected _vector3 = new Vector3();
 
-  constructor() {
-    //this.step = 0;
-  }
+  constructor() {}
 
   public get step(): number {
     return this._step;

@@ -49,11 +49,11 @@ export class PlayerMesh extends Group {
     this.add(_model);
     this.name = "PlayerModel";
 
-    this._mixer.addEventListener("finished", (e) => {
-      if (e.action === _actions.positionAction) {
-        //_actions.pauseAllMoveActions();
-      }
-    });
+    // this._mixer.addEventListener("finished", (e) => {
+    //   if (e.action === _actions.positionAction) {
+    //     //_actions.pauseAllMoveActions();
+    //   }
+    // });
 
     this._poses = new PlayerPoses(this, this._mixer, this._actions, aPoses);
   }

@@ -1,30 +1,32 @@
 import {
   AnimationMixer,
+  LoopOnce,
   Object3D,
   QuaternionKeyframeTrack,
   VectorKeyframeTrack
 } from "three";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { PlayerId } from "../../PlayerId";
 import { createMoveActions } from "../actions.factory";
 
 vi.mock("three");
+vi.mock(import("../../__sampleData__/awayPlayersPosition.big.mock"));
+vi.mock(import("../../__sampleData__/homePlayersPosition.big.mock"));
+vi.mock(import("../../__sampleData__/ball.mock"));
+vi.mock(import("../../__sampleData__/playersPose.mock"));
 
-describe.skip("actions factory", () => {
-  let mixer: AnimationMixer;
-  let playerId: PlayerId;
+describe("actions factory", () => {
+  let _mixer: AnimationMixer;
+  const _playerId: PlayerId = { teamIdx: 0, playerIdx: 1 };
 
   beforeEach(() => {
-    mixer = new AnimationMixer({} as Object3D);
-    playerId = { teamIdx: 0, playerIdx: 1 };
+    _mixer = new AnimationMixer({} as Object3D);
   });
 
-  it("should create move actions", () => {
-    const playerId: PlayerId = { teamIdx: 0, playerIdx: 1 };
-
+  test("should create move actions", () => {
     const { positionAction, rotateAction, poses } = createMoveActions(
-      mixer,
-      playerId
+      _mixer,
+      _playerId
     );
 
     expect(positionAction).toBeTruthy();
@@ -32,8 +34,15 @@ describe.skip("actions factory", () => {
     expect(poses).toBeTruthy();
   });
 
-  it("should create position action with correct keyframes", () => {
-    const { positionAction } = createMoveActions(mixer, playerId);
+  test("should create position action with default values", () => {
+    const { positionAction } = createMoveActions(_mixer, _playerId);
+
+    expect(positionAction.loop).toBe(LoopOnce);
+    expect(positionAction.clampWhenFinished).toBe(true);
+  });
+
+  test("should create position action with correct keyframes", () => {
+    const { positionAction } = createMoveActions(_mixer, _playerId);
 
     const positionKF = positionAction
       .getClip()
@@ -42,10 +51,12 @@ describe.skip("actions factory", () => {
       ) as VectorKeyframeTrack;
     expect(positionKF).toBeTruthy();
     expect(positionKF.name).toBe(".position");
+    expect(positionKF.times.length).greaterThan(0);
+    expect(positionKF.values.length).greaterThan(0);
   });
 
-  it("should create rotate action with correct keyframes", () => {
-    const { rotateAction } = createMoveActions(mixer, playerId);
+  test("should create rotate action with correct keyframes", () => {
+    const { rotateAction } = createMoveActions(_mixer, _playerId);
 
     const rotateKF = rotateAction
       .getClip()
@@ -54,5 +65,7 @@ describe.skip("actions factory", () => {
       ) as QuaternionKeyframeTrack;
     expect(rotateKF).toBeTruthy();
     expect(rotateKF.name).toBe(".quaternion");
+    expect(rotateKF.times.length).greaterThan(0);
+    expect(rotateKF.values.length).greaterThan(0);
   });
 });

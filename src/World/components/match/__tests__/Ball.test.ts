@@ -1,18 +1,18 @@
 import { AnimationClip, AnimationMixer } from "three";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { Ball } from "../ball";
 
 vi.mock("three");
 
 describe("Ball", () => {
-  it("should initialize with default values", () => {
+  test("should initialize with default values", () => {
     const ball = new Ball();
     expect(ball.name).toBe("Ball");
     expect(ball.position).toEqual({ x: 0, y: 0, z: 0 });
     expect(ball.rotation).toMatchObject({ x: 0, y: 0, z: 0 });
   });
 
-  it("should set and get mixer and action", () => {
+  test("should set and get mixer and action", () => {
     const ball = new Ball();
 
     const mixer = new AnimationMixer(ball);
@@ -25,13 +25,13 @@ describe("Ball", () => {
     expect(ball.action).toBe(action);
   });
 
-  it("should throw error if mixer or action is not set", () => {
+  test("should throw error if mixer or action is not set", () => {
     const ball = new Ball();
     expect(() => ball.mixer).toThrow("Ball mixer not set!");
     expect(() => ball.action).toThrow("Ball action not set!");
   });
   describe("tick", () => {
-    it("should update position and rotation on tick", () => {
+    test("should update position and rotation on tick", () => {
       const ball = new Ball();
       ball.position.set(1, 0, 1);
 
@@ -43,7 +43,7 @@ describe("Ball", () => {
       expect(ball.rotation.z).not.toBe(0);
     });
 
-    it("should update mixer time on tick", () => {
+    test("should update mixer time on tick", () => {
       const ball = new Ball();
       const mixer = new AnimationMixer(ball);
       const clip = new AnimationClip("clip", 1);

@@ -10,7 +10,9 @@ export class BallPositionProxy extends PositionProxy {
     super();
     this.step = 0;
   }
-
+  public get step(): number {
+    return super.step;
+  }
   public set step(aStep: number) {
     super.step = aStep;
     this._vector3.set(
@@ -18,18 +20,6 @@ export class BallPositionProxy extends PositionProxy {
       this._positions.pHeight[aStep],
       this._positions.pz[aStep]
     );
-    // if (aStep < 4) {
-    //   playerLogger.debug(
-    //     this._playerId,
-    //     aStep,
-    //     "set step",
-    //     this._vector3.x,
-    //     this._vector3.y,
-    //     this._vector3.z,
-    //     this.z,
-    //     this._positions.pz[aStep]
-    //   );
-    // }
   }
 
   protected xChanged(value: number) {

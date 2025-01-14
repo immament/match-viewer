@@ -1,5 +1,5 @@
 import { AnimationClip, AnimationMixer, Object3D } from "three";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mock } from "vitest-mock-extended";
 import { PlayerId } from "../../PlayerId";
 import { PlayerPoses, PoseChangedEventDetail } from "../PlayerPoses";
@@ -25,29 +25,29 @@ describe("PlayerPoses", () => {
       );
     });
 
-    it("syncCrossFade", () => {
+    test("syncCrossFade", () => {
       playerPoses.syncCrossFade = true;
       expect(playerPoses.syncCrossFade).toBe(true);
       playerPoses.syncCrossFade = false;
       expect(playerPoses.syncCrossFade).toBe(false);
     });
 
-    it("pause", () => {
+    test("pause", () => {
       playerPoses.pause = true;
       expect(playerPoses.pause).toBe(true);
       playerPoses.pause = false;
       expect(playerPoses.pause).toBe(false);
     });
 
-    it("playerId", () => {
+    test("playerId", () => {
       expect(playerPoses.playerId).toEqual({ ...defaultPlayerId });
     });
 
-    it("default currentPose is undefined", () => {
+    test("default currentPose is undefined", () => {
       expect(playerPoses.currentPose).toBeUndefined();
     });
 
-    it("change current pose", async () => {
+    test("change current pose", async () => {
       const action = createPoseAction();
 
       const poseRecord: PoseRecord = {
@@ -80,7 +80,7 @@ describe("PlayerPoses", () => {
   });
 
   describe("switch", () => {
-    it.each([{ withSync: true }])(
+    test.each([{ withSync: true }])(
       "switchPoseTo(, $withSync)",
       ({ withSync }) => {
         const playerActions = new PlayerActions();

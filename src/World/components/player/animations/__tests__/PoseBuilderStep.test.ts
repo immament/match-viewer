@@ -1,5 +1,5 @@
 import { Euler, Quaternion } from "three";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, test } from "vitest";
 import { PlayerId } from "../../PlayerId";
 import { BallPositionProxy } from "../BallPositionProxy";
 import { PlayerPositionProxy } from "../PlayerPositionProxy";
@@ -29,7 +29,7 @@ describe("PoseBuilderStep", () => {
   });
 
   describe("create", () => {
-    it("should initialize with default values", () => {
+    test("should initialize with default values", () => {
       const builderStep = new PoseBuilderStep(
         playerPositionsProxy,
         ballPositionsProxy,
@@ -45,7 +45,7 @@ describe("PoseBuilderStep", () => {
       expect(builderStep.pose).toBeUndefined();
     });
 
-    it("should throw error, if posesResult array has wrong size", () => {
+    test("should throw error, if posesResult array has wrong size", () => {
       expect(
         () =>
           new PoseBuilderStep(
@@ -58,7 +58,7 @@ describe("PoseBuilderStep", () => {
       ).toThrowError("Wrong array sizes posesResult.length !== times.length");
     });
 
-    it("should throw error, if rotateValues array has wrong size", () => {
+    test("should throw error, if rotateValues array has wrong size", () => {
       expect(
         () =>
           new PoseBuilderStep(
@@ -75,7 +75,7 @@ describe("PoseBuilderStep", () => {
     });
   });
 
-  it("should initialize pose record", () => {
+  test("should initialize pose record", () => {
     const builderStep = new PoseBuilderStep(
       playerPositionsProxy,
       ballPositionsProxy,
@@ -100,7 +100,7 @@ describe("PoseBuilderStep", () => {
     expect(builderStep.pose).toBe(poseRecord);
   });
 
-  it("should change step index", () => {
+  test("should change step index", () => {
     const builderStep = new PoseBuilderStep(
       playerPositionsProxy,
       ballPositionsProxy,
@@ -118,7 +118,7 @@ describe("PoseBuilderStep", () => {
     expect(builderStep.pose).toBeUndefined();
   });
 
-  it("should initialize pose record for new step index", () => {
+  test("should initialize pose record for new step index", () => {
     const builderStep = new PoseBuilderStep(
       playerPositionsProxy,
       ballPositionsProxy,
@@ -147,7 +147,7 @@ describe("PoseBuilderStep", () => {
     expect(builderStep.pose).toBe(poseRecord);
   });
 
-  it("should save player direction", () => {
+  test("should save player direction", () => {
     const rotateValues = Array(times.length * 4);
     const direction = Math.PI / 4;
 

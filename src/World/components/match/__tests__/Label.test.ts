@@ -1,17 +1,17 @@
 import { Object3D, Vector3 } from "three";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { Label } from "../Label";
 
 vi.mock("three");
 vi.mock("three/examples/jsm/renderers/CSS2DRenderer.js");
 
 describe("Label", () => {
-  it("should initialize with default values", () => {
+  test("should initialize with default values", () => {
     const label = new Label();
     expect(label).toBeInstanceOf(Label);
   });
 
-  it("should set position and text", () => {
+  test("should set position and text", () => {
     const position = new Vector3(1, 2, 3);
     const text = "Test Label";
 
@@ -21,7 +21,7 @@ describe("Label", () => {
     expect(label["_labelDiv"].textContent).toBe(text);
   });
 
-  it("should add label to an object", () => {
+  test("should add label to an object", () => {
     const object = new Object3D();
 
     const label = new Label();
@@ -30,7 +30,7 @@ describe("Label", () => {
     expect(object.add).lastCalledWith(label["_label"]);
   });
 
-  it("should remove label from its parent", () => {
+  test("should remove label from its parent", () => {
     const object = new Object3D();
 
     const label = new Label();
@@ -40,7 +40,7 @@ describe("Label", () => {
     expect(object.remove).lastCalledWith(label["_label"]);
   });
 
-  it("should update text content", () => {
+  test("should update text content", () => {
     const newText = "Updated Text";
 
     const label = new Label();

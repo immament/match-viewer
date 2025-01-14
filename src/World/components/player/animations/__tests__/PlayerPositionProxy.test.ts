@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, test } from "vitest";
 import { PlayerId } from "../../PlayerId";
 import { PlayerPositionProxy } from "../PlayerPositionProxy";
 
@@ -10,7 +10,7 @@ describe("PlayerPositionProxy", () => {
     positions.set([0, 0, 0, 1, 1, 1]);
   });
 
-  it("should initialize with default values", () => {
+  test("should initialize with default values", () => {
     const proxy = new PlayerPositionProxy(positions, playerId);
     expect(proxy.step).toBe(0);
     expect(proxy.x).toBe(0);
@@ -18,7 +18,7 @@ describe("PlayerPositionProxy", () => {
     expect(proxy.z).toBe(0);
   });
 
-  it("should update position on step change", () => {
+  test("should update position on step change", () => {
     const proxy = new PlayerPositionProxy(positions, playerId);
     proxy.step = 1;
     expect(proxy.x).toBe(1);
@@ -26,19 +26,19 @@ describe("PlayerPositionProxy", () => {
     expect(proxy.z).toBe(1);
   });
 
-  it("should update x position", () => {
+  test("should update x position", () => {
     const proxy = new PlayerPositionProxy(positions, playerId);
     proxy.x = 2;
     expect(positions[0]).toBe(2);
   });
 
-  it("should update y position", () => {
+  test("should update y position", () => {
     const proxy = new PlayerPositionProxy(positions, playerId);
     proxy.y = 2;
     expect(positions[1]).toBe(2);
   });
 
-  it("should update z position", () => {
+  test("should update z position", () => {
     const proxy = new PlayerPositionProxy(positions, playerId);
     proxy.z = 2;
     expect(positions[2]).toBe(2);
