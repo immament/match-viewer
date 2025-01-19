@@ -10,7 +10,7 @@ export const playerLogger = logger.getLogger("player") as PlayerLogger;
 
 playerLogger.isActive = (playerId: LoggerPlayerId) => isDebugPlayer(playerId);
 
-playerLogger.setLevel("DEBUG");
+//playerLogger.setLevel("INFO");
 // only log for debuged player
 playerLogger.methodFactory = function playerLoggerFn(
   methodName: LogLevelNames,

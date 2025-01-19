@@ -11,7 +11,7 @@ export const logLevels = [
 ] as const;
 export type LogLevels = (typeof logLevels)[number];
 
-logger.setLevel("DEBUG");
+logger.setLevel("INFO");
 
 prefix.reg(logger);
 

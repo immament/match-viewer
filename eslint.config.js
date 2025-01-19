@@ -8,7 +8,7 @@ export default [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    files: ["**/*.{js,mjs,cjs,ts}"],
+    files: ["**/*.{js,mjs,cjs,ts,tsx}"],
     languageOptions: { globals: globals.browser },
     rules: {
       "no-console": ["warn", { allow: ["warn", "error"] }],

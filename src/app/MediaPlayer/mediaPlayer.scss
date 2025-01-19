@@ -1,0 +1,162 @@
+div.mv-control-bar {
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  overflow-x: clip;
+
+  background: none;
+  background-image: linear-gradient(0deg, #000, #0000);
+  height: 70px;
+  padding-top: 20px;
+
+  & {
+    // visible
+    display: flex;
+    opacity: 1;
+    transition: visibility 0.1s, opacity 0.1s;
+    visibility: visible;
+  }
+
+  .mv-progress-control {
+    pointer-events: none;
+    height: 20px;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+    font-size: 1em;
+
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    flex: auto;
+    min-width: 4em;
+    touch-action: none;
+
+    .mv-progress-holder {
+      margin: 0;
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+
+      flex: auto;
+      height: 0.4em;
+      transition: all 0.2s;
+
+      // background-color: #73859f;
+      background-color: #73859f80;
+
+      .mv-play-progress {
+        display: block;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        position: absolute;
+        width: 0;
+
+        background-color: #bf3b4d;
+
+        .mv-time-tooltip {
+          right: 0;
+        }
+      }
+    }
+
+    // inactive
+    // .mv-mouse-display {
+    //     opacity: 0;
+    //     transition: visibility 1s, opacity 1s;
+    //     visibility: hidden;
+    // }
+
+    .mv-mouse-display {
+      background-color: #000;
+      display: none;
+      height: 100%;
+      position: absolute;
+      width: 1px;
+      z-index: 1;
+      pointer-events: none;
+      & .mv-time-tooltip {
+        background-color: #000c;
+        color: #fff;
+      }
+    }
+
+    &:hover {
+      font-size: 1.3em;
+      &:before {
+        text-shadow: 0 0 1em #fff;
+      }
+
+      .mv-time-tooltip {
+        display: block;
+        font-size: 0.6em;
+        visibility: visible;
+      }
+      .mv-mouse-display {
+        display: block;
+        opacity: 1;
+        transition: visibility 1s, opacity 1s;
+        visibility: visible;
+      }
+    }
+  }
+
+  button {
+    appearance: none;
+    background: none;
+    border: none;
+    display: inline-block;
+    text-decoration: none;
+    text-transform: none;
+    transition: none;
+    // mv-control
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    text-align: center;
+    width: 4em;
+  }
+
+  .mv-play-control {
+    flex: 8 1;
+    font-size: 1.75em;
+    order: 2;
+
+    cursor: pointer;
+  }
+
+  .mv-icon-placeholder {
+    &:before {
+      content: "\f101";
+
+      height: 100%;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+  }
+
+  .mv-time-tooltip {
+    background-color: #fffc;
+    border-radius: 0.3em;
+    color: #000;
+    float: right;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
+    padding: 6px 8px 8px;
+    pointer-events: none;
+    position: absolute;
+    top: -3.4em;
+    visibility: hidden;
+    z-index: 1;
+  }
+}

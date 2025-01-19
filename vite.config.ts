@@ -11,6 +11,12 @@ export default defineConfig({
       // "/src/World": path.resolve(__dirname, "./src/World")
     }
   },
+  esbuild: {
+    //jsxFactory: "h"
+    // jsxFragment: "Fragment",
+    // jsxImportSource: "jsx-dom",
+    jsxInject: "import * as React from 'jsx-dom'"
+  },
   test: {
     environment: "happy-dom",
     coverage: {

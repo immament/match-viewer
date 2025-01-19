@@ -95,6 +95,7 @@ export class Match implements IUpdatable {
     this.tooltip();
     //this.debugText();
   }
+
   followPlayer(player: PlayerMesh): void {
     this._followBall = false;
     this._controls.setCameraTarget(player.model);
@@ -207,6 +208,9 @@ export class Match implements IUpdatable {
   get time(): number {
     return this._director.time;
   }
+  set time(value: number) {
+    this.changeMatchTime(value);
+  }
   get timeInMinutes(): number {
     return this._director.timeInMinutes;
   }
@@ -236,10 +240,15 @@ export class Match implements IUpdatable {
   }
 
   continue(): void {
-    this._isPaused = true;
+    this._isPaused = false;
   }
 
-  pauseContinue(): boolean {
-    return (this._isPaused = !this._isPaused);
+  /**
+   * Toggles the paused state of the match.
+   *
+   * @returns {boolean} The new paused state of the match. Returns `true` if the match is now playing, otherwise `false`.
+   */
+  playPause(): boolean {
+    return !(this._isPaused = !this._isPaused);
   }
 }

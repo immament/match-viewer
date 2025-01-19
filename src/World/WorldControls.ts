@@ -8,7 +8,7 @@ export function initKeyboard(match: Match, controls: IViewController) {
     ({ key }) => {
       switch (key) {
         case " ":
-          match.pauseContinue();
+          match.playPause();
           break;
         case "n":
           match.moveTime(-1);

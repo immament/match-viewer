@@ -25,7 +25,10 @@
       //"/world/*": ["./src/World/*"]
     },
     "baseUrl": ".",
-    "allowJs": true
+    "allowJs": true,
+
+    "jsx": "react-jsx",
+    "jsxImportSource": "jsx-dom"
   },
 
   "include": ["src"]

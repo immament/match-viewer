@@ -115,7 +115,7 @@ export class MatchSettings implements IUpdatable {
   }
 
   private pauseContinue() {
-    this._match.pauseContinue();
+    this._match.playPause();
   }
 
   private makeSingleStep() {
