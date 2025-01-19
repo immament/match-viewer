@@ -1,4 +1,5 @@
 import "boxicons/css/boxicons.css";
+import type { World } from "./World/World";
 import { createWorld } from "./World/world.factory";
 import { testJsx } from "./app/MediaPlayer/MediaPlayer.factory";
 import { logger } from "./app/logger";
@@ -14,6 +15,12 @@ if (!DEBUG_MODE) {
 }
 
 async function main() {
+  const player = testJsx();
+  const world = await initWorld();
+  if (world.debug_match) player?.setMedia(world.debug_match);
+}
+
+async function initWorld(): Promise<World> {
   const container = document.getElementById(threeContainerId);
 
   if (!container) {
@@ -25,18 +32,7 @@ async function main() {
   return world;
 }
 
-const player = testJsx();
-// player?.setMedia({
-//   duration: 100,
-//   time: 0,
-//   addUpdatable: () => {
-//     return;
-//   }
-// } as unknown as IMedia);
-const world = await main();
-
-if (world.debug_match) player?.setMedia(world.debug_match);
-
+main();
 // .catch((err) => {
 //   console.error("main error:", err);
 // });
