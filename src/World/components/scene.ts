@@ -44,9 +44,7 @@ export async function createStadium(scene: Scene): Promise<Object3D> {
   let stadium: GLTF;
   const stadiumPath = "assets/models/stadium/stadium.gltf";
   try {
-    stadium = await loader.loadAsync(stadiumPath, (ev) => {
-      logger.info("stadium progress:", ev.loaded, ev.total);
-    });
+    stadium = await loader.loadAsync(stadiumPath);
     stadium.scene.name = "stadium";
     scene.add(stadium.scene);
 

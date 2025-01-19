@@ -22,14 +22,7 @@ export async function loadPlayers(): Promise<{ players: PlayerMesh[] }> {
   let characterData: GLTF;
   try {
     logger.info("before load player GLTF");
-    characterData = await loader.loadAsync(modelConfig.modelPath, (ev) => {
-      logger.info(
-        "load player progress:",
-        ev.loaded,
-        ev.total,
-        ev.total ? Math.round((ev.loaded / ev.total) * 100) + "%" : ""
-      );
-    });
+    characterData = await loader.loadAsync(modelConfig.modelPath);
   } catch (error) {
     logger.error(
       "Exception during model loading: " + modelConfig.modelPath,

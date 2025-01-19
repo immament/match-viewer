@@ -100,13 +100,13 @@ export class ProgressHolder {
     if (!targetParent) return;
 
     const displayOffsetX = this.getOffsetX(targetEl, progressEl, ev.offsetX);
-    console.log(
-      "onMouseMoveOverProgressControl",
-      displayOffsetX,
-      targetEl,
-      progressEl,
-      ev.offsetX
-    );
+    // console.log(
+    //   "onMouseMoveOverProgressControl",
+    //   displayOffsetX,
+    //   targetEl,
+    //   progressEl,
+    //   ev.offsetX
+    // );
 
     if (displayOffsetX != undefined) {
       // offsetX = Math.max(0, progressHolderEl.offsetLeft);
