@@ -57,14 +57,20 @@ export class MediaPlayerComponent implements IMediaPlayerComponent {
 
   render(): HTMLElement {
     const result = (
-      <div class="mv-control-bar">{this._playButton.render()}</div>
+      <div class="mv-control-bar">
+        {this._progressHolder.render()}
+        <div class="mv-buttons-line">
+          {this._playButton.render()}
+          {this._fullscreenButton?.render()}
+        </div>
+      </div>
     ) as HTMLElement;
     // as HTMLDivElement & { debug?: { component: unknown } };
 
-    result.appendChild(this._progressHolder.render());
-    if (this._fullscreenButton) {
-      result.appendChild(this._fullscreenButton.render());
-    }
+    // result.appendChild(this._progressHolder.render());
+    // if (this._fullscreenButton) {
+    //   result.appendChild(this._fullscreenButton.render());
+    // }
 
     return result;
   }
@@ -121,7 +127,7 @@ class FullscreenButton {
   render() {
     if (!screenfull.isEnabled) return <></>;
     return (
-      <button class="mv-play-control" onClick={this.onClick}>
+      <button class="mv-fullscreen-control" onClick={this.onClick}>
         <i class={this.icon(screenfull.isFullscreen)} ref={this._iconRef}></i>
       </button>
     );

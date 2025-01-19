@@ -15,9 +15,9 @@ if (!DEBUG_MODE) {
 }
 
 async function main() {
-  const player = testJsx();
+  const mediaPlayer = testJsx();
   const world = await initWorld();
-  if (world.debug_match) player?.setMedia(world.debug_match);
+  if (world.debug_match) mediaPlayer?.setMedia(world.debug_match);
 }
 
 async function initWorld(): Promise<World> {

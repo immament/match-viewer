@@ -1,12 +1,14 @@
 import { createRef, MouseEventHandler } from "jsx-dom";
 import { MediaPlayer } from "./MediaPlayer";
-import { debounce } from "./utils";
+import { debounce } from "../utils";
 
 export class ProgressHolder {
-  private _formattedTimeTooltipRef = createRef<HTMLDivElement>();
+  private _timeRef = createRef<HTMLDivElement>();
+  private _timeTooltipRef = createRef<HTMLDivElement>();
   private _playProgressRef = createRef<HTMLDivElement>();
   private _mouseTimeTooltipRef = createRef<HTMLDivElement>();
   private _progressControllRef = createRef<HTMLDivElement>();
+  private _progressHolderRef = createRef<HTMLDivElement>();
 
   private _mediaPlayer?: MediaPlayer;
 
@@ -22,8 +24,11 @@ export class ProgressHolder {
   }
 
   public setFormattedTime(value: string): void {
-    if (this._formattedTimeTooltipRef.current) {
-      this._formattedTimeTooltipRef.current.textContent = value;
+    if (this._timeRef.current) {
+      this._timeRef.current.textContent = value;
+    }
+    if (this._timeTooltipRef.current) {
+      this._timeTooltipRef.current.textContent = value;
     }
   }
 
@@ -35,25 +40,28 @@ export class ProgressHolder {
 
   public render(): HTMLElement {
     const result = (
-      <div
-        class="mv-progress-control"
-        ref={this._progressControllRef}
-        onMouseMove={(ev) => this.onMouseMoveOverProgressControl(ev)}
-        onClick={this.progressControlClick}
-      >
-        <div class="mv-progress-holder">
-          <div class="mv-play-progress" ref={this._playProgressRef}>
-            <div
-              class="mv-time-tooltip"
-              ref={this._formattedTimeTooltipRef}
-            ></div>
-          </div>
-          <div class="mv-mouse-display">
-            <div
-              class="mv-time-tooltip"
-              aria-hidden="true"
-              ref={this._mouseTimeTooltipRef}
-            ></div>
+      <div class="mv-progress-line">
+        <div class="mv-time" ref={this._timeRef}>
+          00:00
+        </div>
+
+        <div
+          class="mv-progress-control"
+          ref={this._progressControllRef}
+          onMouseMove={(ev) => this.onMouseMoveOverProgressControl(ev)}
+          onClick={this.progressControlClick}
+        >
+          <div class="mv-progress-holder" ref={this._progressHolderRef}>
+            <div class="mv-play-progress" ref={this._playProgressRef}>
+              <div class="mv-time-tooltip" ref={this._timeTooltipRef}></div>
+            </div>
+            <div class="mv-mouse-display">
+              <div
+                class="mv-time-tooltip"
+                aria-hidden="true"
+                ref={this._mouseTimeTooltipRef}
+              ></div>
+            </div>
           </div>
         </div>
       </div>
@@ -74,27 +82,38 @@ export class ProgressHolder {
   };
 
   private onProgressResize: ResizeObserverCallback = () => {
-    if (!this._formattedTimeTooltipRef.current) return;
-    this.fixTooltipPosition(this._formattedTimeTooltipRef.current);
+    if (!this._timeTooltipRef.current) return;
+    this.fixTooltipPosition(this._timeTooltipRef.current);
   };
 
   private onMouseMoveOverProgressControl = debounce((ev: MouseEvent) => {
     if (!this._mouseTimeTooltipRef.current) return;
     if (!this._progressControllRef.current) return;
+    if (!this._progressHolderRef.current) return;
 
     const tooltipEl = this._mouseTimeTooltipRef.current;
     const progressEl = this._progressControllRef.current;
+    const progressHolderEl = this._progressHolderRef.current;
 
     const targetEl = ev.target as HTMLElement;
     const targetParent = tooltipEl.offsetParent as HTMLElement;
     if (!targetParent) return;
 
-    const offsetX = this.getOffsetX(targetEl, progressEl, ev.offsetX);
+    const displayOffsetX = this.getOffsetX(targetEl, progressEl, ev.offsetX);
+    console.log(
+      "onMouseMoveOverProgressControl",
+      displayOffsetX,
+      targetEl,
+      progressEl,
+      ev.offsetX
+    );
 
-    if (offsetX != undefined) {
-      targetParent.style.left = offsetX + "px";
+    if (displayOffsetX != undefined) {
+      // offsetX = Math.max(0, progressHolderEl.offsetLeft);
+
+      targetParent.style.left = displayOffsetX + "px";
       const displayTime = this._mediaPlayer?.percentToTime(
-        offsetX / progressEl.clientWidth
+        displayOffsetX / progressHolderEl.clientWidth
       );
       if (displayTime) {
         tooltipEl.textContent = displayTime;
@@ -117,6 +136,7 @@ export class ProgressHolder {
     while (el) {
       if (el === root) return result;
       result += el.offsetLeft;
+      console.log("getOffsetX", el.className, el.parentElement?.className);
       el = el.offsetParent as HTMLElement | null;
     }
   }

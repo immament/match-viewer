@@ -5,7 +5,7 @@ export function createRenderer(container: HTMLElement) {
   const renderer = new WebGLRenderer({ antialias: true });
   renderer.setSize(container.clientWidth, container.clientHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
-  container.appendChild(renderer.domElement);
+  container.replaceChildren(renderer.domElement);
   return renderer;
 }
 
