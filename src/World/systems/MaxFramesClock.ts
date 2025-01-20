@@ -26,7 +26,6 @@ export class MaxFramesClock extends Clock {
       if (this.minDelta) {
         const borrow = diff - this.minDelta + this.borrow;
         if (borrow < 0) {
-          console.log("skipped", diff, this.minDelta, borrow);
           return 0;
         }
         this.borrow = borrow;

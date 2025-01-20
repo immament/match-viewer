@@ -30,6 +30,7 @@ export class Ball extends Mesh<SphereGeometry, Material> implements IUpdatable {
 
   private _prevPosition = new Vector3(0, 0, 0);
   private _prevDelta = 0;
+
   tick(delta: number): void {
     this._mixer?.update(delta);
 

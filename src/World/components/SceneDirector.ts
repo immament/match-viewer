@@ -7,14 +7,14 @@ export type TimeChangedEventDetail = {
 
 export class SceneDirector extends EventTarget {
   private _mixers: AnimationMixer[] = [];
-  private _actions: AnimationAction[] = [];
+  //private _actions: AnimationAction[] = [];
 
   constructor(
     private _mainMixer: AnimationMixer,
     private _mainAction: AnimationAction
   ) {
     super();
-    this.addActions(this._mainAction);
+    // this.addActions(this._mainAction);
   }
 
   get time(): number {
@@ -36,9 +36,11 @@ export class SceneDirector extends EventTarget {
     this.gotoTime(time);
   }
   gotoTime(timeInSeconds: number) {
-    if (timeInSeconds < 0) timeInSeconds = 0;
-    else if (timeInSeconds > this._mainAction.getClip().duration)
-      timeInSeconds = this._mainAction.getClip().duration;
+    timeInSeconds = Math.max(0, timeInSeconds);
+    timeInSeconds = Math.min(
+      this._mainAction.getClip().duration,
+      timeInSeconds
+    );
 
     //this.unPauseActions();
     const scaledTime = timeInSeconds / this.timeScale;
@@ -57,16 +59,18 @@ export class SceneDirector extends EventTarget {
   modifyTimeScale(timeScale: number) {
     this._mainMixer.timeScale = timeScale;
 
-    this._mixers.forEach((m) => (m.timeScale = timeScale));
+    this._mixers.forEach((m) => {
+      m.timeScale = timeScale;
+    });
   }
 
   addMixer(aMixer: AnimationMixer): number {
     return this._mixers.push(aMixer);
   }
 
-  addActions(...actions: AnimationAction[]) {
-    return this._actions.push(...actions);
-  }
+  // addActions(...actions: AnimationAction[]) {
+  //   return this._actions.push(...actions);
+  // }
 
   // private unPauseActions() {
   //   this._actions.forEach((a) => {

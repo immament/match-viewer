@@ -19,11 +19,16 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "paths": { "@/*": ["./src/*"] },   
-    "baseUrl": ".", 
+    "paths": {
+      "/app/*": ["./src/app/*"],
+      "/test-setup/*": ["./src/__tests__/*"]
+      //"/world/*": ["./src/World/*"]
+    },
+    "baseUrl": ".",
     "allowJs": true,
-    
-    
+
+    "jsx": "react-jsx",
+    "jsxImportSource": "jsx-dom"
   },
 
   "include": ["src"]

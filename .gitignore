@@ -31,3 +31,6 @@ dist-ssr
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+coverage
+test-runner-profile

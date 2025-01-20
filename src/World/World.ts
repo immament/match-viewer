@@ -1,64 +1,53 @@
-import {
-  Object3D,
-  PerspectiveCamera,
-  Scene,
-  Vector3,
-  WebGLRenderer
-} from "three";
+import { PerspectiveCamera, Scene, WebGLRenderer } from "three";
 import Stats from "three/addons/libs/stats.module.js";
-
-import { createControls } from "./systems/controls";
-import { IUpdatable, Loop } from "./systems/Loop";
-import { createRenderer } from "./systems/renderer";
-import { Resizer } from "./systems/Resizer";
-import { createSettingsPanel } from "./systems/settings";
-
-import { logger } from "@/app/logger";
-import { CSS2DRenderer } from "three/addons";
+import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
 import { createCamera } from "./components/camera";
 import { createLights } from "./components/lights";
 import { Match } from "./components/match/Match.model";
+import { createMatch } from "./components/match/matchFactory";
 import { createScene, createStadium } from "./components/scene";
-import { DEBUG_START_TIME } from "./systems/debug";
+import { IViewController } from "./IViewController";
+import { createControls } from "./systems/controls";
+import { IUpdatable, Loop } from "./systems/Loop";
+import { createLabelRenderer, createRenderer } from "./systems/renderer";
+import { Resizer } from "./systems/Resizer";
+import { logger } from "/app/logger";
 
-export interface IViewController extends IUpdatable {
-  setCameraTarget(anObject: Object3D | undefined): void;
-  getCameraTarget(): Object3D | undefined;
-  viewFromTarget: boolean;
-}
+export const DEBUG_START_TIME = 0; //1.45;
 
 export class World implements IUpdatable {
   private _camera: PerspectiveCamera;
   private _controls: IViewController;
   private _renderer: WebGLRenderer;
-  private _labelRenderer: CSS2DRenderer;
   private _scene: Scene;
   private _loop: Loop;
-  private _stats: Stats;
-  private _match?: Match;
+  private _match: Match | undefined;
+  private _debug_stats?: Stats;
+  private _debug_labelRenderer: CSS2DRenderer;
 
-  constructor(private _htmlContainer: HTMLElement) {
+  constructor(htmlContainer: HTMLElement) {
     this._camera = createCamera(
-      _htmlContainer.clientWidth / _htmlContainer.clientHeight
+      htmlContainer.clientWidth / htmlContainer.clientHeight
     );
-    ({ renderer: this._renderer, labelRenderer: this._labelRenderer } =
-      createRenderer(_htmlContainer));
+
+    this._renderer = createRenderer(htmlContainer);
+    this._debug_labelRenderer = createLabelRenderer(htmlContainer);
 
     this._scene = createScene();
 
-    this._scene.layers.enableAll();
-    this._camera.layers.enableAll();
+    // this._scene.layers.enableAll();
+    // this._camera.layers.enableAll();
 
     this._loop = new Loop(
       this._camera,
       this._scene,
       this._renderer,
-      this._labelRenderer
+      this._debug_labelRenderer
     );
-    _htmlContainer.append(this._renderer.domElement);
+
     this._controls = createControls(
       this._camera,
-      this._labelRenderer.domElement
+      this._debug_labelRenderer.domElement
     );
 
     const { lights } = createLights();
@@ -67,16 +56,14 @@ export class World implements IUpdatable {
     this._scene.add(...lights);
 
     new Resizer(
-      _htmlContainer,
+      htmlContainer,
       this._camera,
       this._renderer,
-      this._labelRenderer
+      this._debug_labelRenderer
     );
 
-    this._stats = new Stats();
-    _htmlContainer.appendChild(this._stats.dom);
-
-    this.initKeyboard();
+    this._debug_stats = new Stats();
+    htmlContainer.appendChild(this._debug_stats.dom);
 
     //this.scene.add(createAxesHelper(), createGridHelper());
   }
@@ -84,15 +71,14 @@ export class World implements IUpdatable {
   async init() {
     await createStadium(this._scene);
     this._loop.add(this);
-    const settingsPanel = createSettingsPanel(this);
+    // const settingsPanel = createSettingsPanel(this);
 
-    this._match = new Match(this);
-    await this._match.init();
-    this._match.createMatchSettings(
-      settingsPanel,
-      this._camera,
-      this._controls
-    );
+    this._match = await createMatch(this._controls);
+
+    // const objects = this._match.init();
+    this._match.addToScene(this._scene);
+    this.addToLoop(this._match);
+
     this._match.changeMatchTime(DEBUG_START_TIME * 60);
   }
 
@@ -100,17 +86,14 @@ export class World implements IUpdatable {
     this._loop.add(tickable);
   }
 
-  addToScene(obejct: Object3D) {
-    this._scene.add(obejct);
-  }
+  // addToScene(obejct: Object3D) {
+  //   this._scene.add(obejct);
+  // }
 
-  render() {
-    this._renderer.render(this._scene, this._camera);
-    this._labelRenderer.render(this._scene, this._camera);
-  }
-  camera() {
-    return this._camera;
-  }
+  // render() {
+  //   this._renderer.render(this._scene, this._camera);
+  //   this._labelRenderer.render(this._scene, this._camera);
+  // }
 
   start() {
     this._loop.start();
@@ -121,14 +104,14 @@ export class World implements IUpdatable {
   }
 
   tick() {
-    this._stats.update();
+    this._debug_stats?.update();
   }
 
-  setCameraTarget(target: Object3D | undefined) {
-    this._controls.setCameraTarget(target);
-  }
+  // setCameraTarget(target: Object3D | undefined) {
+  //   this._controls.setCameraTarget(target);
+  // }
 
-  stadiumVisible(visible: boolean) {
+  debug_stadiumVisible(visible: boolean) {
     const stadium = this._scene.getObjectByName("stadium");
     logger.debug("stadium toogle", visible, stadium);
     if (stadium) {
@@ -143,76 +126,10 @@ export class World implements IUpdatable {
     }
   }
 
-  // ## labels
-  getCanvasCoordsOfMesh(mesh: Object3D, offset?: Vector3) {
-    const vector = new Vector3();
-    vector.setFromMatrixPosition(mesh.matrixWorld);
-    //vector.y += 2.5;
-    if (offset) vector.add(offset);
-    vector.project(this._camera);
-
-    const width = this._renderer.domElement.clientWidth;
-    const height = this._renderer.domElement.clientHeight;
-    const widthHalf = width / 2;
-    const heightHalf = height / 2;
-
-    vector.x = vector.x * widthHalf + widthHalf;
-    vector.y = -(vector.y * heightHalf) + heightHalf;
-    return { vector };
+  public get debug_controls(): IViewController {
+    return this._controls;
   }
-
-  appendDomElement(elem: HTMLElement) {
-    this._htmlContainer.appendChild(elem);
-    return elem;
-  }
-
-  // ## controls
-  private initKeyboard() {
-    document.addEventListener(
-      "keyup",
-      (ev) => {
-        switch (ev.key) {
-          case " ":
-            this._match?.pauseContinue();
-            break;
-          case "n":
-          case "N":
-            this._match?.moveTime(-1);
-            break;
-          case "m":
-          case "M":
-            this._match?.moveTime(1);
-            break;
-          case "b":
-          case "B":
-            this._match?.moveTime(-0.1);
-            break;
-          case ",":
-            this._match?.moveTime(0.1);
-            break;
-          case "c":
-            logger.debug("camera:", this.camera(), this.camera().position);
-            logger.debug("target:", this._controls.getCameraTarget());
-            break;
-          case "z":
-            {
-              const ZOOM_DISTANCE = 5;
-              // set zoom to target 15
-              const target = this._controls.getCameraTarget();
-              if (target) {
-                const newPosition = new Vector3();
-                this._camera
-                  .getWorldDirection(newPosition)
-                  .multiplyScalar(ZOOM_DISTANCE);
-
-                this._camera.position.subVectors(target.position, newPosition);
-                if (target.name === "PlayerRoot") this._camera.position.y = 1;
-              }
-            }
-            break;
-        }
-      },
-      false
-    );
+  public get debug_match(): Match | undefined {
+    return this._match;
   }
 }

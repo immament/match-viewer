@@ -1,6 +1,6 @@
 import { DirectionalLight, HemisphereLight, Light } from "three";
 
-export function createLights(castShadow?: boolean) {
+export function createLights(castShadow?: boolean): { lights: Light[] } {
   const hemiLight = new HemisphereLight(0xeeeeee, 0xbbffbb, 1);
   hemiLight.position.set(0, 1, 0);
 
@@ -18,6 +18,8 @@ export function createLights(castShadow?: boolean) {
   }
 
   const lights: Light[] = [hemiLight, dirLight];
+
+  return { lights };
   //lights.push(hemiLight, dirLight);
 
   //dirLight = dirLight.clone();
@@ -43,6 +45,5 @@ export function createLights(castShadow?: boolean) {
   // dirLight = dirLight.clone();
   // dirLight.position.set(0, 10, 30);
   // lights.push(dirLight);
-
-  return { ambientLight: hemiLight, mainLight: dirLight, lights };
+  //ambientLight: hemiLight, mainLight: dirLight,
 }

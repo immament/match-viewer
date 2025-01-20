@@ -2,15 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Three TS</title>
+    <title>Match Viewer</title>
   </head>
   <body>
-    <div style="">
-      <div id="app"></div>
-      <div id="debugPanel"></div>
+    <div id="demoPanel" class="container">
+      <div id="mediaPlayer">
+        <div id="app"></div>
+        <div id="debugPanel"></div>
+      </div>
     </div>
+    <div class="debug-options container"><a href="?dbg" class="debug-mode">Debug</a></p>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

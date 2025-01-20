@@ -1,4 +1,3 @@
-import { logger } from "@/app/logger";
 import {
   AnimationClip,
   AnimationMixer,
@@ -8,13 +7,14 @@ import {
   TextureLoader,
   VectorKeyframeTrack
 } from "three";
-import { getBallPositions } from "../player/_mock_/ball.mock";
+import { getBallPositions } from "../player/__sampleData__/ball.mock";
 import {
   BALL_RADIUS,
   BallPositionsConfig,
   MATCH_TIME_SCALE
-} from "../player/animations/positions";
+} from "../player/animations/positions.utils";
 import { Ball } from "./ball";
+import { logger } from "/app/logger";
 
 export async function loadBall() {
   const texture = new TextureLoader().load("assets/models/ball.jpg");
@@ -52,7 +52,11 @@ function positionAnimation(mixer: AnimationMixer) {
 }
 
 // pz => height
-function createPositionsArrays({ px, pz, pHeight }: BallPositionsConfig) {
+export function createPositionsArrays({
+  px,
+  pz,
+  pHeight
+}: BallPositionsConfig): { times: number[]; positions: number[] } {
   if (px.length !== pz.length || pHeight.length !== px.length) {
     logger.warn("positions arays have diffrent length!", {
       x_length: px.length,

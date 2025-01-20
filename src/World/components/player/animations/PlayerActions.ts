@@ -1,8 +1,8 @@
 import { AnimationAction } from "three";
 
-import { PlayerId } from "../Player.model";
+import { PlayerId } from "../PlayerId";
 import { PoseTypes } from "./Pose.model";
-import { PoseAction } from "./PoseAction";
+import { IMoveAction, IPoseAction } from "./PoseAction.model";
 
 export class PlayerActions {
   public get positionAction(): AnimationAction {
@@ -12,28 +12,21 @@ export class PlayerActions {
     return this._rotateAction;
   }
 
-  private _moveAnimations: AnimationAction[];
-  public get allMoveAnimations(): AnimationAction[] {
-    return [...this._moveAnimations];
-  }
-  public get poseActions(): PoseAction[] {
-    return Object.values(this._poseActions);
-  }
+  private _moveAnimations: IMoveAction[];
 
   constructor(
     private _positionAction: AnimationAction,
     private _rotateAction: AnimationAction,
-    private _poseActions: Record<PoseTypes, PoseAction>,
+    private _poseActions: Record<PoseTypes, IPoseAction>,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _playerId: PlayerId
   ) {
     this._moveAnimations = [_positionAction, _rotateAction];
 
     Object.values(_poseActions).forEach((a) => {
-      a.animation.playerId = _playerId;
       if (a.isMove) {
-        a.animation.setEffectiveWeight(0);
-        this._moveAnimations.push(a.animation);
-        a.animation.play();
+        this._moveAnimations.push(a);
+        a.play();
       }
     });
 
@@ -41,33 +34,8 @@ export class PlayerActions {
     this._rotateAction.play();
   }
 
-  public getPoseAction(poseType: PoseTypes): PoseAction {
+  public getPoseAction(poseType: PoseTypes): IPoseAction {
     return this._poseActions[poseType];
-  }
-
-  stopAllMoveActions() {
-    this._moveAnimations.forEach((action) => {
-      action.stop();
-    });
-  }
-
-  playAllMoveActions() {
-    //playerLogger.info(this._playerId, "playAllMoveActions");
-    this._moveAnimations.forEach((action) => {
-      action.play();
-    });
-  }
-
-  disableAllMoveActions() {
-    this._moveAnimations.forEach((action) => {
-      action.enabled = false;
-    });
-  }
-
-  pauseAllMoveActions() {
-    this._moveAnimations.forEach((action) => {
-      action.paused = true;
-    });
   }
 
   unPauseAllMoveActions() {
@@ -75,8 +43,33 @@ export class PlayerActions {
       action.paused = false;
     });
   }
+
   setTime(timeInSeconds: number) {
     this._positionAction.time = timeInSeconds;
     this._rotateAction.time = timeInSeconds;
+  }
+
+  // TODO: use only in debug settings
+
+  public get debug_poseActions(): IPoseAction[] {
+    return Object.values(this._poseActions);
+  }
+
+  debug_stopAllMoveActions() {
+    this._moveAnimations.forEach((action) => {
+      action.stop();
+    });
+  }
+
+  debug_playAllMoveActions() {
+    this._moveAnimations.forEach((action) => {
+      action.play();
+    });
+  }
+
+  debug_pauseAllMoveActions() {
+    this._moveAnimations.forEach((action) => {
+      action.paused = true;
+    });
   }
 }
