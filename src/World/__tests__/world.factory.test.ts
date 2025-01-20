@@ -1,3 +1,4 @@
+import StatsOrg from "three/addons/libs/stats.module.js";
 import { describe, expect, test, vi } from "vitest";
 import { MatchSettings } from "../components/match/debug/match.settings";
 import { Match } from "../components/match/Match.model";
@@ -10,7 +11,14 @@ logger.disableAll();
 
 // Mock dependencies
 vi.mock(import("three"));
-vi.mock(import("three/addons/libs/stats.module.js"));
+
+vi.mock(import("three/addons/libs/stats.module.js"), () => {
+  const Stats = vi.fn(() => ({
+    dom: document.createElement("canvas")
+  }));
+
+  return { default: Stats as unknown as typeof StatsOrg };
+});
 vi.mock(import("three/examples/jsm/controls/OrbitControls.js"));
 vi.mock(import("three/examples/jsm/loaders/GLTFLoader.js"));
 

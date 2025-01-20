@@ -1,23 +1,15 @@
 import "./mediaPlayer.scss";
-import { IMediaPlayerComponent, MediaPlayer } from "./MediaPlayer";
+import { IMediaPlayer, IMediaPlayerComponent } from "./media.model";
 import { ProgressHolder } from "./ProgressHolder";
-import { createRef } from "jsx-dom";
+import { createRef, FocusEventHandler, MouseEventHandler } from "jsx-dom";
 import screenfull from "screenfull";
 
 export class MediaPlayerComponent implements IMediaPlayerComponent {
   private _progressHolder: ProgressHolder;
-  // private _mediaPlayer?: MediaPlayer;
+  private _mediaPlayer?: IMediaPlayer;
   private _playButton: PlayButton;
   private _fullscreenButton: FullscreenButton;
-
-  public get timeChanged(): ((percent: number) => void) | undefined {
-    return this._progressHolder.timeChanged;
-  }
-  public set timeChanged(callback: ((percent: number) => void) | undefined) {
-    this._progressHolder.timeChanged = callback;
-  }
-
-  public play?: (() => boolean) | undefined;
+  private _speedButton: SpeedButton;
 
   constructor() {
     this._progressHolder = new ProgressHolder();
@@ -25,24 +17,27 @@ export class MediaPlayerComponent implements IMediaPlayerComponent {
     this._playButton = new PlayButton();
     this._playButton.onClick = this.playClick;
     this._fullscreenButton = new FullscreenButton();
+    this._speedButton = new SpeedButton();
+    this._speedButton.onSpeedChange = (value) =>
+      this._mediaPlayer?.changePlaybackSpeed(value);
   }
 
-  setMediaElem(container: HTMLElement): void {
+  public setMediaElem(container: HTMLElement): void {
     this._fullscreenButton?.setMediaElem(container);
   }
 
-  public setMediaPlayer(player: MediaPlayer): void {
-    // this._mediaPlayer = player;
+  public setMediaPlayer(player: IMediaPlayer): void {
+    this._mediaPlayer = player;
     this._progressHolder.setMediaPlayer(player);
   }
 
-  private playClick = () => {
-    this._playButton.setPaused(!this.play?.());
-  };
+  public setPlayStatus(isPlaying: boolean) {
+    this._playButton.setPaused(!isPlaying);
+  }
 
-  // private fullscreenClick = () => {
-  //   this._fullscreenButton?.setInFullscreen(!this.fullscreen?.());
-  // };
+  private playClick = () => {
+    this.setPlayStatus(!!this._mediaPlayer?.tooglePlay());
+  };
 
   public setFormattedTime(value: string): void {
     this._progressHolder.setFormattedTime(value);
@@ -61,18 +56,87 @@ export class MediaPlayerComponent implements IMediaPlayerComponent {
         {this._progressHolder.render()}
         <div class="mv-buttons-line">
           {this._playButton.render()}
-          {this._fullscreenButton?.render()}
+          <div class="mv-buttons-group">
+            {this._speedButton.render()}
+            {this._fullscreenButton?.render()}
+          </div>
         </div>
       </div>
     ) as HTMLElement;
     // as HTMLDivElement & { debug?: { component: unknown } };
 
-    // result.appendChild(this._progressHolder.render());
-    // if (this._fullscreenButton) {
-    //   result.appendChild(this._fullscreenButton.render());
-    // }
-
     return result;
+  }
+}
+
+class SpeedButton {
+  private _menuRef = createRef<HTMLDivElement>();
+  private _labelRef = createRef<HTMLSpanElement>();
+
+  public onSpeedChange?: (value: number) => void;
+
+  private menuClicked = (ev: MouseEvent) => {
+    ev.stopPropagation();
+    const target = ev.target as HTMLElement;
+    if (!target) return;
+    const speed = Number(target.dataset.val);
+    if (speed > 0) {
+      this.onSpeedChange?.(speed);
+      this.setSpeedLabel(speed);
+      this.hideMenu();
+    }
+  };
+  private openMenu = () => {
+    if (this._menuRef.current) {
+      this._menuRef.current.style.display = "block";
+    }
+  };
+  private hideMenu = () => {
+    if (this._menuRef.current) {
+      this._menuRef.current.style.display = "none";
+    }
+  };
+  blur: FocusEventHandler<HTMLButtonElement> = () => {
+    this.hideMenu();
+  };
+
+  private setSpeedLabel(speed: number) {
+    if (this._labelRef.current) {
+      this._labelRef.current.textContent = speed !== 1 ? `x${speed}` : "";
+    }
+  }
+
+  render() {
+    return (
+      <>
+        <button
+          class="mv-speed-control"
+          onClick={this.openMenu}
+          title="Playback Speed"
+          onBlur={this.blur}
+        >
+          <i class={"bx bx-timer"}></i>
+          <span ref={this._labelRef}></span>
+          <div class="mv-popup-menu" ref={this._menuRef}>
+            <div class="mv-menuheader">Playback Speed</div>
+            <div onClick={this.menuClicked}>
+              <div class="mv-menuitem" data-val="1">
+                Normal
+              </div>
+              <div class="mv-menuitem" data-val="2">
+                x2
+              </div>
+              <div class="mv-menuitem" data-val="4">
+                x4
+              </div>
+              <div class="mv-menuitem" data-val="8">
+                x8
+              </div>
+            </div>
+          </div>
+        </button>
+      </>
+    );
   }
 }
 
@@ -87,7 +151,7 @@ class PlayButton {
   }
   render() {
     return (
-      <button class="mv-play-control" onClick={this.onClick}>
+      <button class="mv-play-control" onClick={this.onClick} title="Play">
         <i class={"bx bx-play"} ref={this._iconRef}></i>
       </button>
     );
@@ -95,51 +159,55 @@ class PlayButton {
 }
 
 class FullscreenButton {
+  private _mediaElement?: HTMLElement;
   private _iconRef = createRef<HTMLElement>();
-  private _element?: HTMLElement;
 
   constructor() {
     if (screenfull.isEnabled) {
       screenfull.on("change", () => {
-        this.setInFullscreen(screenfull.isFullscreen);
+        this.update(screenfull.isFullscreen);
       });
     }
   }
 
   setMediaElem(anElement: HTMLElement) {
-    this._element = anElement;
+    this._mediaElement = anElement;
   }
 
   private onClick: () => void = () => {
-    this.fullscreen();
+    this.toogleFullscreen();
   };
 
-  private setInFullscreen(value: boolean) {
+  private update(isFullscreen: boolean) {
     if (this._iconRef.current) {
-      this._iconRef.current.className = this.icon(value);
+      this._iconRef.current.className = this.icon(isFullscreen);
+      this._iconRef.current.title = this.title(isFullscreen);
     }
   }
 
   private icon(isFullscreen: boolean): string {
     return isFullscreen ? "bx bx-exit-fullscreen" : "bx bx-fullscreen";
   }
+  private title(isFullscreen: boolean): string {
+    return isFullscreen ? "Exit Fullscreen" : "Fullscreen";
+  }
 
   render() {
     if (!screenfull.isEnabled) return <></>;
     return (
-      <button class="mv-fullscreen-control" onClick={this.onClick}>
+      <button
+        class="mv-fullscreen-control"
+        onClick={this.onClick}
+        title={this.title(screenfull.isFullscreen)}
+      >
         <i class={this.icon(screenfull.isFullscreen)} ref={this._iconRef}></i>
       </button>
     );
   }
 
-  private fullscreen(): void {
-    if (!screenfull.isEnabled || !this._element) return;
+  private toogleFullscreen(): void {
+    if (!screenfull.isEnabled || !this._mediaElement) return;
 
-    // if (screenfull.isFullscreen) {
-    //   document.exitFullscreen();
-    // }
-
-    screenfull.toggle(this._element);
+    screenfull.toggle(this._mediaElement);
   }
 }

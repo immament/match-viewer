@@ -6,6 +6,7 @@ import { PlayerMesh } from "../player/PlayerMesh";
 import { SceneDirector, TimeChangedEventDetail } from "../SceneDirector";
 import { Ball } from "./ball";
 import { Label } from "./Label";
+import { IMedia } from "/app/MediaPlayer/media.model";
 
 enum MouseButton {
   Main = 0,
@@ -15,7 +16,7 @@ enum MouseButton {
   Fifth = 4
 }
 
-export class Match implements IUpdatable {
+export class Match implements IMedia, IUpdatable {
   private static _instance?: Match;
   static get instance(): Match | undefined {
     return this._instance;
@@ -244,11 +245,11 @@ export class Match implements IUpdatable {
   }
 
   /**
-   * Toggles the paused state of the match.
+   * Toggles the paused/play state of the match.
    *
    * @returns {boolean} The new paused state of the match. Returns `true` if the match is now playing, otherwise `false`.
    */
-  playPause(): boolean {
+  tooglePlay(): boolean {
     return !(this._isPaused = !this._isPaused);
   }
 }

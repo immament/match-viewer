@@ -1,5 +1,5 @@
 import { createRef, MouseEventHandler } from "jsx-dom";
-import { MediaPlayer } from "./MediaPlayer";
+import { IMediaPlayer } from "./media.model";
 import { debounce } from "../utils";
 
 export class ProgressHolder {
@@ -10,11 +10,9 @@ export class ProgressHolder {
   private _progressControllRef = createRef<HTMLDivElement>();
   private _progressHolderRef = createRef<HTMLDivElement>();
 
-  private _mediaPlayer?: MediaPlayer;
+  private _mediaPlayer?: IMediaPlayer;
 
-  public timeChanged?: (percent: number) => void;
-
-  setMediaPlayer(player: MediaPlayer) {
+  setMediaPlayer(player: IMediaPlayer) {
     this._mediaPlayer = player;
   }
 
@@ -78,7 +76,9 @@ export class ProgressHolder {
   }
 
   private progressControlClick: MouseEventHandler<HTMLDivElement> = (ev) => {
-    this.timeChanged?.(ev.offsetX / ev.currentTarget.offsetWidth);
+    this._mediaPlayer?.gotoPercentTime(
+      ev.offsetX / ev.currentTarget.offsetWidth
+    );
   };
 
   private onProgressResize: ResizeObserverCallback = () => {
@@ -136,7 +136,7 @@ export class ProgressHolder {
     while (el) {
       if (el === root) return result;
       result += el.offsetLeft;
-      console.log("getOffsetX", el.className, el.parentElement?.className);
+      // console.log("getOffsetX", el.className, el.parentElement?.className);
       el = el.offsetParent as HTMLElement | null;
     }
   }

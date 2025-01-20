@@ -1,10 +1,15 @@
+import StatsOrg from "three/addons/libs/stats.module.js";
 import { beforeAll, describe, expect, test, vi } from "vitest";
 import { World } from "../World";
-// import { threeMockSetup } from "/test-setup/three.mock.setup";
 
 vi.mock("three");
-// vi.mock("three/examples/jsm/renderers/CSS2DRenderer.js");
-vi.mock("three/addons/libs/stats.module.js");
+vi.mock(import("three/addons/libs/stats.module.js"), () => {
+  const Stats = vi.fn(() => ({
+    dom: document.createElement("canvas")
+  }));
+
+  return { default: Stats as unknown as typeof StatsOrg };
+});
 vi.mock("three/examples/jsm/controls/OrbitControls.js");
 
 describe("World", () => {

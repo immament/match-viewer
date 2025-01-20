@@ -11,7 +11,6 @@ import { createControls } from "./systems/controls";
 import { IUpdatable, Loop } from "./systems/Loop";
 import { createLabelRenderer, createRenderer } from "./systems/renderer";
 import { Resizer } from "./systems/Resizer";
-import { initKeyboard } from "./WorldControls";
 import { logger } from "/app/logger";
 
 export const DEBUG_START_TIME = 0; //1.45;
@@ -63,8 +62,8 @@ export class World implements IUpdatable {
       this._debug_labelRenderer
     );
 
-    // this._debug_stats = new Stats();
-    // htmlContainer.appendChild(this._debug_stats.dom);
+    this._debug_stats = new Stats();
+    htmlContainer.appendChild(this._debug_stats.dom);
 
     //this.scene.add(createAxesHelper(), createGridHelper());
   }
@@ -81,8 +80,6 @@ export class World implements IUpdatable {
     this.addToLoop(this._match);
 
     this._match.changeMatchTime(DEBUG_START_TIME * 60);
-
-    initKeyboard(this._match, this._controls);
   }
 
   addToLoop(tickable: IUpdatable) {

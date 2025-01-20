@@ -1,30 +1,10 @@
-interface IUpdatable {
+import { IMedia, IMediaPlayer, IMediaPlayerComponent } from "./media.model";
+
+export interface IUpdatable {
   tick(delta: number, realDelta?: number): void;
 }
 
-export interface IMedia {
-  time: number;
-  get duration(): number;
-
-  pause(): void;
-  continue(): void;
-  playPause(): boolean;
-  addUpdatable(updatable: IUpdatable): void;
-}
-
-export interface IMediaPlayerComponent {
-  setMediaElem(container: HTMLElement): void;
-  setMediaPlayer(player: MediaPlayer): void;
-  enable(): void;
-  render(container: HTMLElement | undefined): HTMLElement;
-  setProgress(value: number): void;
-  setFormattedTime(time: string): void;
-  timeChanged?: (percent: number) => void;
-  play?: () => boolean;
-  fullscreen?: () => boolean;
-}
-
-export class MediaPlayer implements IUpdatable {
+export class MediaPlayer implements IMediaPlayer, IUpdatable {
   private _media?: IMedia;
   private _container?: HTMLElement;
 
@@ -33,8 +13,9 @@ export class MediaPlayer implements IUpdatable {
     if (aMedia) {
       this.setMedia(aMedia);
     }
-
-    this.initComponent();
+  }
+  changePlaybackSpeed(value: number): void {
+    this._media?.modifyTimeScale(value);
   }
 
   setMedia(media: IMedia) {
@@ -52,11 +33,8 @@ export class MediaPlayer implements IUpdatable {
     }
   }
 
-  initComponent() {
-    this._mpComponent.timeChanged = (percent) => {
-      this.time = this.totalTime * percent;
-    };
-    this._mpComponent.play = () => this.play();
+  gotoPercentTime(percent: number) {
+    this.time = this.totalTime * percent;
   }
 
   public percentToTime(value: number): string {
@@ -113,8 +91,10 @@ export class MediaPlayer implements IUpdatable {
     return result as HTMLDivElement;
   }
 
-  play(): boolean {
-    return this._media?.playPause() ?? true;
+  tooglePlay(): boolean {
+    const isPlaying = this._media?.tooglePlay() ?? false;
+    this._mpComponent.setPlayStatus(isPlaying);
+    return isPlaying;
   }
 
   private formatTime(time: number): string {

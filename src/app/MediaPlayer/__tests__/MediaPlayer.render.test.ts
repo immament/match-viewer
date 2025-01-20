@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { IMedia, IMediaPlayerComponent, MediaPlayer } from "../MediaPlayer";
+import { IMedia, IMediaPlayerComponent } from "../media.model";
+import { MediaPlayer } from "../MediaPlayer";
 import { MediaPlayerComponent } from "../MediaPlayer.component";
 
 class MediaMock implements IMedia {
@@ -8,8 +9,9 @@ class MediaMock implements IMedia {
 
   pause = vi.fn();
   continue = vi.fn();
-  playPause = vi.fn();
+  tooglePlay = vi.fn();
   addUpdatable = vi.fn();
+  modifyTimeScale(): void {}
 }
 
 describe("MediaPlayer Render", () => {
@@ -65,7 +67,7 @@ describe("MediaPlayer Render", () => {
     it("play button click", () => {
       const elem = player.render();
       elem.querySelector<HTMLButtonElement>(".mv-play-control")?.click();
-      expect(media.playPause).toHaveBeenCalledOnce();
+      expect(media.tooglePlay).toHaveBeenCalledOnce();
     });
   });
 });

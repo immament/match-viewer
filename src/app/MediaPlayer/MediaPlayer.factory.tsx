@@ -1,5 +1,6 @@
 import { MediaPlayerComponent } from "./MediaPlayer.component";
-import { IMedia, MediaPlayer } from "./MediaPlayer";
+import { MediaPlayer } from "./MediaPlayer";
+import { IMedia } from "./media.model";
 
 export function testJsx(media?: IMedia) {
   const playerContainer = document.getElementById("mediaPlayer");

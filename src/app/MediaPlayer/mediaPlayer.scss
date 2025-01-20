@@ -9,8 +9,8 @@ div.mv-control-bar {
 
   background: none;
   background-image: linear-gradient(0deg, #000, #0000);
-  height: 70px;
-  padding-bottom: 30px;
+  // height: 70px;
+  // padding-bottom: 30px;
 
   display: flex;
   flex-direction: column;
@@ -22,14 +22,12 @@ div.mv-control-bar {
     transition: visibility 0.1s, opacity 0.1s;
     visibility: visible;
   }
-  .mv-buttons-line {
-    display: flex;
-    justify-content: space-between;
-  }
 
   .mv-progress-line {
-    // position: absolute;
     display: flex;
+    align-items: center;
+    height: 30px;
+
     .mv-time {
       padding: 0 8px;
       display: flex;
@@ -39,10 +37,10 @@ div.mv-control-bar {
 
     .mv-progress-control {
       //height: 30px;
-      padding: 15px 0;
+      --progress-height: 0.4em;
       position: relative;
       width: 100%;
-      font-size: 1em;
+      font-size: 1.3em;
       pointer-events: none;
 
       margin: 0 8px;
@@ -52,17 +50,18 @@ div.mv-control-bar {
       touch-action: none;
 
       .mv-progress-holder {
-        height: 0.4em;
+        height: var(--progress-height);
         width: 100%;
         transition: all 0.2s;
         background-color: #73859f80;
 
         .mv-play-progress {
           position: absolute;
-          height: 0.4em;
+          height: var(--progress-height);
           margin: 0;
           padding: 0;
           width: 0;
+          border-right: 1px solid #222;
           background-color: #bf3b4d;
 
           .mv-time-tooltip {
@@ -73,7 +72,7 @@ div.mv-control-bar {
         .mv-mouse-display {
           position: absolute;
           display: none;
-          height: 0.4em;
+          height: var(--progress-height);
           width: 1px;
           z-index: 1;
           pointer-events: none;
@@ -89,7 +88,6 @@ div.mv-control-bar {
           color: #000;
           float: right;
           font-family: Arial, Helvetica, sans-serif;
-          font-size: 1em;
           padding: 6px 8px 8px;
           pointer-events: none;
           position: absolute;
@@ -107,11 +105,9 @@ div.mv-control-bar {
       // }
 
       &:hover {
+        --progress-height: 0.5em;
         &:before {
           text-shadow: 0 0 1em #fff;
-        }
-        .mv-progress-holder {
-          font-size: 1.3em;
         }
 
         .mv-time-tooltip {
@@ -127,6 +123,16 @@ div.mv-control-bar {
         }
       }
     }
+  }
+  .mv-buttons-line {
+    display: flex;
+    justify-content: space-between;
+    height: 35px;
+    margin-bottom: 2px;
+  }
+
+  .mv-buttons-group {
+    display: flex;
   }
 
   button {
@@ -145,8 +151,48 @@ div.mv-control-bar {
     text-align: center;
     // width: 4em;
 
-    font-size: 1.75em;
-
     cursor: pointer;
+
+    i {
+      font-size: 1.75em;
+    }
+
+    &.mv-speed-control {
+      display: inline-flex;
+      align-items: center;
+      column-gap: 0.2em;
+    }
+    &:focus-visible {
+      outline: #08240880 solid 1px;
+      // outline: 0;
+      border-radius: 4px;
+    }
+  }
+
+  .mv-popup-menu {
+    background-color: #122b00;
+    color: #aaa;
+    position: absolute;
+    bottom: 38px;
+    right: 0;
+    padding: 8px 0;
+    display: none;
+
+    font-size: 14px;
+
+    .mv-menuheader {
+      white-space: nowrap;
+      padding: 0.5em 1em;
+      border-bottom: 1px solid #ffffff20;
+    }
+    .mv-menuitem {
+      cursor: pointer;
+      padding: 0.5em 1em;
+
+      &:hover {
+        background-color: #95d16a;
+        color: #122b00;
+      }
+    }
   }
 }

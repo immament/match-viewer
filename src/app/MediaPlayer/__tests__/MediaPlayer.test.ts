@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { IMedia, IMediaPlayerComponent, MediaPlayer } from "../MediaPlayer";
+import { IMedia, IMediaPlayerComponent } from "../media.model";
+import { MediaPlayer } from "../MediaPlayer";
 
 class MediaMock implements IMedia {
   time = 0;
@@ -7,12 +8,13 @@ class MediaMock implements IMedia {
 
   pause = vi.fn();
   continue = vi.fn();
-  playPause = vi.fn();
+  tooglePlay = vi.fn();
   addUpdatable = vi.fn();
+  modifyTimeScale(): void {}
 }
 
 class MediaPlayerComponent implements IMediaPlayerComponent {
-  timeChanged?: ((percent: number) => void) | undefined;
+  onTimeChanged?: ((percent: number) => void) | undefined;
   play?: (() => boolean) | undefined;
   fullscreen?: (() => boolean) | undefined;
   render = vi.fn();
@@ -22,6 +24,9 @@ class MediaPlayerComponent implements IMediaPlayerComponent {
   setMediaPlayer = vi.fn();
   setMediaElem(): void {
     throw new Error("Method not implemented.");
+  }
+  setPlayStatus(): void {
+    // throw new Error("Method not implemented.");
   }
 }
 
@@ -110,9 +115,9 @@ describe("MatchPlayer", () => {
     });
 
     it("play", () => {
-      player.play();
+      player.tooglePlay();
 
-      expect(media.playPause).toHaveBeenCalledOnce();
+      expect(media.tooglePlay).toHaveBeenCalledOnce();
     });
   });
 });

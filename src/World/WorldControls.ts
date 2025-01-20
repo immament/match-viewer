@@ -1,14 +1,20 @@
 import { Match } from "./components/match/Match.model";
 import { IViewController } from "./IViewController";
 import { logger } from "/app/logger";
+import { IMediaPlayer } from "/app/MediaPlayer/media.model";
 
-export function initKeyboard(match: Match, controls: IViewController) {
+// TODO: refactor
+export function initKeyboard(
+  match: Match,
+  controls: IViewController,
+  mediaPlayer: IMediaPlayer
+) {
   document.addEventListener(
     "keyup",
     ({ key }) => {
       switch (key) {
         case " ":
-          match.playPause();
+          mediaPlayer.tooglePlay();
           break;
         case "n":
           match.moveTime(-1);

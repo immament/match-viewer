@@ -21,7 +21,7 @@ export async function loadPlayers(): Promise<{ players: PlayerMesh[] }> {
   const loader = new GLTFLoader();
   let characterData: GLTF;
   try {
-    logger.info("before load player GLTF");
+    // logger.info("before load player GLTF");
     characterData = await loader.loadAsync(modelConfig.modelPath);
   } catch (error) {
     logger.error(
