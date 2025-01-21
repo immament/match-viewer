@@ -164,7 +164,7 @@ export class MatchSettings implements IUpdatable {
   }
 
   followBall(v: boolean) {
-    this._match.followBall = v;
+    this._match.followBall(v);
   }
 
   viewFromFollowedObject(v: boolean) {
@@ -176,6 +176,6 @@ export class MatchSettings implements IUpdatable {
     //throw "Aa";
     this["match time"] = round(this._match.timeInMinutes, 4);
     this["modify time scale"] = this._match.timeScale();
-    this["follow ball"] = this._match.followBall;
+    this["follow ball"] = this._match.isFollowBall;
   }
 }

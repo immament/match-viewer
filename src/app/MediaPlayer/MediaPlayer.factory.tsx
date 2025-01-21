@@ -1,26 +1,9 @@
-import { MediaPlayerComponent } from "./MediaPlayer.component";
-import { MediaPlayer } from "./MediaPlayer";
-import { IMedia } from "./media.model";
+import { IMatch } from "./media.model";
+import { MatchMediaPlayer } from "./MatchMediaPlayer";
 
-export function testJsx(media?: IMedia) {
+export function testJsx(media?: IMatch) {
   const playerContainer = document.getElementById("mediaPlayer");
   if (playerContainer) {
-    const mediaPlayer = new MediaPlayer(new MediaPlayerComponent(), media);
-    mediaPlayer.createEl(playerContainer);
-
-    return mediaPlayer;
+    return new MatchMediaPlayer(media, playerContainer);
   }
 }
-
-// export function testMatchPlayerComponent() {
-//   const playerContainer = document.getElementById("mediaPlayer");
-//   if (playerContainer) {
-//     const mp = new MediaPlayerComponent();
-//     playerContainer?.appendChild(mp.render());
-//     let i = 0;
-//     setInterval(() => {
-//       mp.progress(i++);
-//       mp.formattedTime = i.toString();
-//     }, 1000);
-//   }
-// }

@@ -157,18 +157,24 @@ div.mv-control-bar {
       font-size: 1.75em;
     }
 
-    &.mv-speed-control {
+    &.mv-with-label {
       display: inline-flex;
       align-items: center;
       column-gap: 0.2em;
     }
     &:focus-visible {
       outline: #08240880 solid 1px;
-      // outline: 0;
       border-radius: 4px;
     }
   }
+  input[type="checkbox"] {
+    accent-color: #82a568;
+    transform: scale(1.2);
 
+    &:not(:checked) {
+      opacity: 0.3;
+    }
+  }
   .mv-popup-menu {
     background-color: #122b00;
     color: #aaa;
@@ -186,9 +192,13 @@ div.mv-control-bar {
       border-bottom: 1px solid #ffffff20;
     }
     .mv-menuitem {
+      white-space: nowrap;
       cursor: pointer;
       padding: 0.5em 1em;
-
+      &.mv-menuitem-selected {
+        background-color: #82a568;
+        color: #122b00;
+      }
       &:hover {
         background-color: #95d16a;
         color: #122b00;

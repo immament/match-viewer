@@ -1,3 +1,4 @@
+import { IViewController } from "src/World/IViewController";
 import { IUpdatable, MediaPlayer } from "./MediaPlayer";
 
 // Implemets by Match
@@ -13,7 +14,15 @@ export interface IMedia {
   addUpdatable(updatable: IUpdatable): void;
 }
 
+export interface IMatch extends IMedia {
+  get viewController(): IViewController;
+  followBall(value: boolean): void;
+  followPlayerByIndex(index: number): void;
+  get isFollowBall(): boolean;
+}
+
 export interface IMediaPlayerComponent {
+  setMedia(media: IMedia): void;
   setMediaElem(container: HTMLElement): void;
   setMediaPlayer(player: MediaPlayer): void;
   enable(): void;
@@ -24,8 +33,12 @@ export interface IMediaPlayerComponent {
 }
 
 export interface IMediaPlayer {
-  percentToTime(value: number): string;
+  percentToDisplayTime(value: number): string;
   tooglePlay(): boolean;
   gotoPercentTime(value: number): void;
   changePlaybackSpeed(value: number): void;
+}
+
+export interface IButton {
+  render(): void;
 }

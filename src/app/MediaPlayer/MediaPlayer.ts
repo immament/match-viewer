@@ -14,31 +14,15 @@ export class MediaPlayer implements IMediaPlayer, IUpdatable {
       this.setMedia(aMedia);
     }
   }
-  changePlaybackSpeed(value: number): void {
-    this._media?.modifyTimeScale(value);
-  }
 
   setMedia(media: IMedia) {
     if (media) {
       this._media = media;
       this.time = media.time;
+      this._mpComponent.setMedia(media);
       this._mpComponent.enable();
       media.addUpdatable(this);
     }
-  }
-
-  tick(): void {
-    if (this._media) {
-      this.update();
-    }
-  }
-
-  gotoPercentTime(percent: number) {
-    this.time = this.totalTime * percent;
-  }
-
-  public percentToTime(value: number): string {
-    return this.formatTime(value * this.totalTime);
   }
 
   public get time(): number {
@@ -54,6 +38,53 @@ export class MediaPlayer implements IMediaPlayer, IUpdatable {
   public get totalTime(): number {
     return this._media?.duration ?? 0;
   }
+
+  // ++ IMediaPlayer ++
+
+  // value in range [0..1]
+  gotoPercentTime(value: number) {
+    this.time = this.totalTime * value;
+  }
+
+  percentToDisplayTime(value: number): string {
+    return this.formatTime(value * this.totalTime);
+  }
+
+  tooglePlay(): boolean {
+    const isPlaying = this._media?.tooglePlay() ?? false;
+    this._mpComponent.setPlayStatus(isPlaying);
+    return isPlaying;
+  }
+
+  changePlaybackSpeed(value: number): void {
+    this._media?.modifyTimeScale(value);
+  }
+
+  // -- IMediaPlayer end --
+
+  createEl(container?: HTMLElement): HTMLDivElement {
+    const elem = this.render();
+    this._container = container;
+    container?.appendChild(elem);
+    if (container) {
+      this._mpComponent.setMediaElem(container);
+    }
+    return elem;
+  }
+
+  render() {
+    const result = this._mpComponent.render(this._container);
+    // result.debug = { component: this };
+    return result as HTMLDivElement;
+  }
+
+  // ++ IUpdatable ++
+  tick(): void {
+    if (this._media) {
+      this.update();
+    }
+  }
+  // -- IUpdatable end --
 
   // + component updates
 
@@ -73,28 +104,6 @@ export class MediaPlayer implements IMediaPlayer, IUpdatable {
   private progressPercent(): number {
     if (!this.totalTime) return 0;
     return Math.round((this.time / this.totalTime) * 10000) / 100;
-  }
-
-  createEl(container?: HTMLElement): HTMLDivElement {
-    const elem = this.render();
-    this._container = container;
-    container?.appendChild(elem);
-    if (container) {
-      this._mpComponent.setMediaElem(container);
-    }
-    return elem;
-  }
-
-  render() {
-    const result = this._mpComponent.render(this._container);
-    // result.debug = { component: this };
-    return result as HTMLDivElement;
-  }
-
-  tooglePlay(): boolean {
-    const isPlaying = this._media?.tooglePlay() ?? false;
-    this._mpComponent.setPlayStatus(isPlaying);
-    return isPlaying;
   }
 
   private formatTime(time: number): string {
