@@ -30,7 +30,7 @@ export async function loadPlayers(): Promise<{ players: PlayerMesh[] }> {
     );
     throw error;
   }
-
+  // logger.info("characterData:", characterData);
   const { model: baseModel, animations } = extractPlayerModel(characterData);
   logger.info("animations:", animations, ", baseModel:", baseModel);
 
@@ -41,24 +41,27 @@ export async function loadPlayers(): Promise<{ players: PlayerMesh[] }> {
     MeshStandardMaterial
   >;
 
-  const shirt = baseModel.getObjectByName("Ch38_Shirt") as DefaultMesh;
+  const shirt = baseModel.getObjectByName("Ch38_Shirt")
+    ?.children[0] as DefaultMesh;
   for (let teamIdx = 0; teamIdx <= 1; teamIdx++) {
     let shirtMaterial: MeshStandardMaterial;
     let shortsMaterial: MeshStandardMaterial;
+    // if (shirt)
+    {
+      if (teamIdx === 0) {
+        shirtMaterial = shirt.material.clone();
+        shirtMaterial.color.set(1, 1, 0);
 
-    if (teamIdx === 0) {
-      shirtMaterial = shirt.material.clone();
-      shirtMaterial.color.set(1, 1, 0);
+        shortsMaterial = shirt.material.clone();
+        shortsMaterial.color.set(0, 0, 1);
 
-      shortsMaterial = shirt.material.clone();
-      shortsMaterial.color.set(0, 0, 1);
-
-      // shirtMaterial = new MeshStandardMaterial({ color: "orange" });
-      // shortsMaterial = new MeshStandardMaterial({ color: "blue" });
-    } else {
-      shirtMaterial = shirt.material.clone();
-      shirtMaterial.color.set(2, 0, 0);
-      //shirtMaterial = new MeshStandardMaterial({ color: "red" });
+        // shirtMaterial = new MeshStandardMaterial({ color: "orange" });
+        // shortsMaterial = new MeshStandardMaterial({ color: "blue" });
+      } else {
+        shirtMaterial = shirt.material.clone();
+        shirtMaterial.color.set(2, 0, 0);
+        //shirtMaterial = new MeshStandardMaterial({ color: "red" });
+      }
     }
 
     for (let playerIdx = 0; playerIdx < 11; playerIdx++) {
@@ -79,29 +82,33 @@ export async function loadPlayers(): Promise<{ players: PlayerMesh[] }> {
 
     function colorize(mesh: SkinnedMesh) {
       if (shirtMaterial) {
-        const shirt = mesh.getObjectByName("Ch38_Shirt") as DefaultMesh;
+        const shirt = mesh.getObjectByName("Ch38_Shirt")
+          ?.children[0] as DefaultMesh;
         if (shirt) {
           shirt.material = shirtMaterial;
         }
         // socks color == short
-        const socks = mesh.getObjectByName("Ch38_Socks") as DefaultMesh;
+        const socks = mesh.getObjectByName("Ch38_Socks")
+          ?.children[0] as DefaultMesh;
         if (socks) {
           socks.material = shirtMaterial;
         }
       }
       if (shortsMaterial) {
-        const shorts = mesh.getObjectByName("Ch38_Shorts") as DefaultMesh;
+        const shorts = mesh.getObjectByName("Ch38_Shorts")
+          ?.children[0] as DefaultMesh;
         if (shorts) {
           shorts.material = shortsMaterial;
         }
         // shoes color == shorts
-        const shoes = mesh.getObjectByName("Ch38_Shoes") as DefaultMesh;
+        const shoes = mesh.getObjectByName("Ch38_Shoes")
+          ?.children[0] as DefaultMesh;
         if (shoes) {
           shoes.material = shortsMaterial;
         }
       }
-      const body = mesh.getObjectByName("Ch38_Body") as DefaultMesh;
-      body.material.metalness = 0.1;
+      // const body = mesh.getObjectByName("Ch38_Body") as DefaultMesh;
+      // body.material.metalness = 0.1;
     }
   }
 
@@ -148,7 +155,7 @@ function modelConfigFactory(modelType: ModelType): ModelConfig {
         jogRight: "sk.jog_strafe_right.anim"
       };
       return new ModelConfig(
-        "assets/models/player/player.gltf",
+        "assets/models/player/player2.gltf",
         (m) => m.getObjectByName("Player"),
         undefined,
         animations
