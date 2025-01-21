@@ -46,8 +46,7 @@ export async function loadPlayers(): Promise<{ players: PlayerMesh[] }> {
   for (let teamIdx = 0; teamIdx <= 1; teamIdx++) {
     let shirtMaterial: MeshStandardMaterial;
     let shortsMaterial: MeshStandardMaterial;
-    // if (shirt)
-    {
+    if (shirt) {
       if (teamIdx === 0) {
         shirtMaterial = shirt.material.clone();
         shirtMaterial.color.set(1, 1, 0);
