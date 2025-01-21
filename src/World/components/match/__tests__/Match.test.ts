@@ -71,7 +71,7 @@ describe("Match", () => {
 
   test("should initialize with default values", () => {
     expect(Match.instance).toBe(match);
-    expect(match.followBall).toBe(false);
+    expect(match.isFollowBall).toBe(false);
   });
 
   test("should load ball and players", async () => {
@@ -80,7 +80,7 @@ describe("Match", () => {
   });
 
   test("should follow ball", () => {
-    match.followBall = true;
+    match.followBall(true);
     expect(controls.setCameraTarget).toHaveBeenCalledWith(match["_ball"]);
   });
 

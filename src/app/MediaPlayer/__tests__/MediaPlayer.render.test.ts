@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { MediaPlayerComponent } from "../components/MediaPlayer.component";
 import { IMedia, IMediaPlayerComponent } from "../media.model";
 import { MediaPlayer } from "../MediaPlayer";
-import { MediaPlayerComponent } from "../MediaPlayer.component";
 
 class MediaMock implements IMedia {
   time = 0;
@@ -11,7 +11,9 @@ class MediaMock implements IMedia {
   continue = vi.fn();
   tooglePlay = vi.fn();
   addUpdatable = vi.fn();
-  modifyTimeScale(): void {}
+  modifyTimeScale = vi.fn();
+  followBall = vi.fn();
+  followPlayerByIndex = vi.fn();
 }
 
 describe("MediaPlayer Render", () => {

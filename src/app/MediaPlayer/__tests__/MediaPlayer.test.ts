@@ -8,26 +8,22 @@ class MediaMock implements IMedia {
 
   pause = vi.fn();
   continue = vi.fn();
-  tooglePlay = vi.fn();
+  tooglePlay = vi.fn(() => true);
   addUpdatable = vi.fn();
-  modifyTimeScale(): void {}
+  modifyTimeScale = vi.fn();
+  followBall = vi.fn();
+  followPlayerByIndex = vi.fn();
 }
 
 class MediaPlayerComponent implements IMediaPlayerComponent {
-  onTimeChanged?: ((percent: number) => void) | undefined;
-  play?: (() => boolean) | undefined;
-  fullscreen?: (() => boolean) | undefined;
   render = vi.fn();
   setProgress = vi.fn();
   setFormattedTime = vi.fn();
   enable = vi.fn();
   setMediaPlayer = vi.fn();
-  setMediaElem(): void {
-    throw new Error("Method not implemented.");
-  }
-  setPlayStatus(): void {
-    // throw new Error("Method not implemented.");
-  }
+  setMediaElem = vi.fn();
+  setPlayStatus = vi.fn();
+  setMedia = vi.fn();
 }
 
 describe("MatchPlayer", () => {
@@ -105,19 +101,41 @@ describe("MatchPlayer", () => {
       player.time = -100;
       expect(player.time).toBe(0);
     });
+
+    it("should convert percent to display time", () => {
+      media.duration = 182;
+
+      expect(player.percentToDisplayTime(0.5)).toBe("01:31");
+    });
+
+    it("should go to percent time", () => {
+      media.duration = 40;
+
+      player.gotoPercentTime(0.5);
+
+      expect(player.time).toBe(20);
+    });
   });
 
-  describe("play", () => {
+  describe("control actions", () => {
     let player: MediaPlayer;
 
     beforeEach(() => {
       player = new MediaPlayer(playerComponent, media);
     });
 
-    it("play", () => {
-      player.tooglePlay();
+    it("should toogle media play", () => {
+      const isPlaying = player.tooglePlay();
 
       expect(media.tooglePlay).toHaveBeenCalledOnce();
+      expect(playerComponent.setPlayStatus).toHaveBeenCalledWith(isPlaying);
+    });
+
+    it("should change playback speed", () => {
+      const playbackSpeed = 8;
+      player.changePlaybackSpeed(playbackSpeed);
+
+      expect(media.modifyTimeScale).toHaveBeenLastCalledWith(playbackSpeed);
     });
   });
 });

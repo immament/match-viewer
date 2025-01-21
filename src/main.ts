@@ -18,11 +18,16 @@ if (DEBUG_MODE) {
 }
 
 async function main() {
-  const mediaPlayer = testJsx();
+  const matchPlayer = testJsx();
   const world = await initWorld();
-  if (mediaPlayer && world.debug_match) {
-    mediaPlayer.setMedia(world.debug_match);
-    initKeyboard(world.debug_match, world.debug_controls, mediaPlayer);
+  if (matchPlayer && world.debug_match) {
+    matchPlayer.setMedia(world.debug_match);
+    // matchPlayer.serViewController(world.debug_controls);
+    initKeyboard(
+      world.debug_match,
+      world.debug_controls,
+      matchPlayer.mediaPlayer
+    );
   }
 }
 

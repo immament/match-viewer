@@ -1,8 +1,8 @@
 import { createRef, MouseEventHandler } from "jsx-dom";
-import { IMediaPlayer } from "./media.model";
-import { debounce } from "../utils";
+import { IMediaPlayer } from "../media.model";
+import { debounce } from "../../utils";
 
-export class ProgressHolder {
+export class ProgressHolderComponent {
   private _timeRef = createRef<HTMLDivElement>();
   private _timeTooltipRef = createRef<HTMLDivElement>();
   private _playProgressRef = createRef<HTMLDivElement>();
@@ -112,7 +112,7 @@ export class ProgressHolder {
       // offsetX = Math.max(0, progressHolderEl.offsetLeft);
 
       targetParent.style.left = displayOffsetX + "px";
-      const displayTime = this._mediaPlayer?.percentToTime(
+      const displayTime = this._mediaPlayer?.percentToDisplayTime(
         displayOffsetX / progressHolderEl.clientWidth
       );
       if (displayTime) {

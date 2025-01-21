@@ -6,7 +6,7 @@ import { PlayerMesh } from "../player/PlayerMesh";
 import { SceneDirector, TimeChangedEventDetail } from "../SceneDirector";
 import { Ball } from "./ball";
 import { Label } from "./Label";
-import { IMedia } from "/app/MediaPlayer/media.model";
+import { IMatch } from "/app/MediaPlayer/media.model";
 
 enum MouseButton {
   Main = 0,
@@ -16,7 +16,7 @@ enum MouseButton {
   Fifth = 4
 }
 
-export class Match implements IMedia, IUpdatable {
+export class Match implements IMatch, IUpdatable {
   private static _instance?: Match;
   static get instance(): Match | undefined {
     return this._instance;
@@ -35,6 +35,10 @@ export class Match implements IMedia, IUpdatable {
 
   private _followBall: boolean = false;
 
+  public get viewController(): IViewController {
+    return this._controls;
+  }
+
   constructor(
     private _controls: IViewController,
     private _ball: Ball,
@@ -50,14 +54,6 @@ export class Match implements IMedia, IUpdatable {
 
   get ballPosition(): Vector3 | undefined {
     return this._ball.position;
-  }
-
-  get followBall(): boolean {
-    return this._followBall;
-  }
-  set followBall(value: boolean) {
-    this._followBall = value;
-    this._controls.setCameraTarget(value ? this._ball : undefined);
   }
 
   get durationMinutes(): number {
@@ -97,9 +93,24 @@ export class Match implements IMedia, IUpdatable {
     //this.debugText();
   }
 
+  get isFollowBall(): boolean {
+    return this._followBall;
+  }
+  followBall(value: boolean): void {
+    this._followBall = value;
+    this._controls.setCameraTarget(value ? this._ball : undefined);
+  }
+
   followPlayer(player: PlayerMesh): void {
     this._followBall = false;
     this._controls.setCameraTarget(player.model);
+  }
+
+  // index from 1 to 22
+  followPlayerByIndex(playerIdx: number): void {
+    this._followBall = false;
+
+    this._controls.setCameraTarget(this._players[playerIdx - 1].children[0]);
   }
 
   private listenMouse(): void {
