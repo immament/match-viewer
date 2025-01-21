@@ -35,7 +35,7 @@ $container-max-widths: (
 }
 
 div#demoPanel {
-  height: 90%;
+  height: 85%;
   min-width: 240px;
   position: relative;
   margin: 0 auto 0 auto;
@@ -94,5 +94,21 @@ div#debugPanel {
 body.debug {
   a.debug-mode {
     display: none;
+  }
+}
+
+.github {
+  a {
+    color: #c0c0c0;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    column-gap: 8px;
+  }
+}
+
+footer {
+  & > div {
+    margin-bottom: 0.5em;
   }
 }
