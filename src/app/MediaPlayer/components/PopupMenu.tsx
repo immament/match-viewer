@@ -84,7 +84,9 @@ export class PopupMenu {
         tabIndex={-1}
       >
         <div class="mv-menuheader">{title}</div>
-        <div onClick={this.menuClicked}>{menuContent}</div>
+        <div onClick={this.menuClicked} class="mv-menucontent">
+          {menuContent}
+        </div>
       </div>
     );
   }
