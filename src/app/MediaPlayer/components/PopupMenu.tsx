@@ -5,6 +5,12 @@ import {
   ReactElement
 } from "jsx-dom";
 
+export type PlaybackSpeedItem = {
+  title: string;
+  value: string | number;
+  selected?: boolean;
+};
+
 export class PopupMenu {
   constructor(private _menuClicked: (value: string | undefined) => void) {}
   private _menuRef = createRef<HTMLDivElement>();
@@ -34,17 +40,26 @@ export class PopupMenu {
     this._menuClicked(target.dataset.val);
   };
 
-  private markSelected(menu: HTMLDivElement, target: HTMLElement) {
+  public select(value: number | string) {
+    if (this._menuRef.current) {
+      const selectedElem = this._menuRef.current.querySelector(
+        `.mv-menuitem[data-val="${value}"]`
+      ) as HTMLElement;
+      this.markSelected(this._menuRef.current, selectedElem);
+    }
+  }
+
+  private markSelected(menu: HTMLDivElement, target: HTMLElement | undefined) {
     const className = "mv-menuitem-selected";
     menu
       .querySelectorAll(`.${className}`)
       .forEach((elem) => elem.classList.remove(className));
-    target.classList.add(className);
+    target?.classList.add(className);
   }
 
   public render(
     title: string,
-    items?: { title: string; value: string | number; selected?: boolean }[],
+    items?: PlaybackSpeedItem[],
     menuContent?: ReactElement
   ) {
     if (items) {

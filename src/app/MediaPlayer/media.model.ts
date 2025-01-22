@@ -7,6 +7,7 @@ export interface IMedia {
   time: number;
   get duration(): number;
 
+  timeScale(): number;
   modifyTimeScale(timeScale: number): void;
   pause(): void;
   continue(): void;
