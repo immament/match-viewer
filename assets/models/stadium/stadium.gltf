@@ -4,7 +4,11 @@
 		"version":"2.0"
 	},
 	"extensionsUsed":[
-		"KHR_materials_specular"
+		"KHR_materials_specular",
+		"EXT_texture_webp"
+	],
+	"extensionsRequired":[
+		"EXT_texture_webp"
 	],
 	"scene":0,
 	"scenes":[
@@ -3491,97 +3495,153 @@
 	],
 	"textures":[
 		{
-			"sampler":0,
-			"source":0
+			"extensions":{
+				"EXT_texture_webp":{
+					"source":0
+				}
+			},
+			"sampler":0
 		},
 		{
-			"sampler":0,
-			"source":1
+			"extensions":{
+				"EXT_texture_webp":{
+					"source":1
+				}
+			},
+			"sampler":0
 		},
 		{
-			"sampler":0,
-			"source":1
+			"extensions":{
+				"EXT_texture_webp":{
+					"source":1
+				}
+			},
+			"sampler":0
 		},
 		{
-			"sampler":0,
-			"source":1
+			"extensions":{
+				"EXT_texture_webp":{
+					"source":1
+				}
+			},
+			"sampler":0
 		},
 		{
-			"sampler":0,
-			"source":2
+			"extensions":{
+				"EXT_texture_webp":{
+					"source":2
+				}
+			},
+			"sampler":0
 		},
 		{
-			"sampler":0,
-			"source":2
+			"extensions":{
+				"EXT_texture_webp":{
+					"source":2
+				}
+			},
+			"sampler":0
 		},
 		{
-			"sampler":0,
-			"source":3
+			"extensions":{
+				"EXT_texture_webp":{
+					"source":3
+				}
+			},
+			"sampler":0
 		},
 		{
-			"sampler":0,
-			"source":3
+			"extensions":{
+				"EXT_texture_webp":{
+					"source":3
+				}
+			},
+			"sampler":0
 		},
 		{
-			"sampler":0,
-			"source":3
+			"extensions":{
+				"EXT_texture_webp":{
+					"source":3
+				}
+			},
+			"sampler":0
 		},
 		{
-			"sampler":0,
-			"source":3
+			"extensions":{
+				"EXT_texture_webp":{
+					"source":3
+				}
+			},
+			"sampler":0
 		},
 		{
-			"sampler":0,
-			"source":3
+			"extensions":{
+				"EXT_texture_webp":{
+					"source":3
+				}
+			},
+			"sampler":0
 		},
 		{
-			"sampler":0,
-			"source":4
+			"extensions":{
+				"EXT_texture_webp":{
+					"source":4
+				}
+			},
+			"sampler":0
 		},
 		{
-			"sampler":0,
-			"source":5
+			"extensions":{
+				"EXT_texture_webp":{
+					"source":5
+				}
+			},
+			"sampler":0
 		},
 		{
-			"sampler":0,
-			"source":6
+			"extensions":{
+				"EXT_texture_webp":{
+					"source":6
+				}
+			},
+			"sampler":0
 		}
 	],
 	"images":[
 		{
-			"mimeType":"image/png",
+			"mimeType":"image/webp",
 			"name":"pitch",
-			"uri":"pitch.png"
+			"uri":"pitch.webp"
 		},
 		{
-			"mimeType":"image/png",
+			"mimeType":"image/webp",
 			"name":"Saha cevresi",
-			"uri":"Saha%20cevresi.png"
+			"uri":"Saha%20cevresi.webp"
 		},
 		{
-			"mimeType":"image/png",
+			"mimeType":"image/webp",
 			"name":"Ads",
-			"uri":"Ads.png"
+			"uri":"Ads.webp"
 		},
 		{
-			"mimeType":"image/png",
+			"mimeType":"image/webp",
 			"name":"2",
-			"uri":"2.png"
+			"uri":"2.webp"
 		},
 		{
-			"mimeType":"image/jpeg",
+			"mimeType":"image/webp",
 			"name":"Concrete_Wall_006_Normal",
-			"uri":"Concrete_Wall_006_Normal.jpg"
+			"uri":"Concrete_Wall_006_Normal.webp"
 		},
 		{
-			"mimeType":"image/png",
+			"mimeType":"image/webp",
 			"name":"italy",
-			"uri":"italy.png"
+			"uri":"italy.webp"
 		},
 		{
-			"mimeType":"image/png",
+			"mimeType":"image/webp",
 			"name":"Turkey",
-			"uri":"Turkey.png"
+			"uri":"Turkey.webp"
 		}
 	],
 	"accessors":[

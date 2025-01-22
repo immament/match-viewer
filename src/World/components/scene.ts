@@ -42,7 +42,7 @@ function createSky() {
 export async function createStadium(scene: Scene): Promise<Object3D> {
   const loader = new GLTFLoader();
   let stadium: GLTF;
-  const stadiumPath = "assets/models/stadium/stadium.gltf";
+  const stadiumPath = "assets/models/stadium/stadium2.gltf";
   try {
     stadium = await loader.loadAsync(stadiumPath);
     stadium.scene.name = "stadium";

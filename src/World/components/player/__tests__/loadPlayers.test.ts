@@ -16,6 +16,7 @@ vi.mock(import("../__sampleData__/playersPose.mock"));
 
 vi.spyOn(Object3D.prototype, "getObjectByName").mockImplementation((name) => {
   const result = new Mesh();
+  result.add(new Mesh());
   result.name = name;
   return result;
 });
