@@ -30,6 +30,7 @@ export default defineConfig({
     diff: {
       // truncateThreshold: 10000
     }
+
     // pool: "threads",
     // poolOptions: {
     //   threads: {

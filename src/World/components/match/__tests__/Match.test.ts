@@ -7,6 +7,7 @@ import { Player3D, PlayerMesh } from "../../player/PlayerMesh";
 import { Ball } from "../ball";
 import { createMatch } from "../match.factory";
 import { Match } from "../Match.model";
+import { logger } from "/app/logger";
 
 vi.mock("three");
 
@@ -56,6 +57,8 @@ vi.mock(import("../../SceneDirector"), () => {
     }))
   };
 });
+
+logger.disableAll();
 
 describe("Match", () => {
   let match: Match;
