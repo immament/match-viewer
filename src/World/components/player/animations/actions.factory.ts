@@ -7,10 +7,6 @@ import {
 } from "three";
 
 import { PlayerId } from "../PlayerId";
-import { getPlayer as getAwayPlayer } from "../__sampleData__/awayPlayersPosition.big.mock";
-import { getBallPositions } from "../__sampleData__/ball.mock";
-import { getPlayer as getHomePlayer } from "../__sampleData__/homePlayersPosition.big.mock";
-import { getPlayerPoses } from "../__sampleData__/playersPose.mock";
 import { playerLogger } from "../player.logger";
 import { PlayerDirectionBuilder } from "./PlayerDirectionBuilder";
 import { RawPoseEvents } from "./Pose.model";
@@ -19,28 +15,40 @@ import { PoseBuilderContext } from "./PoseBuilderContext";
 import {
   BallPositionsConfig,
   MATCH_TIME_SCALE,
+  MatchPositions,
   PlayerPositions,
   xToPitch,
   zToPitch
 } from "./positions.utils";
 
-export function createMoveActions(mixer: AnimationMixer, playerId: PlayerId) {
-  const { positionAction, positionKF } = createPositionAction(mixer, playerId);
+export function createMoveActions(
+  mixer: AnimationMixer,
+  playerId: PlayerId,
+  matchPositions: MatchPositions
+) {
+  const { positionAction, positionKF } = createPositionAction(
+    mixer,
+    playerId,
+    matchPositions.players
+  );
 
   const { rotateAction, poses } = createRotateAction(
     mixer,
     positionKF,
-    playerId
+    playerId,
+    matchPositions.ball,
+    matchPositions.poses[playerId.teamIdx][playerId.playerIdx]
   );
 
   return { positionAction, rotateAction, poses };
 }
 
-function createPositionAction(mixer: AnimationMixer, playerId: PlayerId) {
-  const playerPositions =
-    playerId.teamIdx === 0
-      ? getHomePlayer(playerId.playerIdx)
-      : getAwayPlayer(playerId.playerIdx);
+function createPositionAction(
+  mixer: AnimationMixer,
+  playerId: PlayerId,
+  positionsConfig: PlayerPositions[][]
+) {
+  const playerPositions = positionsConfig[playerId.teamIdx][playerId.playerIdx];
   const { times, positions } = createPositionsArrays(playerPositions, playerId);
 
   const positionKF = new VectorKeyframeTrack(".position", times, positions);
@@ -121,13 +129,16 @@ function createPositionsArrays(
 function createRotateAction(
   mixer: AnimationMixer,
   positionKF: VectorKeyframeTrack,
-  playerId: PlayerId
+  playerId: PlayerId,
+  ballPositions: BallPositionsConfig,
+  rawPoses: RawPoseEvents
 ) {
   return createRotateActionInternal(
     mixer,
     positionKF,
-    getPlayerPoses(playerId.teamIdx, playerId.playerIdx),
-    getBallPositions(),
+    rawPoses,
+    // getPlayerPoses(playerId.teamIdx, playerId.playerIdx),
+    ballPositions,
     playerId
   );
 }

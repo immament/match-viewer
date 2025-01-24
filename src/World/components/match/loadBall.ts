@@ -7,7 +7,6 @@ import {
   TextureLoader,
   VectorKeyframeTrack
 } from "three";
-import { getBallPositions } from "../player/__sampleData__/ball.mock";
 import {
   BALL_RADIUS,
   BallPositionsConfig,
@@ -16,7 +15,7 @@ import {
 import { Ball } from "./ball";
 import { logger } from "/app/logger";
 
-export async function loadBall() {
+export async function loadBall(ballPositions: BallPositionsConfig) {
   const texture = new TextureLoader().load("assets/models/ball.jpg");
   const geometry = new SphereGeometry(BALL_RADIUS, 16, 8);
   const material = new MeshStandardMaterial({ map: texture });
@@ -24,7 +23,7 @@ export async function loadBall() {
 
   const mixer = new AnimationMixer(ball);
 
-  const { positionAction } = positionAnimation(mixer);
+  const { positionAction } = positionAnimation(mixer, ballPositions);
   //ball.position.y = BALL_OFFSET_Y;
 
   positionAction.play();
@@ -33,8 +32,10 @@ export async function loadBall() {
   return { ball };
 }
 
-function positionAnimation(mixer: AnimationMixer) {
-  const rawPositions = getBallPositions();
+function positionAnimation(
+  mixer: AnimationMixer,
+  rawPositions: BallPositionsConfig
+) {
   const { times, positions } = createPositionsArrays(rawPositions);
   const positionKF = new VectorKeyframeTrack(".position", times, positions);
 

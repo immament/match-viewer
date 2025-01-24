@@ -5,8 +5,8 @@ import { PlayerActions } from "../../player/animations/PlayerActions";
 import { PoseRecord } from "../../player/animations/PoseAction.model";
 import { Player3D, PlayerMesh } from "../../player/PlayerMesh";
 import { Ball } from "../ball";
+import { createMatch } from "../match.factory";
 import { Match } from "../Match.model";
-import { createMatch } from "../matchFactory";
 
 vi.mock("three");
 
