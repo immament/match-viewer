@@ -101,9 +101,15 @@ export class PoseBuilder {
     return this.ctx.playerPos.distanceTo(this.ctx.ballPos);
   }
 
-  private movePlayerToBall(maxDistance = 0.5, finalDistance = 0.4) {
+  private movePlayerToBall(
+    minDistance = 0.5,
+    maxDistance = 1.5,
+    finalDistance = 0.4
+  ) {
     if (!ALLOW_MOVE_PLAYER_TO_BALL) return;
-    if (this.ctx.playerPos.distanceTo(this.ctx.ballPos) <= maxDistance) return;
+    const distToBall = this.ctx.playerPos.distanceTo(this.ctx.ballPos);
+    if (distToBall >= maxDistance) return;
+    if (distToBall <= minDistance) return;
 
     const { next } = this.ctx;
     this.ctx.playerPos.moveToPointAtDistance(this.ctx.ballPos, finalDistance);

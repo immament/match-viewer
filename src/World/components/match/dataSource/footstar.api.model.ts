@@ -68,7 +68,7 @@ export type FootstarMatchData = {
       "@_nome_estadio": string;
     };
     game: {
-      "@_status": string;
+      "@_status": "online" | "offline";
       "@_minuto": string;
       "@_refresh_time": string;
       "@_matchType": string;

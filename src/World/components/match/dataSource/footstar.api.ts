@@ -13,20 +13,21 @@ import {
   convertPoses
 } from "./footstar.mapper";
 
-const matchApiBaseUrl =
-  "https://nd.footstar.org/match/get_data_nviewer.asp?jogo_id=";
-// // const matchApiBaseUrl = "/api/";
+const baseUrls = {
+  fs: "https://www.footstar.org/match/get_data_nviewer.asp?jogo_id=[id]",
+  devFs: "https://nd.footstar.org/match/get_data_nviewer.asp?jogo_id=[id]",
+  local: "assets/sampleMatch/match.live.xml"
+};
 
-function apiUrl(matchId: number): string {
-  return matchApiBaseUrl + matchId;
-}
+type FetchSource = "fs" | "devFs" | "local";
 
 export async function fetchFootstarMatchData(
-  matchId: number
+  matchId: number,
+  srcType: FetchSource = "devFs"
 ): Promise<FootstarMatchData> {
-  const url = apiUrl(matchId);
-  const resp = await fetch(url, { mode: "cors", method: "GET" });
-  const xml = await resp.text();
+  const url = apiUrl(matchId, srcType);
+  const xml = await makeFetch(url);
+
   const parser = new XMLParser({ ignoreAttributes: false });
   const matchResp = parser.parse(xml) as FootstarMatchResponse;
   const data = matchResp.xml.general;
@@ -51,4 +52,14 @@ export function convertFsMatch(match: FootstarMatchData): MatchPositions {
     ],
     poses: convertPoses(gameData)
   };
+}
+
+async function makeFetch(url: string) {
+  const resp = await fetch(url, { mode: "cors", method: "GET" });
+  const xml = await resp.text();
+  return xml;
+}
+
+function apiUrl(matchId: number, requestType: FetchSource): string {
+  return baseUrls[requestType].replace("[id]", String(matchId));
 }

@@ -18,19 +18,39 @@ export async function createMatch(controls: IViewController): Promise<Match> {
   return match;
 }
 
+const FROM_FILE_MATCH_ID = -1;
+
 async function loadMatchData() {
   const urlParams = new URLSearchParams(window.location.search);
   const matchId = Number(urlParams.get("id")) || 0;
-
-  const matchData = await (matchId > 0
-    ? fetchFootstarMatchData(matchId)
-    : fetchFootstarMatchDataMock(matchId));
+  const matchData = await fetchMatch(matchId);
 
   logger.info("id:", matchId, "matchData", matchData);
 
   const converted = convertFsMatch(matchData);
+  assertLiveMatch();
 
   logger.info("converted", converted);
 
   return converted;
+
+  function fetchMatch(matchId: number) {
+    if (matchId > 0) {
+      return fetchFootstarMatchData(matchId);
+    }
+    if (matchId === FROM_FILE_MATCH_ID) {
+      return fetchFootstarMatchData(matchId, "local");
+    }
+    return fetchFootstarMatchDataMock(matchId);
+  }
+
+  function assertLiveMatch() {
+    if (
+      matchId !== FROM_FILE_MATCH_ID &&
+      matchData.game_info.game["@_status"] === "online"
+    ) {
+      alert("Live matches are not supported.");
+      throw Error("Live matches are not supported.");
+    }
+  }
 }
