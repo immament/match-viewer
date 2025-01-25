@@ -13,15 +13,19 @@ import {
   convertPoses
 } from "./footstar.mapper";
 
-// const matchApiBaseUrl = "https://nd.footstar.org/match/get_data_nviewer.asp";
-const matchApiBaseUrl = "/api/";
+const matchApiBaseUrl =
+  "https://nd.footstar.org/match/get_data_nviewer.asp?jogo_id=";
+// // const matchApiBaseUrl = "/api/";
+
+function apiUrl(matchId: number): string {
+  return matchApiBaseUrl + matchId;
+}
 
 export async function fetchFootstarMatchData(
-  matchId: number,
-  baseUrl = matchApiBaseUrl
+  matchId: number
 ): Promise<FootstarMatchData> {
-  const url = baseUrl + matchId;
-  const resp = await fetch(url, { mode: "no-cors", method: "GET" });
+  const url = apiUrl(matchId);
+  const resp = await fetch(url, { mode: "cors", method: "GET" });
   const xml = await resp.text();
   const parser = new XMLParser({ ignoreAttributes: false });
   const matchResp = parser.parse(xml) as FootstarMatchResponse;
