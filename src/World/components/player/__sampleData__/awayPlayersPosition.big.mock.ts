@@ -1,10 +1,18 @@
 import { PlayerPositions } from "../animations/positions.utils";
 
+export function getPlayers(): PlayerPositions[] {
+  const result = [];
+  for(let i = 0; i< 11; i++) {
+    result.push(getPlayer(i))
+  }
+  return result
+}
+
 export function getPlayer(index: number): PlayerPositions {
   return { px: players.hpx[index], pz: players.hpz[index] };
 }
 
-export type PlayerPositionsConfig = {
+type PlayerPositionsConfig = {
   hpx: number[][];
   hpz: number[][];
 };

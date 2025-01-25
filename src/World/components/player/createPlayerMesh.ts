@@ -16,18 +16,21 @@ import { PoseAction } from "./animations/PoseAction";
 import { IPoseAction } from "./animations/PoseAction.model";
 import { PoseAnimationAction } from "./animations/PoseAnimationAction";
 import { createMoveActions } from "./animations/actions.factory";
+import { MatchPositions } from "./animations/positions.utils";
 
 export function createPlayerMesh(
   playerId: PlayerId,
   model: Object3D,
   animationClips: AnimationClip[],
-  modelConfig: ModelConfig
+  modelConfig: ModelConfig,
+  positionsConfig: MatchPositions
 ): { player: PlayerMesh } {
   const { mixer, actions, poses } = setupPlayerAnimations(
     playerId,
     model,
     animationClips,
-    modelConfig
+    modelConfig,
+    positionsConfig
   );
 
   const player = new PlayerMesh(playerId, model, mixer, actions, poses);
@@ -39,13 +42,15 @@ function setupPlayerAnimations(
   playerId: PlayerId,
   model: Object3D,
   animationClips: AnimationClip[],
-  modelConfig: ModelConfig
+  modelConfig: ModelConfig,
+  positionsConfig: MatchPositions
 ) {
   const mixer = new AnimationMixer(model);
 
   const { rotateAction, positionAction, poses } = createMoveActions(
     mixer,
-    playerId
+    playerId,
+    positionsConfig
   );
 
   const poseActions = createPoseActions();

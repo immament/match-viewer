@@ -1,5 +1,9 @@
 import { RawPoseEvents, RawPoseTypes } from "../animations/Pose.model";
 
+export function getAllPlayerPoses(): RawPoseEvents[][] {
+  return Object.values(poses).map((data) => data.map((p) => convertPoses(p)));
+}
+
 // playerIdx between 0-10
 export function getPlayerPoses(
   teamIdx: number,

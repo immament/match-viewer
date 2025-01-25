@@ -11,6 +11,7 @@ class MediaMock implements IMedia {
   continue = vi.fn();
   tooglePlay = vi.fn();
   addUpdatable = vi.fn();
+  timeScale = vi.fn();
   modifyTimeScale = vi.fn();
   followBall = vi.fn();
   followPlayerByIndex = vi.fn();

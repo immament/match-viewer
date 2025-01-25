@@ -43,7 +43,19 @@ async function initWorld(): Promise<World> {
   return world;
 }
 
-main();
+async function importTest() {
+  const matchId = Number(urlParams.get("did")) || 1663808;
+  const matchData = await (
+    await import("./World/components/match/dataSource/footstar.api")
+  ).fetchFootstarMatchData(matchId);
+  logger.info("matchData", matchData);
+}
+
+if (urlParams.has("did")) {
+  importTest();
+} else {
+  main();
+}
 // .catch((err) => {
 //   console.error("main error:", err);
 // });

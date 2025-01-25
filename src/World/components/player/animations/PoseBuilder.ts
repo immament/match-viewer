@@ -8,6 +8,7 @@ import { round } from "/app/utils";
 
 const THROW_IN_BALL_MIN_HEIGHT = 1.6;
 const HEAD_BALL_MIN_HEIGHT = 1.4;
+const ALLOW_MOVE_PLAYER_TO_BALL = true;
 
 export class PoseBuilder {
   constructor(
@@ -101,6 +102,7 @@ export class PoseBuilder {
   }
 
   private movePlayerToBall(maxDistance = 0.5, finalDistance = 0.4) {
+    if (!ALLOW_MOVE_PLAYER_TO_BALL) return;
     if (this.ctx.playerPos.distanceTo(this.ctx.ballPos) <= maxDistance) return;
 
     const { next } = this.ctx;

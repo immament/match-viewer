@@ -9,13 +9,16 @@ import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { AnimationNames, ModelConfig } from "./ModelConfig";
 import { PlayerMesh } from "./PlayerMesh";
+import { MatchPositions } from "./animations/positions.utils";
 import { createPlayerMesh } from "./createPlayerMesh";
 import { logger } from "/app/logger";
 
 type ModelType = "player";
 const MODEL_TYPE: ModelType = "player";
 
-export async function loadPlayers(): Promise<{ players: PlayerMesh[] }> {
+export async function loadPlayers(
+  positionsConfig: MatchPositions
+): Promise<{ players: PlayerMesh[] }> {
   const modelConfig = modelConfigFactory(MODEL_TYPE);
 
   const loader = new GLTFLoader();
@@ -73,7 +76,8 @@ export async function loadPlayers(): Promise<{ players: PlayerMesh[] }> {
         { teamIdx, playerIdx },
         playerModel,
         animations,
-        modelConfig
+        modelConfig,
+        positionsConfig
       );
 
       players.push(player);

@@ -1,5 +1,9 @@
 import { Mesh, Object3D } from "three";
 import { describe, expect, it, vi } from "vitest";
+import { getPlayers as getAwayPlayers } from "../__sampleData__/awayPlayersPosition.big.mock";
+import { getBallPositions } from "../__sampleData__/ball.mock";
+import { getPlayers as getHomePlayers } from "../__sampleData__/homePlayersPosition.big.mock";
+import { getAllPlayerPoses } from "../__sampleData__/playersPose.mock";
 import { loadPlayers } from "../loadPlayers";
 import { logger } from "/app/logger";
 
@@ -23,7 +27,12 @@ vi.spyOn(Object3D.prototype, "getObjectByName").mockImplementation((name) => {
 
 describe("loadPlayers", () => {
   it("should load players correctly", async () => {
-    const { players } = await loadPlayers();
+    const positionsConfig = {
+      ball: getBallPositions(),
+      players: [getHomePlayers(), getAwayPlayers()],
+      poses: getAllPlayerPoses()
+    };
+    const { players } = await loadPlayers(positionsConfig);
     expect(players).toHaveLength(22);
     // console.log("players[0].userData", players[0]);
     expect(players[0].teamIdx).toBe(0);

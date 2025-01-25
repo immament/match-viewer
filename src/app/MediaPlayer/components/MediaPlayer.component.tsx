@@ -9,7 +9,6 @@ import { ProgressHolderComponent } from "./ProgressHolder.component";
 import { PlayButton } from "./Play.button";
 import { SpeedButton } from "./Speed.button";
 import { FullscreenButton } from "./Fullscreen.button";
-import { FollowObjectButton } from "./FollowObject.button";
 
 export class MediaPlayerComponent implements IMediaPlayerComponent {
   private _progressHolder: ProgressHolderComponent;
@@ -18,7 +17,7 @@ export class MediaPlayerComponent implements IMediaPlayerComponent {
   private _fullscreenButton: FullscreenButton;
   private _speedButton: SpeedButton;
 
-  constructor(media?: IMedia, private _buttons?: IButton[]) {
+  constructor(private _media?: IMedia, private _buttons?: IButton[]) {
     this._progressHolder = new ProgressHolderComponent();
 
     this._playButton = new PlayButton();
@@ -30,6 +29,8 @@ export class MediaPlayerComponent implements IMediaPlayerComponent {
   }
 
   setMedia(media: IMedia): void {
+    this._media = media;
+    this._speedButton.setSpeed(media.timeScale());
     // this._followButton.setMedia(media);
   }
 
@@ -69,7 +70,7 @@ export class MediaPlayerComponent implements IMediaPlayerComponent {
           {this._playButton.render()}
           <div class="mv-buttons-group">
             <>{this._buttons?.map((bt) => bt.render())}</>
-            {this._speedButton.render()}
+            {this._speedButton.render(this._media?.timeScale())}
             {this._fullscreenButton?.render()}
           </div>
         </div>

@@ -1,3 +1,5 @@
+import { RawPoseEvents } from "./Pose.model";
+
 export type BallPositionsConfig = {
   px: number[];
   pz: number[];
@@ -9,6 +11,11 @@ export type PlayerPositions = {
   px: number[];
   pz: number[];
   // without heigh
+};
+
+export type PlayerPositionsConfig = {
+  hpx: number[][];
+  hpz: number[][];
 };
 
 export const BALL_RADIUS = 0.2;
@@ -78,3 +85,8 @@ export function rotationAngle(direction: number, newDirection: number): number {
 
   return angle;
 }
+export type MatchPositions = {
+  ball: BallPositionsConfig;
+  players: PlayerPositions[][];
+  poses: RawPoseEvents[][];
+};

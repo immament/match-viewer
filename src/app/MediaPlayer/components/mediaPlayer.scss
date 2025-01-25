@@ -8,16 +8,13 @@ div.mv-control-bar {
   overflow-x: clip;
 
   background: none;
-  background-image: linear-gradient(0deg, #000, #0000);
-  // height: 70px;
-  // padding-bottom: 30px;
+  background-image: linear-gradient(0deg, #122b00, #0000);
 
   display: flex;
   flex-direction: column;
 
   & {
     // visible
-
     opacity: 1;
     transition: visibility 0.1s, opacity 0.1s;
     visibility: visible;
@@ -190,6 +187,12 @@ div.mv-control-bar {
       white-space: nowrap;
       padding: 0.5em 1em;
       border-bottom: 1px solid #ffffff20;
+    }
+    .mv-menucontent {
+      max-height: 60vh;
+      overflow-y: auto;
+      scrollbar-color: #25292a #122b00;
+      scrollbar-width: thin;
     }
     .mv-menuitem {
       white-space: nowrap;

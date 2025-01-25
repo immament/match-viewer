@@ -26,7 +26,11 @@ export default defineConfig({
         "**/__sampleData__/*",
         "**/debug/**"
       ]
+    },
+    diff: {
+      // truncateThreshold: 10000
     }
+
     // pool: "threads",
     // poolOptions: {
     //   threads: {
@@ -45,5 +49,17 @@ export default defineConfig({
     // deps: {
     //   inline: ["vitest-canvas-mock"]
     // }
+  },
+  server: {
+    proxy: {
+      "/api": {
+        target: "https://nd.footstar.org/match/get_data_nviewer.asp",
+        changeOrigin: true,
+        rewrite: (path) => {
+          // console.log("path", path, path.replace(/^\/api\//, "?jogo_id="));
+          return path.replace(/^\/api\//, "?jogo_id=");
+        }
+      }
+    }
   }
 });

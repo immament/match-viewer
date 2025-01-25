@@ -11,6 +11,7 @@ export class MatchMediaPlayer {
   }
 
   setMedia(match: IMatch) {
+    match.modifyTimeScale(2);
     this._mediaPlayer.setMedia(match);
     this._followButton.setMatch(match);
   }

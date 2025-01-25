@@ -1,2 +1,3 @@
 *.tmp.txt
 *.big.mock.ts
+footstar.api.test.ts.snap
