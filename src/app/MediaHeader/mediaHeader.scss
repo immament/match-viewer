@@ -19,6 +19,8 @@
 
   .mv-team {
     max-width: 25%;
+    display: flex;
+    column-gap: 1px;
   }
 
   .mv-result {
@@ -26,12 +28,10 @@
     column-gap: 0.3em;
   }
   .mv-box {
-    border-radius: 4px;
     padding: 0.5em 0.8em;
     white-space: nowrap;
     & > div {
       overflow: hidden;
-      //   text-overflow: ellipsis;
     }
   }
 

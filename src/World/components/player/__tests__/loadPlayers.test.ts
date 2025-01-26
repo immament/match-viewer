@@ -1,5 +1,6 @@
 import { Mesh, Object3D } from "three";
 import { describe, expect, it, vi } from "vitest";
+import { MatchData } from "../../match/MatchData.model";
 import { getPlayers as getAwayPlayers } from "../__sampleData__/awayPlayersPosition.big.mock";
 import { getBallPositions } from "../__sampleData__/ball.mock";
 import { getPlayers as getHomePlayers } from "../__sampleData__/homePlayersPosition.big.mock";
@@ -32,7 +33,13 @@ describe("loadPlayers", () => {
       players: [getHomePlayers(), getAwayPlayers()],
       poses: getAllPlayerPoses()
     };
-    const { players } = await loadPlayers(positionsConfig);
+    const matchData = new MatchData(
+      positionsConfig,
+      { name: "Team 1" },
+      { name: "Team 2" }
+    );
+
+    const { players } = await loadPlayers(matchData);
     expect(players).toHaveLength(22);
     // console.log("players[0].userData", players[0]);
     expect(players[0].teamIdx).toBe(0);
