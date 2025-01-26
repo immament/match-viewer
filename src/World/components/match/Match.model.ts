@@ -6,7 +6,7 @@ import { PlayerMesh } from "../player/PlayerMesh";
 import { SceneDirector, TimeChangedEventDetail } from "../SceneDirector";
 import { Ball } from "./ball";
 import { Label } from "./Label";
-import { IMatch } from "/app/MediaPlayer/media.model";
+import { IMatchMedia } from "/app/MediaPlayer/media.model";
 
 enum MouseButton {
   Main = 0,
@@ -16,7 +16,7 @@ enum MouseButton {
   Fifth = 4
 }
 
-export class Match implements IMatch, IUpdatable {
+export class Match implements IMatchMedia, IUpdatable {
   private static _instance?: Match;
   static get instance(): Match | undefined {
     return this._instance;

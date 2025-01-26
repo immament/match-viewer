@@ -15,7 +15,7 @@ export interface IMedia {
   addUpdatable(updatable: IUpdatable): void;
 }
 
-export interface IMatch extends IMedia {
+export interface IMatchMedia extends IMedia {
   get viewController(): IViewController;
   followBall(value: boolean): void;
   followPlayerByIndex(index: number): void;

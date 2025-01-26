@@ -2,7 +2,7 @@ import "boxicons/css/boxicons.css";
 import type { World } from "./World/World";
 import { initKeyboard } from "./World/WorldControls";
 import { createWorld } from "./World/world.factory";
-import { testJsx } from "./app/MediaPlayer/MediaPlayer.factory";
+import { createMatchOverlays as createMatchPlayer } from "./app/MediaPlayer/MediaPlayer.factory";
 import { logger } from "./app/logger";
 import "./style.scss";
 
@@ -18,11 +18,11 @@ if (DEBUG_MODE) {
 }
 
 async function main() {
-  const matchPlayer = testJsx();
+  const matchPlayer = createMatchPlayer();
   const world = await initWorld();
   if (matchPlayer && world.debug_match) {
     matchPlayer.setMedia(world.debug_match);
-    // matchPlayer.serViewController(world.debug_controls);
+
     initKeyboard(
       world.debug_match,
       world.debug_controls,

@@ -8,11 +8,17 @@ import {
 import { loadBall } from "./loadBall";
 import { Match } from "./Match.model";
 import { logger } from "/app/logger";
+import { MediaHeaderComponent } from "/app/MediaHeader/MediaHeader.component";
+import { getPlayerContainer } from "/app/MediaPlayer/MediaPlayer.factory";
 
 export async function createMatch(controls: IViewController): Promise<Match> {
-  const md = await loadMatchData();
-  const { players } = await loadPlayers(md);
-  const { ball } = await loadBall(md.ball);
+  const matchData = await loadMatchData();
+
+  const _mediaHeaderCommponent = new MediaHeaderComponent(matchData);
+  getPlayerContainer()?.appendChild(_mediaHeaderCommponent.render());
+
+  const { players } = await loadPlayers(matchData);
+  const { ball } = await loadBall(matchData.positions.ball);
 
   const match = new Match(controls, ball, players);
   return match;

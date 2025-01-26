@@ -6,6 +6,7 @@ import {
   xToPitch,
   zToPitch
 } from "../../player/animations/positions.utils";
+import { MatchData } from "../MatchData.model";
 import { FootstarMatchData, FootstarMatchResponse } from "./footstar.api.model";
 import {
   convertBallPositions,
@@ -35,10 +36,20 @@ export async function fetchFootstarMatchData(
   return data;
 }
 
-export function convertFsMatch(match: FootstarMatchData): MatchPositions {
-  const gameData = match.game_data.j;
+export function convertFsMatch(fsMatch: FootstarMatchData): MatchData {
+  const positions = convertGameData(fsMatch);
 
-  return {
+  return new MatchData(
+    positions,
+    { name: fsMatch.game_info.home_team_name["#text"] },
+    { name: fsMatch.game_info.away_team_name["#text"] }
+  );
+}
+
+function convertGameData(fsMatch: FootstarMatchData) {
+  const gameData = fsMatch.game_data.j;
+
+  const positions: MatchPositions = {
     ball: {
       px: convertBallPositions(gameData, "x").map((v) => xToPitch(v)),
       pz: convertBallPositions(gameData, "y").map((v) => zToPitch(v)),
@@ -52,6 +63,7 @@ export function convertFsMatch(match: FootstarMatchData): MatchPositions {
     ],
     poses: convertPoses(gameData)
   };
+  return positions;
 }
 
 async function makeFetch(url: string) {

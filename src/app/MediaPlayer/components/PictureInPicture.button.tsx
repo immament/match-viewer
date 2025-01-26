@@ -4,14 +4,14 @@ import { createRef } from "jsx-dom";
 export class PictureInPictureButton {
   private _videoRef = createRef<HTMLVideoElement>();
   private async pictureInPicture() {
-    console.log(
-      "aa",
-      this._videoRef.current,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (document.getElementById("app") as any).requestPictureInPicture,
-      document.pictureInPictureElement,
-      document.pictureInPictureEnabled
-    );
+    // console.log(
+    //   "aa",
+    //   this._videoRef.current,
+    //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    //   (document.getElementById("app") as any).requestPictureInPicture,
+    //   document.pictureInPictureElement,
+    //   document.pictureInPictureEnabled
+    // );
 
     if ("documentPictureInPicture" in window) {
       const app = document.getElementById("mediaPlayer");

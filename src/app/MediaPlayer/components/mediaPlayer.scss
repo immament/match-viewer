@@ -45,6 +45,7 @@ div.mv-control-bar {
       cursor: pointer;
       min-width: 4em;
       touch-action: none;
+      user-select: none;
 
       .mv-progress-holder {
         height: var(--progress-height);

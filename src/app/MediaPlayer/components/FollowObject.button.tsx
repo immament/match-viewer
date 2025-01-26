@@ -1,6 +1,6 @@
 import { ChangeEventHandler, createRef } from "jsx-dom";
 import { PopupMenu } from "./PopupMenu";
-import { IMatch } from "../media.model";
+import { IMatchMedia } from "../media.model";
 
 const MENU_FOLLOW_BALL_IDX = 23;
 
@@ -16,13 +16,13 @@ export class FollowObjectButton {
   }[] = Array(24);
   private _index: number = 23;
 
-  constructor(private _match?: IMatch) {
+  constructor(private _match?: IMatchMedia) {
     this._menu = new PopupMenu(this.menuClicked);
 
     this.initItems();
   }
 
-  setMatch(match: IMatch) {
+  setMatch(match: IMatchMedia) {
     this._match = match;
     match.followBall(true);
   }
@@ -38,7 +38,7 @@ export class FollowObjectButton {
     }
   };
 
-  private setFollowedObject(match: IMatch, index: number): void {
+  private setFollowedObject(match: IMatchMedia, index: number): void {
     this._index = index;
     if (index <= 0) {
       match.followBall(false);

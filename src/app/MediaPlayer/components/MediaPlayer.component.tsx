@@ -28,7 +28,7 @@ export class MediaPlayerComponent implements IMediaPlayerComponent {
     );
   }
 
-  setMedia(media: IMedia): void {
+  public setMedia(media: IMedia): void {
     this._media = media;
     this._speedButton.setSpeed(media.timeScale());
     // this._followButton.setMedia(media);
@@ -62,6 +62,18 @@ export class MediaPlayerComponent implements IMediaPlayerComponent {
     this._progressHolder.enable();
   }
 
+  // -- IMediaPlayer end --
+
+  createEl(container?: HTMLElement): HTMLElement {
+    const elem = this.render();
+    // this._container = container;
+    container?.appendChild(elem);
+    if (container) {
+      this.setMediaElem(container);
+    }
+    return elem;
+  }
+
   render(): HTMLElement {
     const result = (
       <div class="mv-control-bar">
@@ -75,9 +87,8 @@ export class MediaPlayerComponent implements IMediaPlayerComponent {
           </div>
         </div>
       </div>
-    ) as HTMLElement;
-    // as HTMLDivElement & { debug?: { component: unknown } };
+    );
 
-    return result;
+    return result as HTMLElement;
   }
 }

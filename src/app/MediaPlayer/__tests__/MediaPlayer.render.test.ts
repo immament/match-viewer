@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { MediaPlayerComponent } from "../components/MediaPlayer.component";
-import { IMedia, IMediaPlayerComponent } from "../media.model";
+import { IMedia } from "../media.model";
 import { MediaPlayer } from "../MediaPlayer";
 
 class MediaMock implements IMedia {
@@ -20,7 +20,7 @@ class MediaMock implements IMedia {
 describe("MediaPlayer Render", () => {
   let media: MediaMock;
   let player: MediaPlayer;
-  let playerComponent: IMediaPlayerComponent;
+  let playerComponent: MediaPlayerComponent;
 
   beforeEach(() => {
     media = new MediaMock();
@@ -30,7 +30,7 @@ describe("MediaPlayer Render", () => {
 
   describe("time", () => {
     it("should update tooltip time", () => {
-      const elem = player.createEl();
+      const elem = playerComponent.createEl();
       player.time = 91;
 
       expect(
@@ -39,7 +39,7 @@ describe("MediaPlayer Render", () => {
     });
 
     it("should update progress", () => {
-      const elem = player.createEl();
+      const elem = playerComponent.createEl();
 
       player.time = 60;
 
@@ -51,7 +51,7 @@ describe("MediaPlayer Render", () => {
 
   describe("render", () => {
     it("should create a div element with the correct class name", () => {
-      const el = player.render();
+      const el = playerComponent.render();
 
       expect(el.tagName).toBe("DIV");
       expect(el.className).toBe("mv-control-bar");
@@ -59,7 +59,7 @@ describe("MediaPlayer Render", () => {
 
     it("should create a element & append to container", () => {
       const container = document.createElement("div");
-      const el = player.createEl(container);
+      const el = playerComponent.createEl(container);
 
       expect(container.children).toContain(el);
       expect(el.parentElement).toContain(container);
@@ -68,7 +68,7 @@ describe("MediaPlayer Render", () => {
 
   describe("play", () => {
     it("play button click", () => {
-      const elem = player.render();
+      const elem = playerComponent.render();
       elem.querySelector<HTMLButtonElement>(".mv-play-control")?.click();
       expect(media.tooglePlay).toHaveBeenCalledOnce();
     });

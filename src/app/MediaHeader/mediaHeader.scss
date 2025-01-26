@@ -1,0 +1,52 @@
+.mv-media-header {
+  position: absolute;
+  width: calc(100% - 20px);
+  top: 1em;
+  right: 0;
+  .mv-content {
+    overflow: hidden;
+    padding: 0 8px;
+    z-index: 1000;
+    display: flex;
+    justify-content: end;
+    column-gap: 0.4em;
+
+    font-size: 16px;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    opacity: 0.8;
+  }
+
+  .mv-team {
+    max-width: 25%;
+  }
+
+  .mv-result {
+    display: flex;
+    column-gap: 0.3em;
+  }
+  .mv-box {
+    border-radius: 4px;
+    padding: 0.5em 0.8em;
+    white-space: nowrap;
+    & > div {
+      overflow: hidden;
+      //   text-overflow: ellipsis;
+    }
+  }
+
+  .mv-team-1 {
+    background-color: rgb(255, 0, 0);
+    color: rgb(255, 255, 255);
+  }
+  .mv-team-2 {
+    background-color: rgb(5, 77, 0);
+    color: rgb(5, 255, 255);
+  }
+
+  .mv-time {
+    background-color: #dad801;
+    color: black;
+    padding: 0.5em 0.6em;
+  }
+}

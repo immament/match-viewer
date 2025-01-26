@@ -62,21 +62,21 @@ export class MediaPlayer implements IMediaPlayer, IUpdatable {
 
   // -- IMediaPlayer end --
 
-  createEl(container?: HTMLElement): HTMLDivElement {
-    const elem = this.render();
-    this._container = container;
-    container?.appendChild(elem);
-    if (container) {
-      this._mpComponent.setMediaElem(container);
-    }
-    return elem;
-  }
+  // createEl(container?: HTMLElement): HTMLDivElement {
+  //   const elem = this.render();
+  //   this._container = container;
+  //   container?.appendChild(elem);
+  //   if (container) {
+  //     this._mpComponent.setMediaElem(container);
+  //   }
+  //   return elem;
+  // }
 
-  render() {
-    const result = this._mpComponent.render(this._container);
-    // result.debug = { component: this };
-    return result as HTMLDivElement;
-  }
+  // render() {
+  //   const result = this._mpComponent.render(this._container);
+  //   // result.debug = { component: this };
+  //   return result as HTMLDivElement;
+  // }
 
   // ++ IUpdatable ++
   tick(): void {
