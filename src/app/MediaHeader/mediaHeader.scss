@@ -1,52 +1,72 @@
 .mv-media-header {
   position: absolute;
-  width: calc(100% - 20px);
+  width: 100%;
   top: 1em;
   right: 0;
+  width: calc(100% - 30px);
+  display: flex;
+  justify-content: flex-end;
+
   .mv-content {
-    overflow: hidden;
+    // overflow: hidden;
     padding: 0 8px;
     z-index: 1000;
-    display: flex;
+    display: inline-grid;
     justify-content: end;
-    column-gap: 0.4em;
+    align-items: center;
+    column-gap: 4px;
 
-    font-size: 16px;
+    grid-template-columns: 1fr minmax(30%, min-content) minmax(30%, max-content) minmax(
+        max-content,
+        10px
+      );
+
+    font-size: 14px;
     font-weight: bold;
-    color: rgb(255, 255, 255);
+    color: #ffffff;
     opacity: 0.8;
   }
 
   .mv-team {
-    max-width: 25%;
-    display: flex;
     column-gap: 1px;
+    display: inline-grid;
+
+    column-gap: 1px;
+
+    &.mv-team-1 {
+      justify-content: end;
+      grid-template-columns: minmax(50%, min-content) min-content;
+      & > div {
+        background-color: #dad801;
+        color: #000000;
+      }
+    }
+    &.mv-team-2 {
+      justify-content: start;
+      grid-template-columns: min-content minmax(50%, min-content);
+      & > div {
+        background-color: #f00;
+        color: #fff;
+      }
+    }
   }
 
   .mv-result {
     display: flex;
     column-gap: 0.3em;
   }
+
   .mv-box {
-    padding: 0.5em 0.8em;
+    padding: 0.4em 0.8em;
     white-space: nowrap;
     & > div {
       overflow: hidden;
     }
   }
 
-  .mv-team-1 {
-    background-color: rgb(255, 0, 0);
-    color: rgb(255, 255, 255);
-  }
-  .mv-team-2 {
-    background-color: rgb(5, 77, 0);
-    color: rgb(5, 255, 255);
-  }
-
   .mv-time {
-    background-color: #dad801;
-    color: black;
+    background-color: #054d00;
+    color: #05ffff;
     padding: 0.5em 0.6em;
   }
 }
