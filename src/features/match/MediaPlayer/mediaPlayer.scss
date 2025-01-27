@@ -40,7 +40,7 @@ div.mv-control-bar {
       position: relative;
       width: 100%;
       font-size: 1.3em;
-      pointer-events: none;
+      // pointer-events: none;
 
       margin: 0 8px;
 
@@ -69,7 +69,7 @@ div.mv-control-bar {
           }
         }
 
-        .mv-mouse-display {
+        .mv-hover-display {
           position: absolute;
           display: none;
           height: var(--progress-height);
@@ -115,7 +115,7 @@ div.mv-control-bar {
           font-size: 0.6em;
           visibility: visible;
         }
-        .mv-mouse-display {
+        .mv-hover-display {
           display: block;
           opacity: 1;
           transition:

@@ -4,11 +4,12 @@ import { initKeyboard } from "./World/WorldControls";
 import { createWorld } from "./World/world.factory";
 import { createMatchOverlays as createMatchPlayer } from "./app/MediaPlayer/MediaPlayer.factory";
 import { logger } from "./app/logger";
+import { mainReact } from "./main.react";
 import "./style.scss";
 
 const urlParams = new URLSearchParams(window.location.search);
 const DEBUG_MODE = urlParams.has("dbg");
-const threeContainerId = "app";
+const THREE_CONTAINER_ID = "app";
 
 if (DEBUG_MODE) {
   document.body.classList.add("debug");
@@ -17,9 +18,14 @@ if (DEBUG_MODE) {
   logger.getLogger("player").setLevel("INFO");
 }
 
+const LOAD_WORLD = false;
+
 async function main() {
+  mainReact(THREE_CONTAINER_ID);
+
+  if (!LOAD_WORLD) return;
   const matchPlayer = createMatchPlayer();
-  const world = await initWorld();
+  const world = await initWorld(THREE_CONTAINER_ID);
   if (matchPlayer && world.debug_match) {
     matchPlayer.setMedia(world.debug_match);
 
@@ -31,11 +37,11 @@ async function main() {
   }
 }
 
-async function initWorld(): Promise<World> {
-  const container = document.getElementById(threeContainerId);
+async function initWorld(containerId: string): Promise<World> {
+  const container = document.getElementById(containerId);
 
   if (!container) {
-    throw new Error(`Html element #${threeContainerId} not found.`);
+    throw new Error(`Html element #${containerId} not found.`);
   }
   const world = await createWorld(container, DEBUG_MODE);
   // start the animation loop
@@ -43,19 +49,4 @@ async function initWorld(): Promise<World> {
   return world;
 }
 
-async function importTest() {
-  const matchId = Number(urlParams.get("did")) || 1663808;
-  const matchData = await (
-    await import("./World/components/match/dataSource/footstar.api")
-  ).fetchFootstarMatchData(matchId);
-  logger.info("matchData", matchData);
-}
-
-if (urlParams.has("did")) {
-  importTest();
-} else {
-  main();
-}
-// .catch((err) => {
-//   console.error("main error:", err);
-// });
+main();

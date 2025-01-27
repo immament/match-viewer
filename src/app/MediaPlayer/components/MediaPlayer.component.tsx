@@ -1,4 +1,3 @@
-import "./mediaPlayer.scss";
 import {
   IButton,
   IMedia,
@@ -17,7 +16,10 @@ export class MediaPlayerComponent implements IMediaPlayerComponent {
   private _fullscreenButton: FullscreenButton;
   private _speedButton: SpeedButton;
 
-  constructor(private _media?: IMedia, private _buttons?: IButton[]) {
+  constructor(
+    private _media?: IMedia,
+    private _buttons?: IButton[]
+  ) {
     this._progressHolder = new ProgressHolderComponent();
 
     this._playButton = new PlayButton();

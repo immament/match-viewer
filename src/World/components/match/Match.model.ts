@@ -1,5 +1,5 @@
-import { IViewController } from "src/World/IViewController";
 import { Object3D, Raycaster, Scene, Vector2, Vector3 } from "three";
+import { IViewController } from "../../IViewController";
 import { IUpdatable } from "../../systems/Loop";
 import { PlayerId } from "../player/PlayerId";
 import { PlayerMesh } from "../player/PlayerMesh";

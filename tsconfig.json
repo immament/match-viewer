@@ -22,13 +22,11 @@
     "paths": {
       "/app/*": ["./src/app/*"],
       "/test-setup/*": ["./src/__tests__/*"]
-      //"/world/*": ["./src/World/*"]
     },
     "baseUrl": ".",
     "allowJs": true,
 
-    "jsx": "react-jsx",
-    "jsxImportSource": "jsx-dom"
+    "jsx": "react-jsx"
   },
 
   "include": ["src"]

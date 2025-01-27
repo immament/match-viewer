@@ -8,14 +8,13 @@ export default defineConfig({
     alias: {
       "/app": path.resolve(__dirname, "./src/app"),
       "/test-setup": path.resolve(__dirname, "./src/__tests__")
-      // "/src/World": path.resolve(__dirname, "./src/World")
     }
   },
   esbuild: {
     //jsxFactory: "h"
     // jsxFragment: "Fragment",
     // jsxImportSource: "jsx-dom",
-    jsxInject: "import * as React from 'jsx-dom'"
+    // jsxInject: "import * as React from 'jsx-dom'"
   },
   test: {
     environment: "happy-dom",

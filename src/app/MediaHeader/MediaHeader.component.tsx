@@ -1,5 +1,4 @@
 import { MatchData } from "src/World/components/match/MatchData.model";
-import "./mediaHeader.scss";
 import { createRef, RefObject } from "jsx-dom";
 
 export class MediaHeaderComponent {

@@ -39,11 +39,11 @@ export async function fetchFootstarMatchData(
 export function convertFsMatch(fsMatch: FootstarMatchData): MatchData {
   const positions = convertGameData(fsMatch);
 
-  return new MatchData(
+  return {
     positions,
-    { name: fsMatch.game_info.home_team_name["#text"] },
-    { name: fsMatch.game_info.away_team_name["#text"] }
-  );
+    homeTeam: { name: fsMatch.game_info.home_team_name["#text"] },
+    awayTeam: { name: fsMatch.game_info.away_team_name["#text"] }
+  };
 }
 
 function convertGameData(fsMatch: FootstarMatchData) {

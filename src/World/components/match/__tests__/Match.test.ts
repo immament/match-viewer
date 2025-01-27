@@ -1,6 +1,6 @@
-import { IViewController } from "src/World/IViewController";
 import { AnimationClip, AnimationMixer, Object3D, Vector3 } from "three";
 import { beforeEach, describe, expect, test, vi } from "vitest";
+import { IViewController } from "../../../IViewController";
 import { PlayerActions } from "../../player/animations/PlayerActions";
 import { PoseRecord } from "../../player/animations/PoseAction.model";
 import { Player3D, PlayerMesh } from "../../player/PlayerMesh";
