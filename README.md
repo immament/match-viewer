@@ -1,5 +1,5 @@
 ## Football Match Viewer
 
-### Demo
+moved to:
+https://github.com/immament/football-match-viewer
 
-https://immament.github.io/match-viewer/
